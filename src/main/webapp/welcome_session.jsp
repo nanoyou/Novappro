@@ -12,7 +12,6 @@
     <title>欢迎回来</title>
     <h1>欢迎回来</h1>
     <p>
-        <%! Cookie[] cookies = null; %>
         <%! String userUsername = ""; %>
         <%! String userType = ""; %>
         <%
