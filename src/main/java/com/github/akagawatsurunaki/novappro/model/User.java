@@ -1,13 +1,13 @@
 package com.github.akagawatsurunaki.novappro.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.ToString;
+import com.alibaba.fastjson2.annotation.JSONType;
+import lombok.*;
 
 @Data
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
+@JSONType(ignores = {"rawPassword"})
 public class User {
     Integer id;
     String username;
@@ -16,6 +16,7 @@ public class User {
 
     @AllArgsConstructor
     @ToString
+
     public enum Type {
 
         ADMIN(233, "管理员"),
