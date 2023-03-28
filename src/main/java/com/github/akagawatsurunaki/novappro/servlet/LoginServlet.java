@@ -56,6 +56,8 @@ public class LoginServlet extends HttpServlet {
         // 在没有数据库的情况下使用, 之后将不会使用这段代码
         UserTable.init();
 
+        request.getRemoteAddr();
+
         Integer userId = Integer.valueOf(request.getParameter("userId"));
         String rawPassword = request.getParameter("rawPassword");
 
