@@ -18,7 +18,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Set;
 
-@WebServlet(name = "InitDatabaseServlet",urlPatterns = {"/initDatabase"}, loadOnStartup = InitSequenceConfig.INIT_DATABASE)
+@WebServlet(name = "InitDatabaseServlet", urlPatterns = {"/initDatabase"}, loadOnStartup = InitSequenceConfig.INIT_DATABASE)
 public class InitDatabaseServlet extends HttpServlet {
 
     private final static DatabaseManager DATABASE_MANAGER = new DatabaseManager();
@@ -33,6 +33,7 @@ public class InitDatabaseServlet extends HttpServlet {
         System.out.println(s);
     }
 }
+
 class DatabaseManager {
 
     private Connection connection;
@@ -56,7 +57,7 @@ class DatabaseManager {
 
         Set<Field> fields = f.getFieldsAnnotatedWith(Database.class);
 
-        if (!fields.isEmpty()){
+        if (!fields.isEmpty()) {
             fields.forEach(field -> {
                 if (field != null) {
                     try {
