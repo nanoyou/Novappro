@@ -9,6 +9,8 @@ public interface UserMapper {
     User getUserById(int id);
     List<User> getUsers();
 
+    User insertUser(User user);
+
     enum By {
         ID,
         USERNAME,

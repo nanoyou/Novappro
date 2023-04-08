@@ -4,8 +4,6 @@ import com.github.akagawatsurunaki.novappro.annotation.Database;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.User;
 import lombok.Getter;
-import lombok.NonNull;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +31,19 @@ public class UserMapperImpl implements UserMapper {
         return users;
     }
 
+    @Override
+    public User insertUser(User user) {
+        return null;
+    }
+
 
     @Override
     public User getUserById(int id) {
         try(
-              PreparedStatement statement = connection.prepareStatement("select `id`, `username`, `raw_password`, `type` from user where user.id = ?;");
+              PreparedStatement statement =
+                      connection.prepareStatement(
+                              "select `id`, `username`, `raw_password`, `type` from user where user.id = ?;"
+                      )
                 ) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -47,31 +53,9 @@ public class UserMapperImpl implements UserMapper {
             }
             resultSet.close();
             return users.get(0);
-
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
-
-
-//        try {
-//            statement = connection.prepareStatement("select `id`, `username`, `raw_password`, `type` from user where user.id = ?;");
-//            statement.setInt(1, id);
-//            resultSet = statement.executeQuery();
-//            List<User> users = parseResultSet(resultSet);
-//            if (users.isEmpty()){
-//                return null;
-//            }
-//            User user = users.get(0);
-//            resultSet.close();
-//            return user;
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-
-
     }
 
     public static List<User> parseResultSet(ResultSet rs) {
