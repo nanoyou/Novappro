@@ -1,15 +1,13 @@
 package com.github.akagawatsurunaki.novappro.service;
 
+import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
+import com.github.akagawatsurunaki.novappro.constant.Constant;
 import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.User;
-import com.github.akagawatsurunaki.novappro.test.UserTable;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginService {
 
@@ -18,76 +16,38 @@ public class LoginService {
 
     private static final UserMapperImpl USER_MAPPER = UserMapperImpl.getInstance();
 
-    public enum VerifyCode {
-        OK,
-        NO_SUCH_USER,
-        PASSWORD_ERROR,
-        FATAL_ERROR
-    }
-
-
-    @Deprecated
-    public Map<String, Object> tryLoginWithUserName(@NonNull String username, @NonNull String rawPassword) {
-        final String VERIFY_CODE = VerifyCode.class.getName();
-        final String USER = User.class.getName();
-
-        Map<String, Object> result = new HashMap<>();
-
-        for (User user : UserTable.getUsers()) {
-            if (user.getUsername().equals(username)) {
-                if (user.getRawPassword().equals(rawPassword)) {
-                    result.put(VERIFY_CODE, VerifyCode.OK);
-                    result.put(USER, user);
-                } else {
-                    result.put(VERIFY_CODE, VerifyCode.PASSWORD_ERROR);
-                    result.put(USER, null);
-                }
-                return result;
-            }
-        }
-
-        result.put(VERIFY_CODE, VerifyCode.NO_SUCH_USER);
-        result.put(USER, null);
-        return result;
-    }
-
     public Pair<VerifyCode, User> tryLoginWithUserId(@NonNull Integer id, @NonNull String rawPassword) {
+
+        // 密码长度校验
+        if (!(Constant.MIN_LEN_PASSWORD <= rawPassword.length() && rawPassword.length() <= Constant.MAX_LEN_PASSWORD)) {
+            return new ImmutablePair<>(VerifyCode.PASSWORD_OUT_OF_BOUND, null);
+        }
 
         User user = USER_MAPPER.getUserById(id);
         // 判断用户是否存在
         if (user == null) {
             return new ImmutablePair<>(VerifyCode.NO_SUCH_USER, null);
         }
+
         // 校验密码
         if (user.getRawPassword().equals(rawPassword)) {
             return new ImmutablePair<>(VerifyCode.OK, user);
         }
-        return new ImmutablePair<>(VerifyCode.PASSWORD_ERROR, user);
+        return new ImmutablePair<>(VerifyCode.PASSWORD_ERROR, null);
 
     }
 
-//    public Map<String, Object> tryLoginWithUserId(@NonNull Integer id, @NonNull String rawPassword){
-//        final String VERIFY_CODE = VerifyCode.class.getName();
-//        final String USER = User.class.getName();
-//
-//        Map<String, Object> result = new HashMap<>();
-//
-//        for (User user : UserTable.getUsers()) {
-//            if (user.getId().equals(id)) {
-//                if(user.getRawPassword().equals(rawPassword)){
-//                    result.put(VERIFY_CODE, VerifyCode.OK);
-//                    result.put(USER, user);
-//                } else {
-//                    result.put(VERIFY_CODE, VerifyCode.PASSWORD_ERROR);
-//                    result.put(USER, null);
-//                }
-//                return result;
-//            }
-//        }
-//
-//        result.put(VERIFY_CODE, VerifyCode.NO_SUCH_USER);
-//        result.put(USER, null);
-//        return result;
-//    }
+    public enum VerifyCode {
+        @ChineseFieldName(chineseFieldName = "登录成功")
+        OK,
+        @ChineseFieldName(chineseFieldName = "无此用户")
+        NO_SUCH_USER,
+        @ChineseFieldName(chineseFieldName = "密码错误")
+        PASSWORD_ERROR,
+        @ChineseFieldName(chineseFieldName = "密码超出规定范围")
+        PASSWORD_OUT_OF_BOUND,
+        @ChineseFieldName(chineseFieldName = "严重错误")
+        FATAL_ERROR
+    }
 
 }
