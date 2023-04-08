@@ -43,6 +43,7 @@ class DatabaseManager {
             System.out.println(Connection.class.getName() + "是null, 数据库连接初始化失败.");
             return;
         }
+        // 将被注入的类
         String packageName = "com.github.akagawatsurunaki.novappro.mapper.impl";
         scanAnnotations(packageName);
     }

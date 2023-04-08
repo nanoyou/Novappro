@@ -107,7 +107,7 @@ public class LoginServlet extends HttpServlet {
 
         Pair<LoginService.VerifyCode, User> verifyCodeUserPair = LoginService.getInstance().tryLoginWithUserId(userId, rawPassword);
         LoginService.VerifyCode verifyCode = verifyCodeUserPair.getLeft();
-        User user = verifyCodeUserPair.getRight();
+        // User user = verifyCodeUserPair.getRight();
 
         if (verifyCode == LoginService.VerifyCode.OK) {
             request.getRequestDispatcher("welcome.jsp").forward(request, response);
