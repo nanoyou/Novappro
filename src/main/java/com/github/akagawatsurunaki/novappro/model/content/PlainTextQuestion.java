@@ -3,12 +3,10 @@ package com.github.akagawatsurunaki.novappro.model.content;
 import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class MultipleChoiceQuestion implements Question {
+public class PlainTextQuestion implements Question {
 
-    @ChineseFieldName(chineseFieldName = "多选题ID")
+    @ChineseFieldName(chineseFieldName = "纯文本题ID")
     Integer id;
 
     @ChineseFieldName(chineseFieldName = "问题名称")
@@ -17,11 +15,8 @@ public class MultipleChoiceQuestion implements Question {
     @ChineseFieldName(chineseFieldName = "问题描述")
     String description;
 
-    @ChineseFieldName(chineseFieldName = "多选题内容列表")
-    List<TextItem> textItems;
-
-    @ChineseFieldName(chineseFieldName = "已选择文本项目ID列表")
-    List<Integer> selectedTextItemId;
+    @ChineseFieldName(chineseFieldName = "纯文本内容")
+    String plainText;
 
     @ChineseFieldName(chineseFieldName = "是否必填")
     boolean isRequired;

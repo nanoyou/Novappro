@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class SingleChoiceQuestion {
+public class SingleChoiceQuestion implements Question {
 
     @ChineseFieldName(chineseFieldName = "单选题ID")
     Integer id;
@@ -23,4 +23,6 @@ public class SingleChoiceQuestion {
     @ChineseFieldName(chineseFieldName = "已选择文本项目ID")
     Integer selectedTextItemId = Constant.NO_SELECTED_ITEM_ID;
 
+    @ChineseFieldName(chineseFieldName = "是否必填")
+    boolean isRequired;
 }
