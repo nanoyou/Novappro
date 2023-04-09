@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.model.content;
+package com.github.akagawatsurunaki.novappro.model.question;
 
 import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
 import com.github.akagawatsurunaki.novappro.constant.Constant;
@@ -24,5 +24,5 @@ public class SingleChoiceQuestion implements Question {
     Integer selectedTextItemId = Constant.NO_SELECTED_ITEM_ID;
 
     @ChineseFieldName(chineseFieldName = "是否必填")
-    boolean isRequired;
+    Boolean isRequired;
 }

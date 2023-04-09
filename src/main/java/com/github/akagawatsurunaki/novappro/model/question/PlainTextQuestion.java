@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.model.content;
+package com.github.akagawatsurunaki.novappro.model.question;
 
 import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
 import lombok.Data;
@@ -19,5 +19,5 @@ public class PlainTextQuestion implements Question {
     String plainText;
 
     @ChineseFieldName(chineseFieldName = "是否必填")
-    boolean isRequired;
+    Boolean isRequired;
 }

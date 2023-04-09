@@ -19,7 +19,7 @@ public class Course {
     String name;
 
     @ChineseFieldName(chineseFieldName = "学分")
-    int credit;
+    Integer credit;
 
     @ChineseFieldName(chineseFieldName = "课程序号")
     String serialNumber;
