@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ChineseFieldName {
     String chineseFieldName() default "";
+    String description() default "";
 }
