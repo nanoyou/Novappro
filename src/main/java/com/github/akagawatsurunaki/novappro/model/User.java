@@ -11,16 +11,16 @@ import lombok.*;
 @JSONType(ignores = {"rawPassword"})
 public class User {
 
-    @ChineseFieldName(chineseFieldName = "学号/工号")
+    @ChineseFieldName(value = "学号/工号")
     Integer id;
 
-    @ChineseFieldName(chineseFieldName = "姓名")
+    @ChineseFieldName(value = "姓名")
     String username;
 
-    @ChineseFieldName(chineseFieldName = "明文密码")
+    @ChineseFieldName(value = "明文密码")
     String rawPassword;
 
-    @ChineseFieldName(chineseFieldName = "用户类型")
+    @ChineseFieldName(value = "用户类型")
     Type type;
 
     @AllArgsConstructor
@@ -45,7 +45,4 @@ public class User {
             throw new IllegalArgumentException(Type.class.getName() + "无法解析的错误");
         }
     }
-
-
-
 }
