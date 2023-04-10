@@ -4,6 +4,10 @@ import com.github.akagawatsurunaki.novappro.annotation.Database;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.User;
 import lombok.Getter;
+import lombok.NonNull;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +36,21 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public User insertUser(User user) {
-        return null;
+    public Pair<VerifyCode, User> insertUser(@NonNull User user) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO `user` (`username`, `raw_password`, `type`) VALUES (?, ?, ?);"
+            );
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getRawPassword());
+            statement.setString(3, user.getType().getChineseName());
+            if (statement.execute()) {
+                return new ImmutablePair<>(VerifyCode.OK, user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ImmutablePair<>(VerifyCode.INSERT_FAILED, user);
     }
 
 
@@ -56,6 +73,12 @@ public class UserMapperImpl implements UserMapper {
         } catch (SQLException e) {
             return null;
         }
+    }
+
+    public enum VerifyCode{
+
+        OK,
+        INSERT_FAILED,
     }
 
     public static List<User> parseResultSet(ResultSet rs) {
