@@ -75,11 +75,7 @@ public class UserMapperImpl implements UserMapper {
         }
     }
 
-    public enum VerifyCode{
 
-        OK,
-        INSERT_FAILED,
-    }
 
     public static List<User> parseResultSet(ResultSet rs) {
         List<User> result = new ArrayList<>();

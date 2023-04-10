@@ -11,12 +11,11 @@ public interface UserMapper {
     User getUserById(int id);
     List<User> getUsers();
 
-    Pair<UserMapperImpl.VerifyCode, User> insertUser(User user);
+    Pair<VerifyCode, User> insertUser(User user);
 
-    enum By {
-        ID,
-        USERNAME,
+    public enum VerifyCode{
+
+        OK,
+        INSERT_FAILED,
     }
-
-
 }
