@@ -6,18 +6,21 @@ import lombok.Data;
 @Data
 public class PlainTextQuestion implements Question {
 
-    @ChineseFieldName(chineseFieldName = "纯文本题ID")
+    @ChineseFieldName(value = "纯文本题ID")
     Integer id;
 
-    @ChineseFieldName(chineseFieldName = "问题名称")
+    @ChineseFieldName(value = "题目类型")
+    String type = "纯文本题";
+
+    @ChineseFieldName(value = "问题名称")
     String title;
 
-    @ChineseFieldName(chineseFieldName = "问题描述")
+    @ChineseFieldName(value = "问题描述")
     String description;
 
-    @ChineseFieldName(chineseFieldName = "纯文本内容")
+    @ChineseFieldName(value = "纯文本内容")
     String plainText;
 
-    @ChineseFieldName(chineseFieldName = "是否必填")
+    @ChineseFieldName(value = "是否必填")
     Boolean isRequired;
 }

@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 public class TextItem {
 
-    @ChineseFieldName(chineseFieldName = "文本项目ID")
+    @ChineseFieldName(value = "文本项目ID")
     Integer id;
 
-    @ChineseFieldName(chineseFieldName = "纯文本")
+    @ChineseFieldName(value = "纯文本")
     String plainText;
 }

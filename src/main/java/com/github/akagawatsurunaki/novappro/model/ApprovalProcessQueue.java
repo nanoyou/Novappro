@@ -8,16 +8,16 @@ import java.util.List;
 @Data
 public class ApprovalProcessQueue {
 
-    @ChineseFieldName(chineseFieldName = "审批流程处理队列ID")
+    @ChineseFieldName(value = "审批流程处理队列ID")
     Integer id;
 
-    @ChineseFieldName(chineseFieldName = "申请表")
+    @ChineseFieldName(value = "申请表")
     ApplicationForm form;
 
-    @ChineseFieldName(chineseFieldName = "审批流程队列")
+    @ChineseFieldName(value = "审批流程队列")
     List<ApprovalProcessNode> queue;
 
-    @ChineseFieldName(chineseFieldName = "当前审批流程节点ID")
+    @ChineseFieldName(value = "当前审批流程节点ID")
     Integer currentNodeId;
 
 }

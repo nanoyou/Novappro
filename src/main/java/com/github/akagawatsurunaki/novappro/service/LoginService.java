@@ -38,15 +38,15 @@ public class LoginService {
     }
 
     public enum VerifyCode {
-        @ChineseFieldName(chineseFieldName = "登录成功")
+        @ChineseFieldName(value = "登录成功")
         OK,
-        @ChineseFieldName(chineseFieldName = "无此用户")
+        @ChineseFieldName(value = "无此用户")
         NO_SUCH_USER,
-        @ChineseFieldName(chineseFieldName = "密码错误")
+        @ChineseFieldName(value = "密码错误")
         PASSWORD_ERROR,
-        @ChineseFieldName(chineseFieldName = "密码超出规定范围")
+        @ChineseFieldName(value = "密码超出规定范围")
         PASSWORD_OUT_OF_BOUND,
-        @ChineseFieldName(chineseFieldName = "严重错误")
+        @ChineseFieldName(value = "严重错误")
         FATAL_ERROR
     }
 
