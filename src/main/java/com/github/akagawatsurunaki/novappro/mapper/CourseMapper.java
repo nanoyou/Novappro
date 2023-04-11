@@ -10,7 +10,7 @@ public interface CourseMapper {
     Pair<VerifyCode, List<Course>> selectAllCourses();
 
     enum VerifyCode{
-        OK,
+        MAPPER_OK,
         FAILED_TO_SELECT,
     }
 }

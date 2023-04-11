@@ -5,7 +5,6 @@ import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
-import com.github.akagawatsurunaki.novappro.annotation.Database;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.model.course.Course;
 import lombok.Getter;
@@ -14,9 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,8 +58,9 @@ public class CourseMapperImpl implements CourseMapper {
                 courses.add(course);
             });
 
-            return new ImmutablePair<>(VerifyCode.OK, courses);
+            return new ImmutablePair<>(VerifyCode.MAPPER_OK, courses);
         } catch (SQLException e) {
+            e.printStackTrace();
             return new ImmutablePair<>(VerifyCode.FAILED_TO_SELECT, null);
         }
     }

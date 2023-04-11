@@ -11,7 +11,7 @@ import java.io.IOException;
 public class CreateApplicationFormServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CourseMapperImpl.getInstance().selectAllCourses();
+
     }
 
     @Override
