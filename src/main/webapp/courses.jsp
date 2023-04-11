@@ -20,6 +20,7 @@
         <%
             final Course tempCourse = new Course();
         %>
+        <th>序号</th>
         <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.code).value()%>
         </th>
         <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.name).value()%>
@@ -38,12 +39,14 @@
 
     <%
         List<Course> courses = (List<Course>) request.getAttribute(LiteralConstant.COURSES);
-
+        int index = 1;
         for (Course c :
                 courses) {
     %>
 
     <tr>
+        <td><%=index++%>
+        </td>
         <td><%=c.getCode()%>
         </td>
         <td><%=c.getName()%>
