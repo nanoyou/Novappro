@@ -3,10 +3,12 @@ package com.github.akagawatsurunaki.novappro.model.course;
 import cn.hutool.core.util.StrUtil;
 import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
 import com.github.akagawatsurunaki.novappro.constant.Constant;
+import com.github.akagawatsurunaki.novappro.interfase.HasChineseField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
-public class Course {
+public class Course implements HasChineseField {
 
     @ChineseFieldName(value = "课程代码", description = "11位的字符串")
     String code;
@@ -36,8 +38,4 @@ public class Course {
 
     @ChineseFieldName(value = "备注", description = "最多" + Constant.MAX_LEN_COURSE_COMMENT + "个字符")
     String comment;
-
-    public String getTableName()  {
-        return StrUtil.toUnderlineCase(Course.class.getSimpleName());
-    }
 }
