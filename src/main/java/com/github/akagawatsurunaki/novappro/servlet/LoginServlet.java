@@ -59,6 +59,7 @@ public class LoginServlet extends HttpServlet {
 
         if (verifyCode == LoginService.VerifyCode.OK) {
 
+            request.getSession().setAttribute("login_user_id", user.getId());
             request.getSession().setAttribute("user_username", user.getUsername());
             request.getSession().setAttribute("user_type", user.getType().getChineseName());
 
