@@ -14,58 +14,74 @@
 </head>
 <body>
 <h1>当前课程表</h1>
-<table border="1">查询到的课程
-    <%-- 表头 --%>
-    <tr>
+
+
+<form action="${pageContext.request.contextPath}/apply_courses" method="post">
+    <table border="1">查询到的课程
+        <%-- 表头 --%>
+        <tr>
+            <%
+                final Course tempCourse = new Course();
+            %>
+            <th>序号</th>
+            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.code).value()%>
+            </th>
+            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.name).value()%>
+            </th>
+            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.credit).value()%>
+            </th>
+            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.serialNumber).value()%>
+            </th>
+            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.teachers).value()%>
+            </th>
+            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.onlineContactWay).value()%>
+            </th>
+            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.comment).value()%>
+            </th>
+            <th>
+                操作: 选择此课程
+            </th>
+        </tr>
+
         <%
-            final Course tempCourse = new Course();
+            List<Course> courses = (List<Course>) request.getAttribute(LiteralConstant.COURSES);
+            int index = 1;
+            for (Course c :
+                    courses) {
         %>
-        <th>序号</th>
-        <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.code).value()%>
-        </th>
-        <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.name).value()%>
-        </th>
-        <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.credit).value()%>
-        </th>
-        <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.serialNumber).value()%>
-        </th>
-        <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.teachers).value()%>
-        </th>
-        <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.onlineContactWay).value()%>
-        </th>
-        <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.comment).value()%>
-        </th>
-    </tr>
 
-    <%
-        List<Course> courses = (List<Course>) request.getAttribute(LiteralConstant.COURSES);
-        int index = 1;
-        for (Course c :
-                courses) {
-    %>
+        <tr>
+            <td><%=index++%>
+            </td>
+            <td><%=c.getCode()%>
+            </td>
+            <td><%=c.getName()%>
+            </td>
+            <td><%=c.getCredit()%>
+            </td>
+            <td><%=c.getSerialNumber()%>
+            </td>
+            <td><%=c.getTeachers()%>
+            </td>
+            <td><%=c.getOnlineContactWay()%>
+            </td>
+            <td><%=c.getComment()%>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" name="selected_course[]" value="<%= c.getCode()%>"/>
+                </label>
+            </td>
+        </tr>
 
-    <tr>
-        <td><%=index++%>
-        </td>
-        <td><%=c.getCode()%>
-        </td>
-        <td><%=c.getName()%>
-        </td>
-        <td><%=c.getCredit()%>
-        </td>
-        <td><%=c.getSerialNumber()%>
-        </td>
-        <td><%=c.getTeachers()%>
-        </td>
-        <td><%=c.getOnlineContactWay()%>
-        </td>
-        <td><%=c.getComment()%>
-        </td>
-    </tr>
+        <%
+            }
+        %>
+    </table>
+    <label>
+        <input id="confirm_btn" type="submit" value="确认申请"/>
+    </label>
+</form>
 
-    <%
-        }
-    %>
-</table>
 </body>
 </html>

@@ -20,6 +20,11 @@
     <%=
     (new Date()).toString()
     %>
+    <form action="./courses.jsp" method="get">
+        <input type="button" value="我要申请课程" onclick="">
+    </form>
+
+
 </head>
 <body>
 

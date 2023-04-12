@@ -10,15 +10,15 @@
     <h1 style="text-align: center">登录</h1>
     <label>
         学号/工号
-        <input type="text" minlength="<%= Constant.MIN_LEN_USER_ID %>" maxlength="<%= Constant.MAX_LEN_USER_ID %>" name="userId">
+        <input id="user_id" type="text" minlength="<%= Constant.MIN_LEN_USER_ID %>" maxlength="<%= Constant.MAX_LEN_USER_ID %>" name="userId">
     </label>
     <label>
         密码
-        <input type="password" minlength="<%= Constant.MIN_LEN_PASSWORD %>" maxlength="<%= Constant.MAX_LEN_PASSWORD %>" name="rawPassword">
+        <input id="password_input" type="password" minlength="<%= Constant.MIN_LEN_PASSWORD %>" maxlength="<%= Constant.MAX_LEN_PASSWORD %>" name="rawPassword">
     </label>
 
     <label>
-        <input type="submit" name="submit" value="登录">
+        <input id="login_btn" type="submit" name="submit" value="登录">
     </label>
 
     <label>

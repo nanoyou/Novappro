@@ -25,6 +25,8 @@
     <%=
     (new Date()).toString()
     %>
+
+    <input onclick="location.href=('${pageContext.request.contextPath}/get_courses')" value="我要申请课程捏">
 </head>
 <body>
 
