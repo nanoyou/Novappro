@@ -1,16 +1,27 @@
-package com.github.akagawatsurunaki.novappro.model;
+package com.github.akagawatsurunaki.novappro.model.approval;
 
 import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
+import com.github.akagawatsurunaki.novappro.interfase.HasChineseField;
+import com.github.akagawatsurunaki.novappro.model.User;
 import lombok.Data;
+import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 
 import java.util.List;
 
 @Data
-public class ApprovalProcessNode {
+@ToString
+public class ApprovalProcessNode implements HasChineseField {
+
+    @ChineseFieldName(value = "审批节点代码")
+    String code;
 
     @ChineseFieldName(value = "审批人",
             description = "审批人可以为多个，所有位于同一ApprovalProcessNode下的审批人都是同级别的。")
-    List<Integer> userIds;
+    List<User> approvers;
+
+    @ChineseFieldName(value = "申请实体")
+    ApplicationEntity applicationEntity;
 
     @ChineseFieldName(value = "审批类型")
     Type processType = Type.NO_ONE;
@@ -18,7 +29,8 @@ public class ApprovalProcessNode {
     @ChineseFieldName(value = "当前审批状态")
     Status currentStatus;
 
-    public enum Type {
+    @FieldNameConstants
+    public enum Type implements HasChineseField {
         @ChineseFieldName(value = "任何人均可审批")
         ANY_ONE,
         @ChineseFieldName(value = "只有一个人能审批")
@@ -27,7 +39,8 @@ public class ApprovalProcessNode {
         NO_ONE
     }
 
-    public enum Status{
+    @FieldNameConstants
+    public enum Status implements HasChineseField{
         @ChineseFieldName(value = "等待审批")
         WAIT_FOR_APPROVAL,
         @ChineseFieldName(value = "同意审批")

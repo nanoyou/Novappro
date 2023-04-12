@@ -3,11 +3,13 @@ package com.github.akagawatsurunaki.novappro.model;
 import com.alibaba.fastjson2.annotation.JSONType;
 import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 @Data
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldNameConstants
 @JSONType(ignores = {"rawPassword"})
 public class User {
 
