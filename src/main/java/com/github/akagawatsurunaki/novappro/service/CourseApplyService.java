@@ -1,7 +1,13 @@
 package com.github.akagawatsurunaki.novappro.service;
 
 import com.github.akagawatsurunaki.novappro.constant.PrefixConstant;
+import com.github.akagawatsurunaki.novappro.mapper.ApplicationEntityMapper;
+import com.github.akagawatsurunaki.novappro.mapper.CourseApplicationMapper;
+import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
+import com.github.akagawatsurunaki.novappro.mapper.impl.ApplicationEntityMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.impl.CourseMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.User;
 import com.github.akagawatsurunaki.novappro.model.approval.ApplicationEntity;
@@ -17,13 +23,17 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.akagawatsurunaki.novappro.service.ApplyService.VerifyCode.*;
+import static com.github.akagawatsurunaki.novappro.service.CourseApplyService.VerifyCode.*;
 
-public class ApplyService {
+public class CourseApplyService {
 
     @Getter
-    private static final ApplyService instance = new ApplyService();
+    private static final CourseApplyService instance = new CourseApplyService();
     private static final UserMapper USER_MAPPER = UserMapperImpl.getInstance();
+
+    private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = new CourseApplicationMapperImpl();
+
+    private static final ApplicationEntityMapper APPLICATION_ENTITY_MAPPER = new ApplicationEntityMapperImpl();
     private static final CourseService COURSE_SERVICE = CourseService.getInstance();
 
     public Pair<VerifyCode, ApprovalProcessQueue> applyCourses(
@@ -59,19 +69,30 @@ public class ApplyService {
 
         // CourseApplication对象赋值
         CourseApplication courseApplication = new CourseApplication();
-
         courseApplication.setCode(generateApplicationEntityCode(applicant.getId()));
         courseApplication.setApplicantId(applicant.getId());
         courseApplication.setAppliedCourses(selectedCourseCodeList);
         courseApplication.setApplicationType(ApplicationEntity.ApplicationType.COURSE);
 
+        // 创建结点
         var node = createApprovalProcessNode(applicant, approvers, ApprovalProcessNode.Type.ANY_ONE, courseApplication);
-        if (node != null) {
-            var queue = createApprovalProcessQueue(node);
-            // TODO: Store queue to database;
 
-            return queue;
+        if (node != null) {
+
+            var queue = createApprovalProcessQueue(node);
+
+            // 尝试向数据库插入课程申请
+            Pair<CourseApplicationMapper.VerifyCode, CourseApplication> vcaPair = COURSE_APPLICATION_MAPPER.insertCourseApplication(courseApplication);
+
+            if (vcaPair.getLeft() == CourseApplicationMapper.VerifyCode.MAPPER_OK) {
+                // 尝试向数据库插入申请实体
+                var vaePair = APPLICATION_ENTITY_MAPPER.insertApplicationEntity(((ApplicationEntity) courseApplication));
+                if (vaePair.getLeft() == ApplicationEntityMapper.VerifyCode.MAPPER_OK) {
+                    return queue;
+                }
+            }
         }
+
         return null;
 
     }
