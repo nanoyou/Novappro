@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet;
 
 import cn.hutool.json.JSONUtil;
-import com.github.akagawatsurunaki.novappro.service.ApplyService;
+import com.github.akagawatsurunaki.novappro.service.CourseApplyService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +15,7 @@ import java.util.List;
 @WebServlet(name = "ApplyCoursesServlet", value = "/apply_courses")
 public class ApplyCoursesServlet extends HttpServlet {
 
-    private static final ApplyService APPLY_SERVICE = ApplyService.getInstance();
+    private static final CourseApplyService APPLY_SERVICE = CourseApplyService.getInstance();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
