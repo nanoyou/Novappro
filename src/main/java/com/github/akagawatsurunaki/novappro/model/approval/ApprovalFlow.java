@@ -2,6 +2,7 @@ package com.github.akagawatsurunaki.novappro.model.approval;
 
 import com.github.akagawatsurunaki.novappro.annotation.Field;
 import com.github.akagawatsurunaki.novappro.annotation.Table;
+import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class ApprovalFlow {
     String flowNo;
 
     @Field(field = "appro_status")
-    String approStatus;
+    ApprovalStatus approStatus;
 
     @Field(field = "title")
     String title;
@@ -32,4 +33,5 @@ public class ApprovalFlow {
 
     @Field(field = "add_time")
     Date addTime;
+
 }
