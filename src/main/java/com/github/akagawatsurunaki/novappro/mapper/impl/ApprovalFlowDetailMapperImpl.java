@@ -6,6 +6,7 @@ import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowDetailMapper;
 import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.util.EntityUtil;
+import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,6 +14,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.sql.SQLException;
 
 public class ApprovalFlowDetailMapperImpl implements ApprovalFlowDetailMapper {
+
+    @Getter
+    private static final ApprovalFlowDetailMapper instance = new ApprovalFlowDetailMapperImpl();
 
     @Override
     public Pair<VerifyCode.Mapper, ApprovalFlowDetail> insert(@NonNull ApprovalFlowDetail approvalFlowDetail) {
