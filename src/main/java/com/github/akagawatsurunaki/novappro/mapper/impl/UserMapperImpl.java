@@ -9,7 +9,6 @@ import com.github.akagawatsurunaki.novappro.annotation.Database;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.User;
-import com.github.akagawatsurunaki.novappro.model.approval.ApplicationEntity;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -61,36 +60,36 @@ public class UserMapperImpl implements UserMapper {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select id, username, raw_password, type from user");
             users = parseResultSet(resultSet);
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, users);
         } catch (SQLException e) {
             e.printStackTrace();
             return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
-        return null;
     }
 
-    @Override
-    public Pair<VerifyCode.Mapper, List<User>> selectUserByApplicationTypeOfAuthority(ApplicationEntity.ApplicationType type) {
-        try {
-            URL resource = ResourceUtil.getResource(selectUserByApplicationTypeOfAuthoritySQL);
-            String typeStr = type.getChineseFieldNameAnnotation(ApplicationEntity.ApplicationType.class, type.name()).value();
-            List<Entity> userEntities = Db.use().query(FileUtil.readString(resource, StandardCharsets.UTF_8), typeStr);
-
-            if (userEntities == null) {
-                return null;
-            }
-
-            List<User> result = new ArrayList<>();
-            for (Entity entity : userEntities) {
-                User course = parseUserEntity(entity);
-                result.add(course);
-            }
-            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    @Override
+//    public Pair<VerifyCode.Mapper, List<User>> selectUserByApplicationTypeOfAuthority(ApplicationEntity.ApplicationType type) {
+//        try {
+//            URL resource = ResourceUtil.getResource(selectUserByApplicationTypeOfAuthoritySQL);
+//            String typeStr = type.getChineseFieldNameAnnotation(ApplicationEntity.ApplicationType.class, type.name()).value();
+//            List<Entity> userEntities = Db.use().query(FileUtil.readString(resource, StandardCharsets.UTF_8), typeStr);
+//
+//            if (userEntities == null) {
+//                return null;
+//            }
+//
+//            List<User> result = new ArrayList<>();
+//            for (Entity entity : userEntities) {
+//                User course = parseUserEntity(entity);
+//                result.add(course);
+//            }
+//            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     private User parseUserEntity(Entity entity){
         User user = new User();
