@@ -8,7 +8,7 @@ import lombok.experimental.FieldNameConstants;
 
 @Data
 @ToString
-public abstract class ApplicationEntity implements HasChineseField{
+public class ApplicationEntity implements HasChineseField{
 
     @ChineseFieldName(value = "申请实体代码")
     String code;

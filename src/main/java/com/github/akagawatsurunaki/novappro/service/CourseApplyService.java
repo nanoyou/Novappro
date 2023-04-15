@@ -1,14 +1,8 @@
 package com.github.akagawatsurunaki.novappro.service;
 
 import com.github.akagawatsurunaki.novappro.constant.PrefixConstant;
-import com.github.akagawatsurunaki.novappro.mapper.ApplicationEntityMapper;
-import com.github.akagawatsurunaki.novappro.mapper.CourseApplicationMapper;
-import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
-import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
-import com.github.akagawatsurunaki.novappro.mapper.impl.ApplicationEntityMapperImpl;
-import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
-import com.github.akagawatsurunaki.novappro.mapper.impl.CourseMapperImpl;
-import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.*;
+import com.github.akagawatsurunaki.novappro.mapper.impl.*;
 import com.github.akagawatsurunaki.novappro.model.User;
 import com.github.akagawatsurunaki.novappro.model.approval.ApplicationEntity;
 import com.github.akagawatsurunaki.novappro.model.approval.ApprovalProcessNode;
@@ -36,6 +30,9 @@ public class CourseApplyService {
     private static final ApplicationEntityMapper APPLICATION_ENTITY_MAPPER = new ApplicationEntityMapperImpl();
     private static final CourseService COURSE_SERVICE = CourseService.getInstance();
 
+    private static final ApprovalProcessQueueMapper APPROVAL_PROCESS_QUEUE_MAPPER =
+            ApprovalProcessQueueMapperImpl.getInstance();
+
     public Pair<VerifyCode, ApprovalProcessQueue> applyCourses(
             @NonNull Integer applicantId,
             @NonNull List<String> selectedCourseCodeList
@@ -53,15 +50,25 @@ public class CourseApplyService {
         Pair<CourseService.VerifyCode, List<Course>> pair = COURSE_SERVICE.getCoursesByCodes(selectedCourseCodeList);
         CourseService.VerifyCode verifyCode = pair.getLeft();
         List<Course> courses = pair.getRight();
+
         // 如果申请人存在, 审批人存在, 课程校验成功
         if (verifyCode == CourseService.VerifyCode.SERVICE_OK) {
             // 初始化一个流程
             ApprovalProcessQueue queue = initCourseApprovalProcess(applicant, courses, approvers);
+
+            if (queue == null){
+               return new ImmutablePair<>(UNKNOWN_SERVICE_ERROR, null);
+            }
+            APPROVAL_PROCESS_QUEUE_MAPPER.insertApprovalProcessQueue(queue);
+
             return new ImmutablePair<>(SERVICE_OK, queue);
         }
         return new ImmutablePair<>(NO_SUCH_COURSE, null);
     }
 
+
+    private static final ApprovalProcessNodeMapper APPROVAL_PROCESS_NODE_MAPPER =
+            ApprovalProcessNodeMapperImpl.getInstance();
     private ApprovalProcessQueue initCourseApprovalProcess(
             @NonNull User applicant,
             @NonNull List<Course> selectedCourseCodeList,
@@ -83,6 +90,8 @@ public class CourseApplyService {
 
             // 尝试向数据库插入课程申请
             Pair<CourseApplicationMapper.VerifyCode, CourseApplication> vcaPair = COURSE_APPLICATION_MAPPER.insertCourseApplication(courseApplication);
+
+            APPROVAL_PROCESS_NODE_MAPPER.insertApprovalProcessNode(node);
 
             if (vcaPair.getLeft() == CourseApplicationMapper.VerifyCode.MAPPER_OK) {
                 // 尝试向数据库插入申请实体
@@ -107,7 +116,7 @@ public class CourseApplyService {
             @NonNull ApprovalProcessNode node) {
         ApprovalProcessQueue processQueue = new ApprovalProcessQueue();
         processQueue.setCode(generateApprovalProcessQueueCode(node.getApplicationEntity().getApplicantId()));
-        processQueue.setQueue(new ArrayList<ApprovalProcessNode>());
+        processQueue.setQueue(new ArrayList<>());
         processQueue.getQueue().add(node);
         processQueue.setCurrentNodeCode(node.getCode());
         return processQueue;

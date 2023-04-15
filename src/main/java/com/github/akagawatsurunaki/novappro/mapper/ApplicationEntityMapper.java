@@ -8,10 +8,13 @@ public interface ApplicationEntityMapper {
 
     Pair<VerifyCode, ApplicationEntity> insertApplicationEntity(@NonNull ApplicationEntity applicationEntity);
 
+    Pair<VerifyCode, ApplicationEntity> selectApplicationEntityByCode(@NonNull String code);
+
     enum VerifyCode {
         MAPPER_OK,
         SQL_EXCEPTION,
         ZERO_ROW_INSERTED,
+        NO_SUCH_ENTITY
     }
 
 }
