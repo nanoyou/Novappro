@@ -3,7 +3,6 @@ package com.github.akagawatsurunaki.novappro.model.approval;
 import com.github.akagawatsurunaki.novappro.annotation.Field;
 import com.github.akagawatsurunaki.novappro.annotation.Table;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
-import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
@@ -20,8 +19,6 @@ public class ApprovalFlowDetail {
     Integer id;
     @Field(field = "flow_no")
     String flowNo;
-    @Field(field = "bus_type")
-    BusType busType;
     @Field(field = "audit_user_id")
     Integer auditUserId;
     @Field(field = "audit_remark")
