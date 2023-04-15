@@ -19,16 +19,16 @@ public class RegisterService {
 
     private static final UserMapperImpl USER_MAPPER = UserMapperImpl.getInstance();
 
-    public Pair<VerifyCode, User> trySignUp(Object uname, Object rawPwd, Object cRawPwd) {
+    public Pair<INFO, User> trySignUp(Object uname, Object rawPwd, Object cRawPwd) {
 
         User user = new User();
 
         String username = ((String) uname);
 
         // 校验用户名
-        VerifyCode usernameLegal = UsernameUtil.isUsernameLegal(username);
+        INFO usernameLegal = UsernameUtil.isUsernameLegal(username);
 
-        if (usernameLegal != VerifyCode.OK) {
+        if (usernameLegal != INFO.OK) {
             return new ImmutablePair<>(usernameLegal, null);
         }
 
@@ -39,12 +39,12 @@ public class RegisterService {
 
         // 两次密码输入是否一致
         if (!rawPassword.equals(confirmedRawPassword)) {
-            return new ImmutablePair<>(VerifyCode.PASSWORD_INCONSISTENT, null);
+            return new ImmutablePair<>(INFO.PASSWORD_INCONSISTENT, null);
         }
 
         // 密码是否合法:
-        VerifyCode passwordLegal = PasswordUtil.isPasswordLegal(rawPassword);
-        if (passwordLegal != VerifyCode.OK) {
+        INFO passwordLegal = PasswordUtil.isPasswordLegal(rawPassword);
+        if (passwordLegal != INFO.OK) {
             return new ImmutablePair<>(passwordLegal, null);
         }
 
@@ -57,13 +57,13 @@ public class RegisterService {
         var verifyCodeUserPair = USER_MAPPER.insertUser(user);
 
         // 数据库插入是否成功
-        if (verifyCodeUserPair.getLeft() == UserMapperImpl.VerifyCode.OK) {
-            return new ImmutablePair<>(VerifyCode.OK, user);
+        if (verifyCodeUserPair.getLeft() == com.github.akagawatsurunaki.novappro.constant.VerifyCode.Mapper.OK) {
+            return new ImmutablePair<>(INFO.OK, user);
         }
-        return new ImmutablePair<>(VerifyCode.MAPPER_FAILED, user);
+        return new ImmutablePair<>(INFO.MAPPER_FAILED, user);
     }
 
-    public enum VerifyCode {
+    public enum INFO {
         @ChineseFieldName(value = "用户ID不是一个整数")
         USER_ID_IS_NOT_A_NUMBER,
         @ChineseFieldName(value = "两次密码输入不一致")
@@ -93,17 +93,17 @@ public class RegisterService {
 
 class UsernameUtil {
 
-    public static RegisterService.VerifyCode isUsernameLegal(@NonNull String username) {
+    public static RegisterService.INFO isUsernameLegal(@NonNull String username) {
         if (Constant.MIN_LEN_USERNAME <= username.length() && username.length() <= Constant.MAX_LEN_USERNAME) {
 
             if (Validator.isChineseName(username)) {
-                return RegisterService.VerifyCode.OK;
+                return RegisterService.INFO.OK;
             } else {
-                return RegisterService.VerifyCode.USERNAME_IS_NOT_CHINESE;
+                return RegisterService.INFO.USERNAME_IS_NOT_CHINESE;
             }
 
         } else {
-            return RegisterService.VerifyCode.USERNAME_OUT_OF_BOUND;
+            return RegisterService.INFO.USERNAME_OUT_OF_BOUND;
         }
     }
 }
@@ -111,15 +111,15 @@ class UsernameUtil {
 class PasswordUtil {
     private static final String pattern = "^(?=.*\\d)(?=.*[a-zA-Z])(?=.*[^\\da-zA-Z\\s]).{" + Constant.MIN_LEN_PASSWORD + "," + Constant.MAX_LEN_PASSWORD + "}$";
 
-    public static RegisterService.VerifyCode isPasswordLegal(@NonNull String password) {
+    public static RegisterService.INFO isPasswordLegal(@NonNull String password) {
         if (Constant.MIN_LEN_PASSWORD <= password.length() && password.length() <= Constant.MAX_LEN_PASSWORD) {
             if (ReUtil.isMatch(pattern, password)) {
-                return RegisterService.VerifyCode.OK;
+                return RegisterService.INFO.OK;
             } else {
-                return RegisterService.VerifyCode.PASSWORD_MISMATCH;
+                return RegisterService.INFO.PASSWORD_MISMATCH;
             }
         } else {
-            return RegisterService.VerifyCode.PASSWORD_OUT_OF_BOUND;
+            return RegisterService.INFO.PASSWORD_OUT_OF_BOUND;
         }
     }
 }

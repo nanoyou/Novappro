@@ -5,6 +5,7 @@ import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
+import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.model.course.Course;
 import lombok.Getter;
@@ -25,16 +26,23 @@ public class CourseMapperImpl implements CourseMapper {
     @Getter
     private static final CourseMapperImpl instance = new CourseMapperImpl();
 
-    @Getter
-    private static  final  UserMapperImpl USER_MAPPER = UserMapperImpl.getInstance();
+    private static final String selectAllCoursesSQL;
+    private static final String selectCourseByCodeSQL;
 
-    String selectAllCoursesSQL = "mysql/select_all_courses.sql";
+    static {
+        selectAllCoursesSQL = FileUtil.readString(ResourceUtil.getResource("mysql/select_all_courses.sql"),
+                StandardCharsets.UTF_8);
+
+        selectCourseByCodeSQL = FileUtil.readString(ResourceUtil.getResource("mysql/select_course_by_code.sql"),
+                StandardCharsets.UTF_8);
+    }
+
     @Override
-    public Pair<VerifyCode, List<Course>> selectAllCourses() {
+    public Pair<VerifyCode.Mapper, List<Course>> selectAllCourses() {
 
         try {
-            URL resource = ResourceUtil.getResource(selectAllCoursesSQL);
-            List<Entity> courseEntities = Db.use().query(FileUtil.readString(resource, StandardCharsets.UTF_8));
+
+            List<Entity> courseEntities = Db.use().query(selectAllCoursesSQL);
 
             List<Course> courses = new ArrayList<>();
             courseEntities.forEach(entity -> {
@@ -42,28 +50,29 @@ public class CourseMapperImpl implements CourseMapper {
                 courses.add(course);
             });
 
-            return new ImmutablePair<>(VerifyCode.SQL_OK, courses);
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, courses);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ImmutablePair<>(VerifyCode.FAILED_TO_SELECT, null);
+            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
     }
 
-    String selectCourseByCodeSQL = "mysql/select_course_by_code.sql";
     @Override
-    public Pair<VerifyCode, Course> selectCourseByCode(@NonNull String code) {
+    public Pair<VerifyCode.Mapper, Course> selectCourseByCode(@NonNull String code) {
 
         try {
             URL resource = ResourceUtil.getResource(selectCourseByCodeSQL);
             List<Entity> courseEntities = Db.use().query(FileUtil.readString(resource, StandardCharsets.UTF_8), code);
 
-            if (courseEntities == null){
-                return new ImmutablePair<>(VerifyCode.NO_SUCH_COURSE, null);
+            if (courseEntities == null || courseEntities.isEmpty()) {
+                return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
             }
+
             Course course = parseCourseEntity(courseEntities.get(0));
-            return new ImmutablePair<>(VerifyCode.SQL_OK, course);
+
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, course);
         } catch (SQLException e) {
-            return new ImmutablePair<>(VerifyCode.FAILED_TO_SELECT, null);
+            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet;
 
+import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.model.User;
 import com.github.akagawatsurunaki.novappro.service.LoginService;
 import org.apache.commons.lang3.tuple.Pair;
@@ -53,11 +54,12 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        Pair<LoginService.VerifyCode, User> verifyCodeUserPair = LoginService.getInstance().tryLoginWithUserId(userId, rawPassword);
-        LoginService.VerifyCode verifyCode = verifyCodeUserPair.getLeft();
+        var verifyCodeUserPair = LoginService.getInstance().tryLoginWithUserId(userId,
+                rawPassword);
+        var verifyCode = verifyCodeUserPair.getLeft();
         User user = verifyCodeUserPair.getRight();
 
-        if (verifyCode == LoginService.VerifyCode.OK) {
+        if (verifyCode == VerifyCode.Service.OK) {
 
             request.getSession().setAttribute("login_user_id", user.getId());
             request.getSession().setAttribute("user_username", user.getUsername());
@@ -79,11 +81,11 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        Pair<LoginService.VerifyCode, User> verifyCodeUserPair = LoginService.getInstance().tryLoginWithUserId(userId, rawPassword);
-        LoginService.VerifyCode verifyCode = verifyCodeUserPair.getLeft();
+        var verifyCodeUserPair = LoginService.getInstance().tryLoginWithUserId(userId, rawPassword);
+        var verifyCode = verifyCodeUserPair.getLeft();
         User user = verifyCodeUserPair.getRight();
 
-        if (verifyCode == LoginService.VerifyCode.OK) {
+        if (verifyCode == VerifyCode.Service.OK) {
 
             List<Cookie> cookies = new ArrayList<>();
             cookies.add(new Cookie("user_username", user.getUsername()));
@@ -106,11 +108,11 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        Pair<LoginService.VerifyCode, User> verifyCodeUserPair = LoginService.getInstance().tryLoginWithUserId(userId, rawPassword);
-        LoginService.VerifyCode verifyCode = verifyCodeUserPair.getLeft();
+        var verifyCodeUserPair = LoginService.getInstance().tryLoginWithUserId(userId, rawPassword);
+        var verifyCode = verifyCodeUserPair.getLeft();
         // User user = verifyCodeUserPair.getRight();
 
-        if (verifyCode == LoginService.VerifyCode.OK) {
+        if (verifyCode == VerifyCode.Service.OK) {
             request.getRequestDispatcher("welcome.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.jsp").forward(request, response);

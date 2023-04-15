@@ -24,9 +24,9 @@ public class SignUpServlet extends HttpServlet {
         Object confirmedRawPassword = request.getParameter("confirmedRawPassword");
 
         var verifyCodeUserPair = RegisterService.getInstance().trySignUp(username, rawPassword, confirmedRawPassword);
-        RegisterService.VerifyCode verifyCode = verifyCodeUserPair.getLeft();
+        RegisterService.INFO verifyCode = verifyCodeUserPair.getLeft();
 
-        if (verifyCode != RegisterService.VerifyCode.OK) {
+        if (verifyCode != RegisterService.INFO.OK) {
             Pair<String, String> pair = EnumUtil.parseVerifyCode(verifyCode);
             String value = pair.getLeft();
             String description = pair.getRight();

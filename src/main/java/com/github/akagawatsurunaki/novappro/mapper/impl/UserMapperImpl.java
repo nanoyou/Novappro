@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.annotation.Database;
+import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.User;
 import com.github.akagawatsurunaki.novappro.model.approval.ApplicationEntity;
@@ -51,23 +52,24 @@ public class UserMapperImpl implements UserMapper {
         return result;
     }
 
-    public List<User> getUsers() {
-
-        Statement statement;
-        ResultSet resultSet;
-        List<User> users = new ArrayList<>();
+    @Override
+    public Pair<VerifyCode.Mapper, List<User>> getUsers() {
         try {
+            Statement statement;
+            ResultSet resultSet;
+            List<User> users = new ArrayList<>();
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select id, username, raw_password, type from user");
             users = parseResultSet(resultSet);
         } catch (SQLException e) {
-            return users;
+            e.printStackTrace();
+            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
-        return users;
+        return null;
     }
 
     @Override
-    public List<User> selectUserByApplicationTypeOfAuthority(ApplicationEntity.ApplicationType type) {
+    public Pair<VerifyCode.Mapper, List<User>> selectUserByApplicationTypeOfAuthority(ApplicationEntity.ApplicationType type) {
         try {
             URL resource = ResourceUtil.getResource(selectUserByApplicationTypeOfAuthoritySQL);
             String typeStr = type.getChineseFieldNameAnnotation(ApplicationEntity.ApplicationType.class, type.name()).value();
@@ -82,7 +84,7 @@ public class UserMapperImpl implements UserMapper {
                 User course = parseUserEntity(entity);
                 result.add(course);
             }
-            return result;
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,7 +104,7 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public Pair<VerifyCode, User> insertUser(@NonNull User user) {
+    public Pair<VerifyCode.Mapper, User> insertUser(@NonNull User user) {
         try {
             PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO `user` (`username`, `raw_password`, `type`) VALUES (?, ?, ?);"
@@ -111,16 +113,16 @@ public class UserMapperImpl implements UserMapper {
             statement.setString(2, user.getRawPassword());
             statement.setString(3, user.getType().getChineseName());
             if (statement.execute()) {
-                return new ImmutablePair<>(VerifyCode.OK, user);
+                return new ImmutablePair<>(VerifyCode.Mapper.OK, user);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new ImmutablePair<>(VerifyCode.INSERT_FAILED, user);
+        return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, user);
     }
 
     @Override
-    public User getUserById(int id) {
+    public Pair<VerifyCode.Mapper, User> getUserById(int id) {
         try (
                 PreparedStatement statement =
                         connection.prepareStatement(
@@ -131,10 +133,10 @@ public class UserMapperImpl implements UserMapper {
             ResultSet resultSet = statement.executeQuery();
             List<User> users = parseResultSet(resultSet);
             if (users.isEmpty()) {
-                return null;
+                return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
             }
             resultSet.close();
-            return users.get(0);
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, users.get(0));
         } catch (SQLException e) {
             return null;
         }
