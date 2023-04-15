@@ -4,19 +4,30 @@ import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.annotation.Table;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
+import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowDetailMapper;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowMapper;
+import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlow;
+import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlowDetail;
 
-import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.Date;
 
 public class Test {
-    public static void main(String[] args) throws SQLException, IllegalAccessException {
+    public static void main(String[] args){
+        func2();
+    }
+
+    static void func1() {
         ApprovalFlowMapper approvalFlowMapper = ApprovalFlowMapperImpl.getInstance();
         var af = new ApprovalFlow("1231234", ApprovalStatus.APPROVED, "asdf", BusType.LINEAR, 123, new Date());
         approvalFlowMapper.insert(af);
+    }
+
+    static void func2() {
+        ApprovalFlowDetailMapper approvalFlowDetailMapper = ApprovalFlowDetailMapperImpl.getInstance();
+        var s = new ApprovalFlowDetail(111, "234", 12, "sdff", new Date(), ApprovalStatus.AUDITING);
+        approvalFlowDetailMapper.insert(s);
     }
 
 }
