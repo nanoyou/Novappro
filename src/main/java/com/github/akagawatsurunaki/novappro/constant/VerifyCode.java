@@ -5,6 +5,7 @@ public final class VerifyCode {
     public enum Mapper{
         NO_SUCH_ENTITY,
         SQL_EXCEPTION,
+        OTHER_EXCEPTION,
         OK;
     }
 
