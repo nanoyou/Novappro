@@ -14,6 +14,8 @@ import com.github.akagawatsurunaki.novappro.model.approval.CourseApproFlow;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
 import lombok.Getter;
 import lombok.NonNull;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -115,8 +117,27 @@ public class ApplyCourseService {
 
             return VerifyCode.Service.OK;
         }
-       return VerifyCode.Service.ERROR;
+        return VerifyCode.Service.ERROR;
     }
 
+    public Pair<VerifyCode.Service, List<CourseApplication>> getAppliedCourses(@NonNull Integer userId) {
+        // 校验用户是否存在
+        var vc_user = USER_MAPPER.getUserById(userId);
+        var vc = vc_user.getLeft();
+
+        if (vc == VerifyCode.Mapper.NO_SUCH_ENTITY) {
+            return new ImmutablePair<>(VerifyCode.Service.NO_SUCH_USER, null);
+        }
+
+        var user = vc_user.getRight();
+
+        var vc_l = COURSE_APPLICATION_MAPPER.select(user.getId());
+
+        if (vc_l.getLeft() == VerifyCode.Mapper.OK) {
+
+            return new ImmutablePair<>(VerifyCode.Service.OK, vc_l.getRight());
+        }
+        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+    }
 
 }
