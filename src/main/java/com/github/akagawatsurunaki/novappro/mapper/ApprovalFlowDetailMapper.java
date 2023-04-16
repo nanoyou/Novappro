@@ -9,4 +9,6 @@ public interface ApprovalFlowDetailMapper {
 
     Pair<VerifyCode.Mapper, ApprovalFlowDetail> insert(@NonNull ApprovalFlowDetail approvalFlowDetail);
 
+    Pair<VerifyCode.Mapper, ApprovalFlowDetail> select(@NonNull String flowNo);
+
 }

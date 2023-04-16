@@ -32,4 +32,25 @@ public class ApprovalFlowDetailMapperImpl implements ApprovalFlowDetailMapper {
             return new ImmutablePair<>(VerifyCode.Mapper.OTHER_EXCEPTION, approvalFlowDetail);
         }
     }
+    String selectSQL = "SELECT * FROM `audit_flow_detail` WHERE `audit_flow_detail`.`flow_no` = ?;";
+    @Override
+    public Pair<VerifyCode.Mapper, ApprovalFlowDetail> select(@NonNull String flowNo) {
+        try {
+            var query = Db.use().query(selectSQL, flowNo);
+
+            if (query.isEmpty()) {
+                return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
+            }
+
+            var entity = query.get(0);
+
+            ApprovalFlowDetail approvalFlowDetail = EntityUtil.parseEntity(ApprovalFlowDetail.class, entity);
+
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, approvalFlowDetail);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, null);
+        }
+    }
+
 }
