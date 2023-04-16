@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet;
 
+import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
 import com.github.akagawatsurunaki.novappro.service.ApplyCourseService;
 
 import javax.servlet.ServletException;
@@ -17,7 +18,13 @@ public class ApplyCoursesServlet extends HttpServlet {
     private static final ApplyCourseService APPLY_COURSE_SERVICE = ApplyCourseService.getInstance();
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
         request.setCharacterEncoding("UTF-8");
         String[] selectedCourseCodes = request.getParameterValues("selected_course[]");
         if (selectedCourseCodes == null) {
@@ -32,6 +39,9 @@ public class ApplyCoursesServlet extends HttpServlet {
 
         APPLY_COURSE_SERVICE.apply(id, selectedCourseCodeList);
 
+        var s = APPLY_COURSE_SERVICE.getAppliedCourses(id).getRight();
+        request.setAttribute(ServletConstant.RequestAttr.COURSE_APPLICATIONS.name, s);
+        request.getRequestDispatcher("get_applied_courses.jsp").forward(request, response);
 
 
     }
