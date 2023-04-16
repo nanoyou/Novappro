@@ -3,20 +3,22 @@ package com.github.akagawatsurunaki.novappro.model.approval;
 import com.github.akagawatsurunaki.novappro.annotation.Field;
 import com.github.akagawatsurunaki.novappro.annotation.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
-import java.util.List;
+
 
 @FieldNameConstants
-@Data
+@NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Data
+@Builder
 @Table(table = "courses_approval")
-public class CourseApproval {
-
+public class CourseApplication {
     @Field(field = "flow_no")
     String flowNo;
 
@@ -25,8 +27,7 @@ public class CourseApproval {
 
     @Field(field = "add_time")
     Date addTime;
-
     @Field(field = "appro_courses")
-    List<String> approCourseIds;
+    String approCourseIds;
 
 }
