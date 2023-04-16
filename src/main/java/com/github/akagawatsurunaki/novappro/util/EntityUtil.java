@@ -85,7 +85,7 @@ public class EntityUtil {
                     }
 
                     Object value = entity.get(annotation.field());
-                    field.set(obj, value);
+                    field.set(obj, Convert.convert(field.getType(), value));
                 }
             }
             return Convert.convert(tClass, obj);
