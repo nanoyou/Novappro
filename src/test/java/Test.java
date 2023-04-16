@@ -17,7 +17,7 @@ import java.util.Date;
 
 public class Test {
     public static void main(String[] args){
-        func3();
+//        func3();
     }
 
     static void func1() {
@@ -32,11 +32,11 @@ public class Test {
         approvalFlowDetailMapper.insert(s);
     }
 
-    static void func3() {
-        ApprovalFlowDetailMapper approvalFlowDetailMapper = ApprovalFlowDetailMapperImpl.getInstance();
-        Pair<VerifyCode.Mapper, ApprovalFlowDetail> pair = approvalFlowDetailMapper.select(111);
-        ApprovalFlowDetail approvalFlowDetail = pair.getRight();
-        System.out.println("approvalFlowDetail = " + approvalFlowDetail);
-    }
+//    static void func3() {
+//        ApprovalFlowDetailMapper approvalFlowDetailMapper = ApprovalFlowDetailMapperImpl.getInstance();
+//        Pair<VerifyCode.Mapper, ApprovalFlowDetail> pair = approvalFlowDetailMapper.select(111);
+//        ApprovalFlowDetail approvalFlowDetail = pair.getRight();
+//        System.out.println("approvalFlowDetail = " + approvalFlowDetail);
+//    }
 
 }
