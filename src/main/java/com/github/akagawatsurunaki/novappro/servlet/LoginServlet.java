@@ -48,8 +48,8 @@ public class LoginServlet extends HttpServlet {
     void loginBySession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 测试用例: http://localhost:8080/Novappro_war_exploded/login?username=1&rawPassword=12345678
 
-        Integer userId = Integer.valueOf(request.getParameter("userId"));
-        String rawPassword = request.getParameter("rawPassword");
+        Integer userId = Integer.valueOf(request.getParameter(ServletConstant.RequestParam.USER_ID.name));
+        String rawPassword = request.getParameter(ServletConstant.RequestParam.RAW_PASSWORD.name);
 
         if (rawPassword == null) {
             return;
@@ -63,20 +63,20 @@ public class LoginServlet extends HttpServlet {
         if (verifyCode == VerifyCode.Service.OK) {
 
             request.getSession().setAttribute(ServletConstant.RequestAttr.LOGIN_USER_ID.name, user.getId());
-            request.getSession().setAttribute("user_username", user.getUsername());
-            request.getSession().setAttribute("user_type", user.getType().getChineseName());
+            request.getSession().setAttribute(ServletConstant.RequestAttr.USER_USERNAME.name, user.getUsername());
+            request.getSession().setAttribute(ServletConstant.RequestParam.USER_TYPE.name, user.getType().getChineseName());
 
-            response.sendRedirect("welcome_session.jsp");
+            response.sendRedirect(ServletConstant.JSPResource.WELCOME_SESSION.name);
         } else {
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            request.getRequestDispatcher(ServletConstant.JSPResource.ERROR.name).forward(request, response);
         }
     }
 
     void loginByCookie(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 测试用例: http://localhost:8080/Novappro_war_exploded/login?username=1&rawPassword=12345678
 
-        Integer userId = Integer.valueOf(request.getParameter("userId"));
-        String rawPassword = request.getParameter("rawPassword");
+        Integer userId = Integer.valueOf(request.getParameter(ServletConstant.RequestParam.USER_ID.name));
+        String rawPassword = request.getParameter(ServletConstant.RequestParam.RAW_PASSWORD.name);
 
         if (rawPassword == null) {
             return;
@@ -89,21 +89,21 @@ public class LoginServlet extends HttpServlet {
         if (verifyCode == VerifyCode.Service.OK) {
 
             List<Cookie> cookies = new ArrayList<>();
-            cookies.add(new Cookie("user_username", user.getUsername()));
-            cookies.add(new Cookie("user_type", user.getType().getChineseName()));
+            cookies.add(new Cookie(ServletConstant.RequestAttr.USER_USERNAME.name, user.getUsername()));
+            cookies.add(new Cookie(ServletConstant.RequestParam.USER_TYPE.name, user.getType().getChineseName()));
             cookies.forEach(response::addCookie);
 
-            response.sendRedirect("welcome_cookie.jsp");
+            response.sendRedirect(ServletConstant.JSPResource.WELCOME_COOKIE.name);
         } else {
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            request.getRequestDispatcher(ServletConstant.JSPResource.ERROR.name).forward(request, response);
         }
     }
 
     void loginByURL(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 测试用例: http://localhost:8080/Novappro_war_exploded/login?userId=1&rawPassword=12345678
 
-        Integer userId = Integer.valueOf(request.getParameter("userId"));
-        String rawPassword = request.getParameter("rawPassword");
+        Integer userId = Integer.valueOf(request.getParameter(ServletConstant.RequestParam.USER_ID.name));
+        String rawPassword = request.getParameter(ServletConstant.RequestParam.RAW_PASSWORD.name);
 
         if (rawPassword == null) {
             return;
@@ -114,9 +114,9 @@ public class LoginServlet extends HttpServlet {
         // User user = verifyCodeUserPair.getRight();
 
         if (verifyCode == VerifyCode.Service.OK) {
-            request.getRequestDispatcher("welcome.jsp").forward(request, response);
+            request.getRequestDispatcher(ServletConstant.JSPResource.WELCOME.name).forward(request, response);
         } else {
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            request.getRequestDispatcher(ServletConstant.JSPResource.ERROR.name).forward(request, response);
         }
     }
 
