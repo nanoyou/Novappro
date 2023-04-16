@@ -11,13 +11,16 @@ import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapper
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlowDetail;
+import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Test {
     public static void main(String[] args){
-//        func3();
+        func4();
     }
 
     static void func1() {
@@ -38,5 +41,12 @@ public class Test {
 //        ApprovalFlowDetail approvalFlowDetail = pair.getRight();
 //        System.out.println("approvalFlowDetail = " + approvalFlowDetail);
 //    }
+
+    static void func4() {
+        List<String> strs = new ArrayList<>();
+        strs.add("1111");
+        strs.add("2222");
+        List<String> courseCodes = CourseUtil.getCourseCodes(strs.toString());
+    }
 
 }
