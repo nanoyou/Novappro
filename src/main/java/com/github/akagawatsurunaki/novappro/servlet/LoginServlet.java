@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet;
 
+import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.model.User;
 import com.github.akagawatsurunaki.novappro.service.LoginService;
@@ -61,7 +62,7 @@ public class LoginServlet extends HttpServlet {
 
         if (verifyCode == VerifyCode.Service.OK) {
 
-            request.getSession().setAttribute("login_user_id", user.getId());
+            request.getSession().setAttribute(ServletConstant.RequestAttr.LOGIN_USER_ID.name, user.getId());
             request.getSession().setAttribute("user_username", user.getUsername());
             request.getSession().setAttribute("user_type", user.getType().getChineseName());
 
