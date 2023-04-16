@@ -1,6 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet;
 
-import cn.hutool.json.JSONUtil;
+import com.github.akagawatsurunaki.novappro.service.ApplyCourseService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +14,7 @@ import java.util.List;
 @WebServlet(name = "ApplyCoursesServlet", value = "/apply_courses")
 public class ApplyCoursesServlet extends HttpServlet {
 
+    private static final ApplyCourseService APPLY_COURSE_SERVICE = ApplyCourseService.getInstance();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,6 +29,10 @@ public class ApplyCoursesServlet extends HttpServlet {
         }
 
         Integer id = (Integer) request.getSession().getAttribute("login_user_id");
+
+        APPLY_COURSE_SERVICE.apply(id, selectedCourseCodeList);
+
+
 
     }
 }
