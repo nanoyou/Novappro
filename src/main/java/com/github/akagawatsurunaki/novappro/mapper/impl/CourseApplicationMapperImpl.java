@@ -11,11 +11,14 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CourseApplicationMapperImpl implements CourseApplicationMapper {
 
     @Getter
     private static final CourseApplicationMapper instance = new CourseApplicationMapperImpl();
+    String sql = "SELECT * FROM `courses_approval` WHERE `courses_approval`.`add_user_id` = ?;";
 
     @Override
     public Pair<VerifyCode.Mapper, CourseApplication> insert(@NonNull CourseApplication courseApplication) {
@@ -35,8 +38,24 @@ public class CourseApplicationMapperImpl implements CourseApplicationMapper {
     }
 
     @Override
-    public Pair<VerifyCode.Mapper, CourseApplication> select() {
+    public Pair<VerifyCode.Mapper, List<CourseApplication>> select(@NonNull Integer userId) {
+        try {
 
-        return null;
+            var entities = Db.use().query(sql, userId);
+            List<CourseApplication> result = new ArrayList<>();
+
+            entities.forEach(
+                    entity -> {
+                        var e = EntityUtil.parseEntity(CourseApplication.class, entity);
+                        result.add(e);
+                    }
+            );
+
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
+        }
     }
 }
