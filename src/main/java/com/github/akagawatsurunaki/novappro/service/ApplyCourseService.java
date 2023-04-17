@@ -11,6 +11,7 @@ import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.model.approval.CourseApplication;
 import com.github.akagawatsurunaki.novappro.model.approval.CourseApproFlow;
+import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
 import lombok.Getter;
 import lombok.NonNull;
@@ -69,7 +70,7 @@ public class ApplyCourseService {
 
             var approval
                     = CourseApplication.builder()
-                    .approCourseIds(StrUtil.toString(courseIds))
+                    .approCourseIds(CourseUtil.toCourseCodesStr(courseIds))
                     .flowNo(flowNo)
                     .addUserId(user.getId())
                     .addTime(date)
