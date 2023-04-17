@@ -6,15 +6,21 @@ public final class VerifyCode {
         NO_SUCH_ENTITY,
         SQL_EXCEPTION,
         OTHER_EXCEPTION,
+
+        FAILED_TO_PARSE_ENTITY,
+
         OK;
     }
 
     public enum Service{
         ERROR,
+        MEANINGLESS,
         OK,
         PASSWORD_ERROR,
         NO_SUCH_ENTITY,
         NO_SUCH_USER,
+        NO_SUCH_COURSE_APPL,
+        NO_SUCH_COURSE,
         TOO_LONG_PASSWORD
         ;
     }
