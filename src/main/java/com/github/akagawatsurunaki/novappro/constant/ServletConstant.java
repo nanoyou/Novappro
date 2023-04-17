@@ -8,7 +8,6 @@ public class ServletConstant {
     public static final String INFO = "info";
 
     public static class WebServletValue {
-         public final static String  GET_APPLIED_COURSES = "/get_applied_courses";
          public final static String  MODIFY_COURSE_APPL = "/modify_course_appl";
 
     }
