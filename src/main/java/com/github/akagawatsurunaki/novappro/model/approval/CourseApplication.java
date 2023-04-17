@@ -19,6 +19,7 @@ import java.util.Date;
 @Builder
 @Table(table = "courses_approval")
 public class CourseApplication {
+
     @Field(field = "flow_no")
     String flowNo;
 
@@ -27,6 +28,7 @@ public class CourseApplication {
 
     @Field(field = "add_time")
     Date addTime;
+
     @Field(field = "appro_courses")
     String approCourseIds;
 
