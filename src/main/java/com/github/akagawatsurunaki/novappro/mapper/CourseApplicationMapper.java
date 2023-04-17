@@ -11,4 +11,12 @@ public interface CourseApplicationMapper {
 
     Pair<VerifyCode.Mapper, CourseApplication> insert(@NonNull CourseApplication courseApplication);
     Pair<VerifyCode.Mapper, List<CourseApplication>> select(@NonNull Integer userId);
+
+    Pair<VerifyCode.Mapper, CourseApplication> selectByFlowNo(@NonNull String flowNo);
+
+    Pair<VerifyCode.Mapper, CourseApplication> update(@NonNull CourseApplication courseApplication);
+    Pair<VerifyCode.Mapper, CourseApplication> update(@NonNull List<CourseApplication> courseApplications);
+
+    Pair<VerifyCode.Mapper, CourseApplication> delete(@NonNull CourseApplication courseApplication);
+
 }
