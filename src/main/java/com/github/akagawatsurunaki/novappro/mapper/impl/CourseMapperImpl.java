@@ -14,7 +14,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,8 +60,7 @@ public class CourseMapperImpl implements CourseMapper {
     public Pair<VerifyCode.Mapper, Course> selectCourseByCode(@NonNull String code) {
 
         try {
-            URL resource = ResourceUtil.getResource(selectCourseByCodeSQL);
-            List<Entity> courseEntities = Db.use().query(FileUtil.readString(resource, StandardCharsets.UTF_8), code);
+            List<Entity> courseEntities = Db.use().query(selectCourseByCodeSQL, code);
 
             if (courseEntities == null || courseEntities.isEmpty()) {
                 return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
@@ -74,6 +72,30 @@ public class CourseMapperImpl implements CourseMapper {
         } catch (SQLException e) {
             return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
+    }
+
+    @Override
+    public Pair<VerifyCode.Mapper, List<Course>> selectCourses(@NonNull List<String> codes) {
+
+        List<Course> result = new ArrayList<>();
+
+        if (codes.isEmpty()) {
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+        }
+
+        for (String code : codes) {
+            var vc_course = selectCourseByCode(code);
+            if (vc_course.getLeft() == VerifyCode.Mapper.OK) {
+                result.add(vc_course.getRight());
+            } else if (vc_course.getLeft() == VerifyCode.Mapper.NO_SUCH_ENTITY) {
+                return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
+            } else {
+                return new ImmutablePair<>(VerifyCode.Mapper.OTHER_EXCEPTION, null);
+            }
+        }
+
+        return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+
     }
 
     private Course parseCourseEntity(Entity entity) {
