@@ -7,12 +7,19 @@ public class ServletConstant {
 
     public static final String INFO = "info";
 
+    public static class WebServletValue {
+         public final static String  GET_APPLIED_COURSES = "/get_applied_courses";
+         public final static String  MODIFY_COURSE_APPL = "/modify_course_appl";
+
+    }
+
     @AllArgsConstructor
     public enum JSPResource {
         WELCOME("welcome.jsp"),
         WELCOME_SESSION("welcome_session.jsp"),
         WELCOME_COOKIE("welcome_cookie.jsp"),
-        ERROR("error.jsp");
+        ERROR("error.jsp"),
+        COURSE_APPL_DETAIL("course_appl_detail.jsp");
 
         public final String name;
     }
@@ -24,6 +31,8 @@ public class ServletConstant {
         LOGIN_USER_ID("login_user_id"),
         COURSE_APPLICATIONS("course_applications"),
         USER_USERNAME("user_username"),
+        APPLIED_COURSES("applied_courses"),
+        SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
         ;
 
         public final String name;
@@ -33,7 +42,13 @@ public class ServletConstant {
     public enum RequestParam {
         USER_ID("userId"),
         RAW_PASSWORD("rawPassword"),
-        USER_TYPE("user_type");
+        USER_TYPE("user_type"),
+        UPDATED_COURSES("updated_courses"),
+        // FLOW_NO("flow_no"),
+
+        SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
+
+;
 
         public final String name;
     }
