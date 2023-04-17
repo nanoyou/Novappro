@@ -13,4 +13,6 @@ public interface CourseMapper {
 
     Pair<VerifyCode.Mapper, Course> selectCourseByCode(@NonNull String code);
 
+    Pair<VerifyCode.Mapper, List<Course>> selectCourses(@NonNull List<String> codes);
+
 }
