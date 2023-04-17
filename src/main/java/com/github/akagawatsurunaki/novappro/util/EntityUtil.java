@@ -10,6 +10,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 public class EntityUtil {
+
+    public static <T> String getTableName(Object obj){
+        var tClass = obj.getClass();
+
+        // 是否拥有@Table注解
+        if (!tClass.isAnnotationPresent(Table.class)) {
+            return null;
+        }
+
+        return tClass.getAnnotation(Table.class).table();
+    }
+
     public static <T> Entity getEntity(Object obj) throws IllegalAccessException {
 
         var tClass = obj.getClass();
