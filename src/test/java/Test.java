@@ -1,6 +1,7 @@
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
+import cn.hutool.json.JSONUtil;
 import com.github.akagawatsurunaki.novappro.annotation.Table;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
@@ -20,7 +21,14 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args){
-        func4();
+        List<String> list = new ArrayList<>();
+        list.add("123123");
+        list.add("12341234");
+        var json = JSONUtil.toJsonStr(list);
+        System.out.println(json);
+        var ll = JSONUtil.toList(json, String.class);
+
+
     }
 
     static void func1() {
