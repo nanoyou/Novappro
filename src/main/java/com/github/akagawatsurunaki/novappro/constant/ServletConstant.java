@@ -9,6 +9,7 @@ public class ServletConstant {
 
     public static class WebServletValue {
          public final static String  MODIFY_COURSE_APPL = "/modify_course_appl";
+         public final static String COURSE_APPL_DETAIL = "/course_appl_detail";
 
     }
 
@@ -44,6 +45,7 @@ public class ServletConstant {
         USER_TYPE("user_type"),
         UPDATED_COURSES("updated_courses"),
         // FLOW_NO("flow_no"),
+        ADD_APPRO_COURSE("add_appro_course"),
 
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
 

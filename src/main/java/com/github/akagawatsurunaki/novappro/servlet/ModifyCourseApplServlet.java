@@ -30,21 +30,29 @@ public class ModifyCourseApplServlet extends HttpServlet {
         var flowNo = request.getParameter(ServletConstant.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
 
         if (flowNo == null) {
-            return;
+            request.getRequestDispatcher(ServletConstant.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
+
         }
 
         var s = request.getParameterValues(ServletConstant.RequestParam.UPDATED_COURSES.name);
+
         // 校验是否为空
-        var updatedCourseCodes = Arrays.stream(s).toList();
+        // TODO: 2023年4月18日 课程重复添加校验
+        var updatedCourseCodes = new java.util.ArrayList<>(Arrays.stream(s).toList());
 
         if (updatedCourseCodes.isEmpty()) {
-            return;
+            request.getRequestDispatcher(ServletConstant.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
+
         }
+
+        // 清空空白字符
+        updatedCourseCodes.removeIf(String::isBlank);
 
         var vc_courses = COURSE_APPL_DETAIL_SERVICE.updateAppliedCourses(flowNo, updatedCourseCodes);
 
         if (vc_courses.getLeft()!= VerifyCode.Service.OK) {
-            return;
+            request.getRequestDispatcher(ServletConstant.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
+
         }
 
         // 删除要更新的课程参数
@@ -52,7 +60,7 @@ public class ModifyCourseApplServlet extends HttpServlet {
         request.setAttribute(ServletConstant.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name, flowNo);
         request.setAttribute(ServletConstant.RequestAttr.APPLIED_COURSES.name, vc_courses.getRight());
 
-        // 刷新页面redirect
+        // 刷新页面
         request.getRequestDispatcher(ServletConstant.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
     }
 }
