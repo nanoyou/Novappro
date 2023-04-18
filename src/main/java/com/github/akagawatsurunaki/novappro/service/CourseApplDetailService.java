@@ -67,6 +67,9 @@ public class CourseApplDetailService {
             return new ImmutablePair<>(VerifyCode.Service.NO_SUCH_COURSE_APPL, null);
         }
 
+        // 如果有课程重复, 则去重
+        courseCodesToUpdate = CollectionUtil.distinct(courseCodesToUpdate);
+
         // 校验这些课程是否存在
 
         var vc_courses = COURSE_MAPPER.selectCourses(courseCodesToUpdate);
