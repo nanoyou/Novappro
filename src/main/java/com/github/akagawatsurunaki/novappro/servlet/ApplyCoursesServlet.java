@@ -50,6 +50,6 @@ public class ApplyCoursesServlet extends HttpServlet {
         request.setAttribute(ServletConstant.RequestAttr.COURSE_APPLICATIONS.name, courseApplications);
 
         // 跳转页面
-        request.getRequestDispatcher("get_applied_courses.jsp").forward(request, response);
+        request.getRequestDispatcher(ServletConstant.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);
     }
 }

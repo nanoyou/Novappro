@@ -19,7 +19,9 @@ public class ServletConstant {
         WELCOME_SESSION("welcome_session.jsp"),
         WELCOME_COOKIE("welcome_cookie.jsp"),
         ERROR("error.jsp"),
-        COURSE_APPL_DETAIL("course_appl_detail.jsp");
+        COURSE_APPL_DETAIL("course_appl_detail.jsp"),
+        GET_APPLIED_COURSES("get_applied_courses.jsp")
+        ;
 
         public final String name;
     }
