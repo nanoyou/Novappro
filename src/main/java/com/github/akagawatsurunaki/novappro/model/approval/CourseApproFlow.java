@@ -16,12 +16,21 @@ import lombok.NoArgsConstructor;
 
 public class CourseApproFlow  {
 
+    /**
+     * 审批流的唯一标志号码
+     */
     @Field(field = "appro_flow_nos")
     String approFlowNos;
 
+    /**
+     * 审批流明细的唯一标志号码, 这里有多个, 可组成一列
+     */
     @Field(field = "appro_flow_detail_nos")
     String approFlowDetailIds;
 
+    /**
+     * 当前的审批流结点的唯一标志号码
+     */
     @Field(field = "cur_node_no")
     Integer currentNodeNo;
 
