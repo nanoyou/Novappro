@@ -32,7 +32,7 @@ To change this template use File | Settings | File Templates.
 <form method="get">
     <table border="1">
         <tr>
-            <th>号</th>
+            <th>流水号</th>
             <th>工号</th>
             <th>选课编号</th>
             <th>操作</th>
@@ -40,7 +40,6 @@ To change this template use File | Settings | File Templates.
 
         <%
             for (CourseApplication crsApp : crsApps) {
-
         %>
 
         <tr>
