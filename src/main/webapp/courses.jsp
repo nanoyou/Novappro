@@ -12,10 +12,13 @@
 <head>
     <title>课程表</title>
 </head>
+<script>
+    function courseAppl(){
+        location.href = "${pageContext.request.contextPath}/apply_courses"
+    }
+</script>
 <body>
 <h1>当前课程表</h1>
-
-
 <form action="${pageContext.request.contextPath}/apply_courses" method="post">
     <table border="1">查询到的课程
         <%-- 表头 --%>
@@ -79,9 +82,12 @@
         %>
     </table>
     <label>
-        <input id="confirm_btn" type="submit" value="确认申请"/>
+        <input id="confirm_btn" type="submit" value="确认申请课程"/>
     </label>
-</form>
 
+</form>
+<label>
+    <input id="course_appl_btn" type="button" value="查看我的课程申请" onclick="courseAppl()"/>
+</label>
 </body>
 </html>
