@@ -1,6 +1,5 @@
 package com.github.akagawatsurunaki.novappro.service;
 
-import cn.hutool.core.util.StrUtil;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
@@ -36,8 +35,6 @@ public class ApplyCourseService {
             ApprovalFlowDetailMapperImpl.getInstance();
 
     private static final CourseApproFlowMapper COURSE_APPRO_FLOW_MAPPER = CourseApproFlowMapperImpl.getInstance();
-
-    private static final CourseMapper COURSE_MAPPER = CourseMapperImpl.getInstance();
 
     private static final User approver;
 

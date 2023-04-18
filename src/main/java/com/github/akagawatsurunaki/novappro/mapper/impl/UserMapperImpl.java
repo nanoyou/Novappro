@@ -14,8 +14,6 @@ import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,6 @@ public class UserMapperImpl implements UserMapper {
 
     @Database
     private static Connection connection;
-    String selectUserByApplicationTypeOfAuthoritySQL = "mysql/select_user_by_application_type_of_authority.sql";
 
     public static List<User> parseResultSet(ResultSet rs) {
         List<User> result = new ArrayList<>();
@@ -66,30 +63,6 @@ public class UserMapperImpl implements UserMapper {
             return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
     }
-
-//    @Override
-//    public Pair<VerifyCode.Mapper, List<User>> selectUserByApplicationTypeOfAuthority(ApplicationEntity.ApplicationType type) {
-//        try {
-//            URL resource = ResourceUtil.getResource(selectUserByApplicationTypeOfAuthoritySQL);
-//            String typeStr = type.getChineseFieldNameAnnotation(ApplicationEntity.ApplicationType.class, type.name()).value();
-//            List<Entity> userEntities = Db.use().query(FileUtil.readString(resource, StandardCharsets.UTF_8), typeStr);
-//
-//            if (userEntities == null) {
-//                return null;
-//            }
-//
-//            List<User> result = new ArrayList<>();
-//            for (Entity entity : userEntities) {
-//                User course = parseUserEntity(entity);
-//                result.add(course);
-//            }
-//            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
 
     private User parseUserEntity(Entity entity){
         User user = new User();
