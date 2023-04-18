@@ -18,25 +18,39 @@
 </head>
 <script>
     function removeCourse(id) {
-        var elem = document.getElementById("crs_row_" + id);
+        const elem = document.getElementById("crs_row_" + id);
         elem.parentNode.removeChild(elem);
     }
-    function refresh(flowNo){
+
+    function refresh(flowNo) {
         location.href =
-            "${pageContext.request.contextPath}/course_appl_detail?<%=SELECTED_COURSE_APPL_FLOW_NO.name%>="+flowNo
+            "${pageContext.request.contextPath}/course_appl_detail?<%=SELECTED_COURSE_APPL_FLOW_NO.name%>=" + flowNo
+    }
+
+    function addCourse(flowNo) {
+        const code = document.getElementById("text_add_course").value;
+        const crsTable = document.getElementById("courses_table");
+        crsTable.insertRow();
+        // const row = crsTable.rows[crsTable.rows.length - 1];
+        const elem = '<input type="hidden" name="<%=ServletConstant.RequestParam.UPDATED_COURSES.name%>" value="' +
+            code + '">';
+        const input = document.createElement('input');
+
+        crsTable.appendChild(input);
+        refresh(flowNo)
     }
 </script>
 <body>
 <h1>查看课程申请详细内容</h1>
-<form method="post" action="./<%=ServletConstant.WebServletValue.MODIFY_COURSE_APPL%>">
 
-    <%
-        String flowNo = (String) request.getAttribute(ServletConstant.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
-    %>
-
+<%
+    String flowNo = (String) request.getAttribute(ServletConstant.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+%>
+<form method="post" action="${pageContext.request.contextPath}
+<%=ServletConstant.WebServletValue.MODIFY_COURSE_APPL%>">
     单号 <%=flowNo%>
     <input type="hidden" name="<%=ServletConstant.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name%>" value="<%=flowNo%>">
-    <table border="1">
+    <table id="courses_table" border="1">
         <%-- 表头 --%>
         <tr>
             <%
@@ -70,7 +84,7 @@
                     courses) {
         %>
 
-        <tr  id="crs_row_<%=c.getCode()%>">
+        <tr id="crs_row_<%=c.getCode()%>">
             <td><%=index++%>
             </td>
             <td><%=c.getCode()%>
@@ -92,23 +106,22 @@
                     <input type="button" value="删除" onclick="removeCourse('<%=c.getCode()%>')"/>
                 </label>
             </td>
-            <input type="hidden" name="<%=ServletConstant.RequestParam.UPDATED_COURSES.name%>" value="<%=c.getCode()%>">
-        </tr>
-        <tr>
-
+            <input type="hidden" name="<%=ServletConstant.RequestParam.UPDATED_COURSES.name%>"
+                    value="<%=c.getCode()%>">
         </tr>
         <%
             }
         %>
     </table>
     <label>
-        <input type="button" name="add_appro_course" value="增加课程"/>
+        输入课程代码
+        <input id="text_add_course" type="text" name="<%=ServletConstant.RequestParam.UPDATED_COURSES.name%>" value=""/>
     </label>
     <label>
-        <input type="submit" name="" value="确认修改" onclick="refresh('<%=flowNo%>')"/>
+        <input type="submit" value="增加课程" onclick="refresh('<%=flowNo%>')" />
     </label>
     <label>
-        <input type="button" name="" value="取消修改"/>
+        <input type="submit" value="确认修改" onclick="refresh('<%=flowNo%>')"/>
     </label>
 </form>
 </body>
