@@ -27,8 +27,8 @@ To change this template use File | Settings | File Templates.
             (List<CourseApplication>) request.getAttribute(ServletConstant.RequestAttr.COURSE_APPLICATIONS.name);
 %>
 
-<h1>申请的课程申请 工单列表</h1>
-
+<h1>您的课程申请</h1>
+以下是您的课程申请记录
 <form method="get">
     <table border="1">
         <tr>
