@@ -24,10 +24,4 @@ public class CourseApplDetailServlet extends HttpServlet {
         request.setAttribute(ServletConstant.RequestAttr.APPLIED_COURSES.name, courses);
         request.getRequestDispatcher(ServletConstant.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
     }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
-
-    }
 }
