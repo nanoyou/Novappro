@@ -18,12 +18,6 @@ public class ModifyCourseApplServlet extends HttpServlet {
     private static final CourseApplDetailService COURSE_APPL_DETAIL_SERVICE = CourseApplDetailService.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
-
-    }
-
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         request.setCharacterEncoding("UTF-8");
