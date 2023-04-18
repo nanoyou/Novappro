@@ -18,31 +18,38 @@ public class ApplyCoursesServlet extends HttpServlet {
     private static final ApplyCourseService APPLY_COURSE_SERVICE = ApplyCourseService.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        doPost(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         request.setCharacterEncoding("UTF-8");
-        String[] selectedCourseCodes = request.getParameterValues("selected_course[]");
-        if (selectedCourseCodes == null) {
-            return;
-        }
-        List<String> selectedCourseCodeList = Arrays.stream(selectedCourseCodes).toList();
-        if (selectedCourseCodeList.isEmpty()) {
-            return;
-        }
 
+        // 获取登录人ID
         Integer id = (Integer) request.getSession().getAttribute("login_user_id");
 
-        APPLY_COURSE_SERVICE.apply(id, selectedCourseCodeList);
+        // 获取选取的课程列表
+        String[] selectedCourseCodes = request.getParameterValues("selected_course[]");
 
-        var s = APPLY_COURSE_SERVICE.getAppliedCourses(id).getRight();
-        request.setAttribute(ServletConstant.RequestAttr.COURSE_APPLICATIONS.name, s);
+        if (selectedCourseCodes != null) {
+            if (selectedCourseCodes.length > 0) {
+
+                List<String> selectedCourseCodeList = Arrays.stream(selectedCourseCodes).toList();
+                // 申请这些课程
+                APPLY_COURSE_SERVICE.apply(id, selectedCourseCodeList);
+            }
+        }
+
+        // 获取这些课程
+        var courseApplications = APPLY_COURSE_SERVICE.getAppliedCourses(id).getRight();
+
+        // 设置到 Request 中
+        request.setAttribute(ServletConstant.RequestAttr.COURSE_APPLICATIONS.name, courseApplications);
+
+        // 跳转页面
         request.getRequestDispatcher("get_applied_courses.jsp").forward(request, response);
-
-
     }
 }
