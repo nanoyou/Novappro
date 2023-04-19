@@ -13,6 +13,9 @@ import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ApprovalService {
 
     @Getter
@@ -23,11 +26,35 @@ public class ApprovalService {
             ApprovalFlowDetailMapperImpl.getInstance();
     private static final UserMapper USER_MAPPER = UserMapperImpl.getInstance();
 
+
+    public Pair<VerifyCode.Service, List<ApplItem>> getApplItems(@NonNull Integer approverId) {
+        var vc_flowNos = APPROVAL_FLOW_DETAIL_MAPPER.selectFlowNoByApproverId(approverId);
+
+        if (vc_flowNos.getLeft() == VerifyCode.Mapper.OK) {
+
+            var flowNoList = vc_flowNos.getRight();
+            List<ApplItem> result = new ArrayList<>();
+
+            for (String flowNo : flowNoList) {
+                var vc_applItem = getApplItem(flowNo);
+                if (vc_applItem.getLeft() != VerifyCode.Service.OK) {
+                    return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+                }
+                result.add(vc_applItem.getRight());
+            }
+
+            return new ImmutablePair<>(VerifyCode.Service.OK, result);
+
+        }
+        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+    }
+
     // TODO: TEST
+
     /**
      * 获取一个ApplItem对象
      */
-    public Pair<VerifyCode.Service, ApplItem> getApplItem(@NonNull String flowNo) {
+    private Pair<VerifyCode.Service, ApplItem> getApplItem(@NonNull String flowNo) {
 
         var vc_af = APPROVAL_FLOW_MAPPER.select(flowNo);
 
