@@ -1,11 +1,13 @@
 package com.github.akagawatsurunaki.novappro.mapper.impl;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.annotation.Database;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.database.User;
+import com.github.akagawatsurunaki.novappro.util.EntityUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -22,6 +24,28 @@ public class UserMapperImpl implements UserMapper {
 
     @Database
     private static Connection connection;
+    //    @Override
+//    @Deprecated
+//    public Pair<VerifyCode.Mapper, User> getUserById(int id) {
+//        try (
+//                PreparedStatement statement =
+//                        connection.prepareStatement(
+//                                "select `id`, `username`, `raw_password`, `type` from user where user.id = ?;"
+//                        )
+//        ) {
+//            statement.setInt(1, id);
+//            ResultSet resultSet = statement.executeQuery();
+//            List<User> users = parseResultSet(resultSet);
+//            if (users.isEmpty()) {
+//                return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
+//            }
+//            resultSet.close();
+//            return new ImmutablePair<>(VerifyCode.Mapper.OK, users.get(0));
+//        } catch (SQLException e) {
+//            return null;
+//        }
+//    }
+    String selectUserById = " SELECT * FROM `user` WHERE `user`.`id` = ?;";
 
     public static List<User> parseResultSet(ResultSet rs) {
         List<User> result = new ArrayList<>();
@@ -61,7 +85,7 @@ public class UserMapperImpl implements UserMapper {
         }
     }
 
-    private User parseUserEntity(Entity entity){
+    private User parseUserEntity(Entity entity) {
         User user = new User();
         user.setId(entity.getInt(StrUtil.toUnderlineCase(User.Fields.id)));
         user.setUsername(entity.getStr(StrUtil.toUnderlineCase(User.Fields.username)));
@@ -91,23 +115,22 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public Pair<VerifyCode.Mapper, User> getUserById(int id) {
-        try (
-                PreparedStatement statement =
-                        connection.prepareStatement(
-                                "select `id`, `username`, `raw_password`, `type` from user where user.id = ?;"
-                        )
-        ) {
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            List<User> users = parseResultSet(resultSet);
-            if (users.isEmpty()) {
+    public Pair<VerifyCode.Mapper, User> selectUserById(@NonNull Integer id) {
+        try {
+            var entities = Db.use().query(selectUserById, id);
+
+            if (entities.size() != 1) {
                 return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
             }
-            resultSet.close();
-            return new ImmutablePair<>(VerifyCode.Mapper.OK, users.get(0));
+
+            var entity = entities.get(0);
+            var result = EntityUtil.parseEntity(User.class, entity);
+
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+
         } catch (SQLException e) {
-            return null;
+            e.printStackTrace();
+            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
     }
 
