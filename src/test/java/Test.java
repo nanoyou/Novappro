@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args){
-        func6();
+
     }
 
     static void func1() {
@@ -48,10 +48,10 @@ public class Test {
 //        var s = ZhFieldUtil.getZhValue(ApplItem.class, ApplItem.Fields.applicantName);
 //        System.out.println(s);
 //    }
-
-    static void func6() {
-        var s = ApprovalService.getInstance().getApplItem("APFL2021000216818008100493182");
-        System.out.println(s);
-    }
+//
+//    static void func6() {
+//        var s = ApprovalService.getInstance().getApplItems("APFL2021000216818008100493182");
+//        System.out.println(s);
+//    }
 
 }
