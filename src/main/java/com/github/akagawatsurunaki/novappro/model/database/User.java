@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.model;
+package com.github.akagawatsurunaki.novappro.model.database;
 
 import com.alibaba.fastjson2.annotation.JSONType;
 import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;

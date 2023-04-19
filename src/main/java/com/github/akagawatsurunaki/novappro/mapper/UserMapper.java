@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.mapper;
 
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
-import com.github.akagawatsurunaki.novappro.model.User;
+import com.github.akagawatsurunaki.novappro.model.database.User;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;

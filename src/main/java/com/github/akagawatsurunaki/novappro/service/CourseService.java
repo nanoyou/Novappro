@@ -3,7 +3,7 @@ package com.github.akagawatsurunaki.novappro.service;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseMapperImpl;
-import com.github.akagawatsurunaki.novappro.model.course.Course;
+import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

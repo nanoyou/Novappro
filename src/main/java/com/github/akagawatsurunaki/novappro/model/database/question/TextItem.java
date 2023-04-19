@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.model.question;
+package com.github.akagawatsurunaki.novappro.model.database.question;
 
 import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
 import lombok.Data;

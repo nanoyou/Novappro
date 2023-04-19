@@ -1,14 +1,11 @@
 package com.github.akagawatsurunaki.novappro.mapper.impl;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.annotation.Database;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
-import com.github.akagawatsurunaki.novappro.model.User;
+import com.github.akagawatsurunaki.novappro.model.database.User;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;

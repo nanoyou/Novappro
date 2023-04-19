@@ -5,11 +5,11 @@ import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import com.github.akagawatsurunaki.novappro.mapper.*;
 import com.github.akagawatsurunaki.novappro.mapper.impl.*;
-import com.github.akagawatsurunaki.novappro.model.User;
-import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlow;
-import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlowDetail;
-import com.github.akagawatsurunaki.novappro.model.approval.CourseApplication;
-import com.github.akagawatsurunaki.novappro.model.approval.CourseApproFlow;
+import com.github.akagawatsurunaki.novappro.model.database.User;
+import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
+import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
+import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
+import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApproFlow;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
 import lombok.Getter;
@@ -91,7 +91,7 @@ public class ApplyCourseService {
                     = ApprovalFlowDetail.builder()
                     .flowNo(flowNo)
                     .auditUserId(approver.getId())
-                    .auditStatus(ApprovalStatus.AUDITING)
+                    .auditStatus(ApprovalStatus.WAITING_FOR_ME)
                     .auditRemark("")
                     .auditTime(date)
                     .build();

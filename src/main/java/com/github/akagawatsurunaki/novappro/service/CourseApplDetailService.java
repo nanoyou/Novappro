@@ -6,7 +6,7 @@ import com.github.akagawatsurunaki.novappro.mapper.CourseApplicationMapper;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseMapperImpl;
-import com.github.akagawatsurunaki.novappro.model.course.Course;
+import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import lombok.Getter;
 import lombok.NonNull;

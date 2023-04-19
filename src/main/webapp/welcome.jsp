@@ -1,5 +1,5 @@
 <%@ page import="java.util.Date" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.model.User" %><%--
+<%@ page import="com.github.akagawatsurunaki.novappro.model.database.User" %><%--
   Created by IntelliJ IDEA.
   User: 96514
   Date: 2023/3/26

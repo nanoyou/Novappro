@@ -3,7 +3,7 @@ package com.github.akagawatsurunaki.novappro.service;
 import com.github.akagawatsurunaki.novappro.constant.Constant;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
-import com.github.akagawatsurunaki.novappro.model.User;
+import com.github.akagawatsurunaki.novappro.model.database.User;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;

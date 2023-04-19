@@ -1,6 +1,6 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.ServletConstant" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.model.approval.CourseApplication" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication" %>
 <%@ page
         import="static com.github.akagawatsurunaki.novappro.constant.ServletConstant.RequestParam.SELECTED_COURSE_APPL_FLOW_NO" %>
 Created by IntelliJ IDEA.

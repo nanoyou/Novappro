@@ -1,6 +1,6 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.ServletConstant" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.model.course.Course" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.database.course.Course" %>
 <%@ page
         import="static com.github.akagawatsurunaki.novappro.constant.ServletConstant.RequestAttr.SELECTED_COURSE_APPL_FLOW_NO" %>
 <%--

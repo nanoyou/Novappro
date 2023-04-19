@@ -1,6 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet;
 
-import com.github.akagawatsurunaki.novappro.model.User;
+import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.RegisterService;
 import com.github.akagawatsurunaki.novappro.util.EnumUtil;
 import org.apache.commons.lang3.tuple.Pair;

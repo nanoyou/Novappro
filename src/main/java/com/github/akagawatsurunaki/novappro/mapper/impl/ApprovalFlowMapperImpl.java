@@ -4,7 +4,7 @@ import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowMapper;
-import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlow;
+import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.util.EntityUtil;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;

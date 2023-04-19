@@ -1,5 +1,5 @@
 <%@ page import="java.util.List" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.model.course.Course" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.database.course.Course" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.LiteralConstant" %><%--
   Created by IntelliJ IDEA.
   User: 96514

@@ -4,7 +4,7 @@ import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.CourseApplicationMapper;
-import com.github.akagawatsurunaki.novappro.model.approval.CourseApplication;
+import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
 import com.github.akagawatsurunaki.novappro.util.EntityUtil;
 import lombok.Getter;
 import lombok.NonNull;

@@ -2,9 +2,8 @@ package com.github.akagawatsurunaki.novappro.servlet;
 
 import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
-import com.github.akagawatsurunaki.novappro.model.User;
+import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.LoginService;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -12,7 +11,6 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @WebServlet(name = "ServletLogin", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {

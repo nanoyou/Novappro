@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.model.approval;
+package com.github.akagawatsurunaki.novappro.model.database.approval;
 
 import com.github.akagawatsurunaki.novappro.annotation.Field;
 import com.github.akagawatsurunaki.novappro.annotation.Table;
@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
-import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 

@@ -1,6 +1,5 @@
-package com.github.akagawatsurunaki.novappro.model.course;
+package com.github.akagawatsurunaki.novappro.model.database.course;
 
-import cn.hutool.core.util.StrUtil;
 import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
 import com.github.akagawatsurunaki.novappro.constant.Constant;
 import com.github.akagawatsurunaki.novappro.interfase.HasChineseField;

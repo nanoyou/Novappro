@@ -7,7 +7,7 @@ import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
-import com.github.akagawatsurunaki.novappro.model.course.Course;
+import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;

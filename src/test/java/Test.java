@@ -1,19 +1,13 @@
-import cn.hutool.core.util.EnumUtil;
-import cn.hutool.db.Db;
-import cn.hutool.db.Entity;
 import cn.hutool.json.JSONUtil;
-import com.github.akagawatsurunaki.novappro.annotation.Table;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowDetailMapper;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowMapper;
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
-import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlow;
-import com.github.akagawatsurunaki.novappro.model.approval.ApprovalFlowDetail;
+import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
+import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Date;
