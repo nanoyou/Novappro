@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Set;
 
+@Deprecated
 @WebServlet(name = "InitDatabaseServlet", urlPatterns = {"/initDatabase"}, loadOnStartup = InitSequenceConfig.INIT_DATABASE)
 public class InitDatabaseServlet extends HttpServlet {
 
@@ -29,8 +30,6 @@ public class InitDatabaseServlet extends HttpServlet {
 
         // 初始化数据库
         DATABASE_MANAGER.init();
-        String s = JSONObject.toJSONString(UserMapperImpl.getInstance().selectUserById(1));
-        System.out.println(s);
     }
 }
 
