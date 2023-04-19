@@ -1,4 +1,3 @@
-import cn.hutool.json.JSONUtil;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowDetailMapper;
@@ -7,7 +6,10 @@ import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapper
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
+import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
+import com.github.akagawatsurunaki.novappro.service.ApprovalService;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
+import com.github.akagawatsurunaki.novappro.util.ZhFieldUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,12 +17,7 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args){
-        List<String> list = new ArrayList<>();
-        list.add("123123");
-        list.add("12341234");
-        var json = JSONUtil.toJsonStr(list);
-        System.out.println(json);
-        var ll = JSONUtil.toList(json, String.class);
+        func6();
 
 
     }
@@ -49,6 +46,16 @@ public class Test {
         strs.add("1111");
         strs.add("2222");
         List<String> courseCodes = CourseUtil.getCourseCodes(strs.toString());
+    }
+//    static void func5(){
+//        ApplItem applItem = new ApplItem();
+//        var s = ZhFieldUtil.getZhValue(ApplItem.class, ApplItem.Fields.applicantName);
+//        System.out.println(s);
+//    }
+
+    static void func6() {
+        var s = ApprovalService.getInstance().getApplItem("APFL2021000216818008100493182");
+        System.out.println(s);
     }
 
 }
