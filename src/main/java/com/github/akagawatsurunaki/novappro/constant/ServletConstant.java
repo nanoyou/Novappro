@@ -10,6 +10,8 @@ public class ServletConstant {
     public static class WebServletValue {
          public final static String  MODIFY_COURSE_APPL = "/modify_course_appl";
          public final static String COURSE_APPL_DETAIL = "/course_appl_detail";
+         public final static String GET_APPROS = "/get_appros";
+
 
     }
 
