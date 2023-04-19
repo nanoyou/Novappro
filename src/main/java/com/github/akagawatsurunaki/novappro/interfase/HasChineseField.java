@@ -5,6 +5,7 @@ import lombok.NonNull;
 
 import java.lang.reflect.Field;
 
+@Deprecated
 public interface HasChineseField {
 
     default  <T> ZhField getChineseFieldNameAnnotation(Class<T> clazz, @NonNull String fieldName) {
