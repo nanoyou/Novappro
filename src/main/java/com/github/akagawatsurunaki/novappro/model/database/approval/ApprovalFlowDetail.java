@@ -4,6 +4,7 @@ import com.github.akagawatsurunaki.novappro.annotation.Field;
 import com.github.akagawatsurunaki.novappro.annotation.Table;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 import java.util.Date;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Builder
+@FieldNameConstants
 @Table(table = "audit_flow_detail")
 public class ApprovalFlowDetail {
 
