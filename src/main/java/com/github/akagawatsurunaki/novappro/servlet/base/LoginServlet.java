@@ -2,8 +2,10 @@ package com.github.akagawatsurunaki.novappro.servlet.base;
 
 import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.base.LoginService;
+import com.github.akagawatsurunaki.novappro.util.ZhFieldUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -62,9 +64,17 @@ public class LoginServlet extends HttpServlet {
 
             request.getSession().setAttribute(ServletConstant.RequestAttr.LOGIN_USER_ID.name, user.getId());
             request.getSession().setAttribute(ServletConstant.RequestAttr.USER_USERNAME.name, user.getUsername());
-            request.getSession().setAttribute(ServletConstant.RequestParam.USER_TYPE.name, user.getType().getChineseName());
+            request.getSession().setAttribute(ServletConstant.RequestParam.USER_TYPE.name, user.getType().name());
 
-            response.sendRedirect(ServletConstant.JSPResource.WELCOME_SESSION.name);
+            // 根据不同的身份发送到不同的页面
+            if (user.getType().equals(UserType.STUDENT)){
+                response.sendRedirect(ServletConstant.JSPResource.WELCOME_SESSION.name);
+            } else if (user.getType().equals(UserType.TEACHER)) {
+                response.sendRedirect(ServletConstant.JSPResource.GET_APPROS.name);
+            } else if(user.getType().equals(UserType.ADMIN)){
+                return;
+            }
+
         } else {
             request.getRequestDispatcher(ServletConstant.JSPResource.ERROR.name).forward(request, response);
         }
@@ -88,7 +98,8 @@ public class LoginServlet extends HttpServlet {
 
             List<Cookie> cookies = new ArrayList<>();
             cookies.add(new Cookie(ServletConstant.RequestAttr.USER_USERNAME.name, user.getUsername()));
-            cookies.add(new Cookie(ServletConstant.RequestParam.USER_TYPE.name, user.getType().getChineseName()));
+            cookies.add(new Cookie(ServletConstant.RequestParam.USER_TYPE.name,
+                    ZhFieldUtil.getZhValue(User.class, user.getType().name())));
             cookies.forEach(response::addCookie);
 
             response.sendRedirect(ServletConstant.JSPResource.WELCOME_COOKIE.name);

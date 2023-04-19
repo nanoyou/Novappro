@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ReUtil;
 import com.github.akagawatsurunaki.novappro.annotation.ZhField;
 import com.github.akagawatsurunaki.novappro.constant.Constant;
+import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import lombok.Getter;
@@ -51,7 +52,7 @@ public class RegisterService {
         user.setRawPassword(rawPassword);
 
         // TODO: 默认注册的用户均为学生, 未来可能支持多种身份的注册.
-        user.setType(User.Type.STUDENT);
+        user.setType(UserType.STUDENT);
 
         // 调用Mapper对数据库执行INSERT语句
         var verifyCodeUserPair = USER_MAPPER.insertUser(user);
