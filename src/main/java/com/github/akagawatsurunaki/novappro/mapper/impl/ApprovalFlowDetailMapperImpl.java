@@ -12,11 +12,16 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApprovalFlowDetailMapperImpl implements ApprovalFlowDetailMapper {
 
     @Getter
     private static final ApprovalFlowDetailMapper instance = new ApprovalFlowDetailMapperImpl();
+    String selectSQL = "SELECT * FROM `audit_flow_detail` WHERE `audit_flow_detail`.`flow_no` = ?;";
+    String selectFlowNoByApproverIdSQL = "SELECT `flow_no` FROM `audit_flow_detail` WHERE `audit_flow_detail`" +
+            ".`audit_user_id` = ?;";
 
     @Override
     public Pair<VerifyCode.Mapper, ApprovalFlowDetail> insert(@NonNull ApprovalFlowDetail approvalFlowDetail) {
@@ -32,13 +37,13 @@ public class ApprovalFlowDetailMapperImpl implements ApprovalFlowDetailMapper {
             return new ImmutablePair<>(VerifyCode.Mapper.OTHER_EXCEPTION, approvalFlowDetail);
         }
     }
-    String selectSQL = "SELECT * FROM `audit_flow_detail` WHERE `audit_flow_detail`.`flow_no` = ?;";
+
     @Override
     public Pair<VerifyCode.Mapper, ApprovalFlowDetail> select(@NonNull String flowNo) {
         try {
             var query = Db.use().query(selectSQL, flowNo);
 
-            if (query.isEmpty()) {
+            if (query.size() != 1) {
                 return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
             }
 
@@ -49,7 +54,34 @@ public class ApprovalFlowDetailMapperImpl implements ApprovalFlowDetailMapper {
             return new ImmutablePair<>(VerifyCode.Mapper.OK, approvalFlowDetail);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ImmutablePair<>(VerifyCode.Mapper.OK, null);
+            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
+        }
+    }
+
+    @Override
+    public Pair<VerifyCode.Mapper, List<String>> selectFlowNoByApproverId(@NonNull Integer approverId) {
+        try {
+            var query = Db.use().query(selectFlowNoByApproverIdSQL, approverId);
+
+            if (query.isEmpty()) {
+                return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
+            }
+
+            List<String> result = new ArrayList<>();
+
+            query.forEach(
+                    entity -> {
+                        var flowNo = entity.getStr(EntityUtil.getFieldName(ApprovalFlowDetail.class,
+                                ApprovalFlowDetail.Fields.flowNo));
+                        result.add(flowNo);
+                    }
+            );
+
+            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
     }
 

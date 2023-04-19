@@ -5,10 +5,14 @@ import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.List;
+
 public interface ApprovalFlowDetailMapper {
 
     Pair<VerifyCode.Mapper, ApprovalFlowDetail> insert(@NonNull ApprovalFlowDetail approvalFlowDetail);
 
     Pair<VerifyCode.Mapper, ApprovalFlowDetail> select(@NonNull String flowNo);
+
+    Pair<VerifyCode.Mapper, List<String>> selectFlowNoByApproverId(@NonNull Integer approverId);
 
 }
