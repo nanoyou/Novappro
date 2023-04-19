@@ -3,7 +3,7 @@ package com.github.akagawatsurunaki.novappro.servlet.base;
 import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.model.database.User;
-import com.github.akagawatsurunaki.novappro.service.LoginService;
+import com.github.akagawatsurunaki.novappro.service.base.LoginService;
 
 import javax.servlet.*;
 import javax.servlet.http.*;

@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
 import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
-import com.github.akagawatsurunaki.novappro.service.ApplyCourseService;
+import com.github.akagawatsurunaki.novappro.service.stu.ApplyCourseService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

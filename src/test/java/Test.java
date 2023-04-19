@@ -6,10 +6,8 @@ import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapper
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
-import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
-import com.github.akagawatsurunaki.novappro.service.ApprovalService;
+import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
-import com.github.akagawatsurunaki.novappro.util.ZhFieldUtil;
 
 import java.util.ArrayList;
 import java.util.Date;

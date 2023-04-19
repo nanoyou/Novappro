@@ -2,7 +2,7 @@ package com.github.akagawatsurunaki.novappro.servlet.stu;
 
 import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
-import com.github.akagawatsurunaki.novappro.service.CourseService;
+import com.github.akagawatsurunaki.novappro.service.stu.CourseService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

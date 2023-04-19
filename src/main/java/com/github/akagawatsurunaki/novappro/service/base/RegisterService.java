@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.service;
+package com.github.akagawatsurunaki.novappro.service.base;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ReUtil;

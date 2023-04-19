@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.service;
+package com.github.akagawatsurunaki.novappro.service.stu;
 
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;

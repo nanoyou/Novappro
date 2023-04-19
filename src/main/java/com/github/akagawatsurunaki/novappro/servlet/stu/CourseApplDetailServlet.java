@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
 import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
-import com.github.akagawatsurunaki.novappro.service.CourseApplDetailService;
+import com.github.akagawatsurunaki.novappro.service.stu.CourseApplDetailService;
 
 import javax.servlet.*;
 import javax.servlet.http.*;

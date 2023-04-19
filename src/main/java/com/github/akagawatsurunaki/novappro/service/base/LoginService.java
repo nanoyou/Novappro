@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.service;
+package com.github.akagawatsurunaki.novappro.service.base;
 
 import com.github.akagawatsurunaki.novappro.constant.Constant;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
