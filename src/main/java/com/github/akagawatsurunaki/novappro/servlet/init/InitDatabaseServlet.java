@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.servlet;
+package com.github.akagawatsurunaki.novappro.servlet.init;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.github.akagawatsurunaki.novappro.annotation.Database;

@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.servlet;
+package com.github.akagawatsurunaki.novappro.servlet.base;
 
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.RegisterService;

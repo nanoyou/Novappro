@@ -18,8 +18,6 @@ import java.util.List;
 public class Test {
     public static void main(String[] args){
         func6();
-
-
     }
 
     static void func1() {
