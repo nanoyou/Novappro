@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ChineseFieldName {
+public @interface ZhField {
     String value() default "";
-    String description() default "";
+    String desc() default "";
 
 }

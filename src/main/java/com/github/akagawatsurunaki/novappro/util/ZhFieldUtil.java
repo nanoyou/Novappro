@@ -1,0 +1,36 @@
+package com.github.akagawatsurunaki.novappro.util;
+
+import com.github.akagawatsurunaki.novappro.annotation.ZhField;
+import lombok.NonNull;
+
+import java.lang.reflect.Field;
+
+public class ZhFieldUtil {
+    public static <T> String getZhValue(Class<T> cls, @NonNull String fieldName) {
+        // 获取所有字段
+        Field[] fields = cls.getDeclaredFields();
+        for (Field field : fields) {
+            // 如果一个Field上既有注解又和指定的名称相同, 则返回注解
+            if (field.isAnnotationPresent(ZhField.class)) {
+                if (fieldName.equals(field.getName())) {
+                    return field.getAnnotation(ZhField.class).value();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static <T> String getZhDesc(Class<T> cls, @NonNull String fieldName) {
+        // 获取所有字段
+        Field[] fields = cls.getDeclaredFields();
+        for (Field field : fields) {
+            // 如果一个Field上既有注解又和指定的名称相同, 则返回注解
+            if (field.isAnnotationPresent(ZhField.class)) {
+                if (fieldName.equals(field.getName())) {
+                    return field.getAnnotation(ZhField.class).desc();
+                }
+            }
+        }
+        return null;
+    }
+}
