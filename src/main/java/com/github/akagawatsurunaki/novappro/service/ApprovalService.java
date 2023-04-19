@@ -1,16 +1,80 @@
 package com.github.akagawatsurunaki.novappro.service;
 
+import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowDetailMapper;
+import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowMapper;
+import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
+import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
+import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
+import lombok.Getter;
+import lombok.NonNull;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 public class ApprovalService {
+
+    @Getter
+    private static final ApprovalService instance = new ApprovalService();
+
+    private static final ApprovalFlowMapper APPROVAL_FLOW_MAPPER = ApprovalFlowMapperImpl.getInstance();
+    private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
+            ApprovalFlowDetailMapperImpl.getInstance();
+    private static final UserMapper USER_MAPPER = UserMapperImpl.getInstance();
+
+    // TODO: TEST
+    /**
+     * 获取一个ApplItem对象
+     */
+    public Pair<VerifyCode.Service, ApplItem> getApplItem(@NonNull String flowNo) {
+
+        var vc_af = APPROVAL_FLOW_MAPPER.select(flowNo);
+
+        if (vc_af.getLeft() == VerifyCode.Mapper.OK) {
+
+            var approFlow = vc_af.getRight();
+            var vc_afd = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo);
+
+            if (vc_afd.getLeft() == VerifyCode.Mapper.OK) {
+
+                var applFlowDetail = vc_afd.getRight();
+
+                var vc_addUser = USER_MAPPER.selectUserById(approFlow.getAddUserId());
+                var vc_approver = USER_MAPPER.selectUserById(applFlowDetail.getAuditUserId());
+
+                if (vc_addUser.getLeft() == VerifyCode.Mapper.OK && vc_approver.getLeft() == VerifyCode.Mapper.OK) {
+
+                    var applicant = vc_addUser.getRight();
+                    var approver = vc_approver.getRight();
+
+                    var applItem = ApplItem.builder()
+                            .flowNo(approFlow.getFlowNo())
+                            .title(approFlow.getTitle())
+                            .applicantName(applicant.getUsername())
+                            .addTime(approFlow.getAddTime())
+                            .approverName(approver.getUsername())
+                            .approvalStatus(applFlowDetail.getAuditStatus())
+                            .build();
+
+                    return new ImmutablePair<>(VerifyCode.Service.OK, applItem);
+                }
+            }
+        }
+        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+    }
+
 
     /*
     TODO: 默认于老师为课程申请的审批人, 登录后, 网页上将会显示当前需要审批的审批.
 
     登陆后跳转到审批人的界面, 界面显示了loginUser的可以进行审批的审批列表.
 
+
     appl_list
 
     |---------------------------------------------|
-    |审批流号  |标题|发起人|申请状态     |操作       |
+    |审批流号  |标题|发起人|审批人|申请时间|申请状态 |操作  |
     -----------------------------------------------
     | weuusa  你好  我      待我审批    |查看详情   |
     -----------------------------------------------
