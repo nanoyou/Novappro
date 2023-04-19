@@ -22,7 +22,8 @@ public class ServletConstant {
         WELCOME_COOKIE("welcome_cookie.jsp"),
         ERROR("error.jsp"),
         COURSE_APPL_DETAIL("course_appl_detail.jsp"),
-        GET_APPLIED_COURSES("get_applied_courses.jsp")
+        GET_APPLIED_COURSES("get_applied_courses.jsp"),
+        GET_APPROS("get_appros.jsp")
         ;
 
         public final String name;
@@ -37,6 +38,7 @@ public class ServletConstant {
         USER_USERNAME("user_username"),
         APPLIED_COURSES("applied_courses"),
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
+        APPL_ITEMS_WITH_GIVEN_APPROVER("APPL_ITEMS_WITH_GIVEN_APPROVER")
         ;
 
         public final String name;
