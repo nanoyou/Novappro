@@ -22,6 +22,31 @@ public class EntityUtil {
         return tClass.getAnnotation(Table.class).table();
     }
 
+    public static <T> String getFieldName(@NonNull Class<T> tClass, @NonNull String fieldName){
+        // 是否拥有@Table注解
+        if (!tClass.isAnnotationPresent(Table.class)) {
+            return null;
+        }
+
+        var fields = tClass.getDeclaredFields();
+
+        for (Field field : fields) {
+            // 是否有@Field注解
+            if (field.isAnnotationPresent(com.github.akagawatsurunaki.novappro.annotation.Field.class)){
+                if (field.getName().equals(fieldName)){
+                    return field.getAnnotation(com.github.akagawatsurunaki.novappro.annotation.Field.class).field();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static <T> String getFieldName(@NonNull Object obj, @NonNull String fieldName){
+        var tClass = obj.getClass();
+        return getFieldName(tClass, fieldName);
+    }
+
     public static <T> Entity getEntity(Object obj) throws IllegalAccessException {
 
         var tClass = obj.getClass();
