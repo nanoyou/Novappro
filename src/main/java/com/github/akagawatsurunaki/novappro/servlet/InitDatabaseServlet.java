@@ -29,7 +29,7 @@ public class InitDatabaseServlet extends HttpServlet {
 
         // 初始化数据库
         DATABASE_MANAGER.init();
-        String s = JSONObject.toJSONString(UserMapperImpl.getInstance().getUserById(1));
+        String s = JSONObject.toJSONString(UserMapperImpl.getInstance().selectUserById(1));
         System.out.println(s);
     }
 }

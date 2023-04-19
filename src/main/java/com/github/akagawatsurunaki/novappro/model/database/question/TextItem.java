@@ -1,14 +1,14 @@
 package com.github.akagawatsurunaki.novappro.model.database.question;
 
-import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
+import com.github.akagawatsurunaki.novappro.annotation.ZhField;
 import lombok.Data;
 
 @Data
 public class TextItem {
 
-    @ChineseFieldName(value = "文本项目ID")
+    @ZhField(value = "文本项目ID")
     Integer id;
 
-    @ChineseFieldName(value = "纯文本")
+    @ZhField(value = "纯文本")
     String plainText;
 }

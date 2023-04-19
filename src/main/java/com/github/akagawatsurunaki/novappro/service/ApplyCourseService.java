@@ -40,13 +40,13 @@ public class ApplyCourseService {
 
     static {
         // TODO: 默认只允许于老师参与审批课程任务
-        approver = USER_MAPPER.getUserById(20210004).getRight();
+        approver = USER_MAPPER.selectUserById(20210004).getRight();
     }
 
     public VerifyCode.Service apply(@NonNull Integer userId, @NonNull List<String> courseIds) {
 
         // 校验用户是否存在
-        var vc_user = USER_MAPPER.getUserById(userId);
+        var vc_user = USER_MAPPER.selectUserById(userId);
         var vc = vc_user.getLeft();
 
         if (vc == VerifyCode.Mapper.NO_SUCH_ENTITY) {
@@ -120,7 +120,7 @@ public class ApplyCourseService {
 
     public Pair<VerifyCode.Service, List<CourseApplication>> getAppliedCourses(@NonNull Integer userId) {
         // 校验用户是否存在
-        var vc_user = USER_MAPPER.getUserById(userId);
+        var vc_user = USER_MAPPER.selectUserById(userId);
         var vc = vc_user.getLeft();
 
         if (vc == VerifyCode.Mapper.NO_SUCH_ENTITY) {

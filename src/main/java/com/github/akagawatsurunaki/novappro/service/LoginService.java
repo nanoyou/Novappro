@@ -23,7 +23,7 @@ public class LoginService {
             return new ImmutablePair<>(VerifyCode.Service.TOO_LONG_PASSWORD, null);
         }
 
-        var pair = USER_MAPPER.getUserById(id);
+        var pair = USER_MAPPER.selectUserById(id);
         // 判断用户是否存在
 
         var vc = pair.getLeft();

@@ -2,7 +2,7 @@ package com.github.akagawatsurunaki.novappro.service;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ReUtil;
-import com.github.akagawatsurunaki.novappro.annotation.ChineseFieldName;
+import com.github.akagawatsurunaki.novappro.annotation.ZhField;
 import com.github.akagawatsurunaki.novappro.constant.Constant;
 import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
@@ -64,25 +64,25 @@ public class RegisterService {
     }
 
     public enum INFO {
-        @ChineseFieldName(value = "用户ID不是一个整数")
+        @ZhField(value = "用户ID不是一个整数")
         USER_ID_IS_NOT_A_NUMBER,
-        @ChineseFieldName(value = "两次密码输入不一致")
+        @ZhField(value = "两次密码输入不一致")
         PASSWORD_INCONSISTENT,
-        @ChineseFieldName(value = "密码超过规定长度",
-                description = "密码必须在" + Constant.MIN_LEN_PASSWORD + "位到" + Constant.MAX_LEN_PASSWORD + "位范围内。")
+        @ZhField(value = "密码超过规定长度",
+                desc = "密码必须在" + Constant.MIN_LEN_PASSWORD + "位到" + Constant.MAX_LEN_PASSWORD + "位范围内。")
         PASSWORD_OUT_OF_BOUND,
-        @ChineseFieldName(value = "密码不合法",
-                description = "密码必须至少包含字母、数字、特殊字符。")
+        @ZhField(value = "密码不合法",
+                desc = "密码必须至少包含字母、数字、特殊字符。")
         PASSWORD_MISMATCH,
-        @ChineseFieldName(value = "用户名不是中文")
+        @ZhField(value = "用户名不是中文")
         USERNAME_IS_NOT_CHINESE,
 
-        @ChineseFieldName(value = "用户名超过规定长度",
-                description = "用户名必须在" + Constant.MIN_LEN_USERNAME + "位到" + Constant.MAX_LEN_USERNAME + "位范围内。")
+        @ZhField(value = "用户名超过规定长度",
+                desc = "用户名必须在" + Constant.MIN_LEN_USERNAME + "位到" + Constant.MAX_LEN_USERNAME + "位范围内。")
         USERNAME_OUT_OF_BOUND,
 
-        @ChineseFieldName(value = "下层服务错误",
-                description = "")
+        @ZhField(value = "下层服务错误",
+                desc = "")
         MAPPER_FAILED,
 
         OK
