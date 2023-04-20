@@ -66,11 +66,15 @@ public class LoginServlet extends HttpServlet {
             request.getSession().setAttribute(ServletConstant.RequestAttr.USER_USERNAME.name, user.getUsername());
             request.getSession().setAttribute(ServletConstant.RequestParam.USER_TYPE.name, user.getType().name());
 
+            request.setAttribute(ServletConstant.RequestAttr.LOGIN_USER.name,user);
+
             // 根据不同的身份发送到不同的页面
             if (user.getType().equals(UserType.STUDENT)){
                 response.sendRedirect(ServletConstant.JSPResource.WELCOME_SESSION.name);
             } else if (user.getType().equals(UserType.TEACHER)) {
-                response.sendRedirect(ServletConstant.JSPResource.GET_APPROS.name);
+                // ServletConstant.JSPResource.GET_APPROS.name
+                request.getRequestDispatcher(ServletConstant.WebServletValue.GET_APPROS).forward(request, response);
+              //  response.sendRedirect(ServletConstant.JSPResource.GET_APPROS.name);
             } else if(user.getType().equals(UserType.ADMIN)){
                 return;
             }
