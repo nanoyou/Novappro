@@ -1,6 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.course.Course" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.constant.LiteralConstant" %><%--
+<%@ page import="com.github.akagawatsurunaki.novappro.constant.LiteralConstant" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %><%--
   Created by IntelliJ IDEA.
   User: 96514
   Date: 2023/4/11
@@ -23,23 +24,20 @@
     <table border="1">查询到的课程
         <%-- 表头 --%>
         <tr>
-            <%
-                final Course tempCourse = new Course();
-            %>
             <th>序号</th>
-            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.code).value()%>
+            <th><%=ZhFieldUtil.getZhValue(Course.class, Course.Fields.code)%>
             </th>
-            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.name).value()%>
+            <th><%=ZhFieldUtil.getZhValue(Course.class, Course.Fields.name)%>
             </th>
-            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.credit).value()%>
+            <th><%=ZhFieldUtil.getZhValue(Course.class, Course.Fields.credit)%>
             </th>
-            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.serialNumber).value()%>
+            <th><%=ZhFieldUtil.getZhValue(Course.class, Course.Fields.serialNumber)%>
             </th>
-            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.teachers).value()%>
+            <th><%=ZhFieldUtil.getZhValue(Course.class, Course.Fields.teachers)%>
             </th>
-            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.onlineContactWay).value()%>
+            <th><%=ZhFieldUtil.getZhValue(Course.class, Course.Fields.onlineContactWay)%>
             </th>
-            <th><%=tempCourse.getChineseFieldNameAnnotation(Course.class, Course.Fields.comment).value()%>
+            <th><%=ZhFieldUtil.getZhValue(Course.class, Course.Fields.comment)%>
             </th>
             <th>
                 操作: 选择此课程

@@ -2,7 +2,6 @@ package com.github.akagawatsurunaki.novappro.model.database.course;
 
 import com.github.akagawatsurunaki.novappro.annotation.ZhField;
 import com.github.akagawatsurunaki.novappro.constant.Constant;
-import com.github.akagawatsurunaki.novappro.interfase.HasChineseField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
-public class Course implements HasChineseField {
+public class Course {
 
     @ZhField(value = "课程代码", desc = "11位的字符串")
     String code;
