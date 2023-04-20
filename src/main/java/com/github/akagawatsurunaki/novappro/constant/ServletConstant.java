@@ -34,6 +34,8 @@ public class ServletConstant {
     public enum RequestAttr {
         USER_ID("user_id"),
         LOGIN_USER_ID("login_user_id"),
+
+        LOGIN_USER("login_user"),
         COURSE_APPLICATIONS("course_applications"),
         USER_USERNAME("user_username"),
         APPLIED_COURSES("applied_courses"),
