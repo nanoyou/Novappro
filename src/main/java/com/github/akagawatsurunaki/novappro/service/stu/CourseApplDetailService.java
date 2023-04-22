@@ -25,6 +25,7 @@ public class CourseApplDetailService {
 
     private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
 
+    @Deprecated
     public List<Course> getAppliedCourses(@NonNull String flowNo) {
         if (flowNo.isEmpty()) {
             return null;
