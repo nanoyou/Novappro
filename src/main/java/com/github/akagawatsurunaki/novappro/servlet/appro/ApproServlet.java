@@ -38,8 +38,8 @@ public class ApproServlet extends HttpServlet {
                 request.setAttribute(ServletConstant.RequestAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name, applItems);
                 request.getRequestDispatcher(ServletConstant.JSPResource.GET_APPROS.name).forward(request, response);
                 return;
-            }
 
+            }
         }
         request.getRequestDispatcher(ServletConstant.JSPResource.ERROR.name).forward(request, response);
     }

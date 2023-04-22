@@ -1,13 +1,12 @@
 package com.github.akagawatsurunaki.novappro.service.appro;
 
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
-import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowDetailMapper;
-import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowMapper;
-import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
-import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
-import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
-import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.*;
+import com.github.akagawatsurunaki.novappro.mapper.impl.*;
+import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
+import com.github.akagawatsurunaki.novappro.model.frontend.CourseAppItemDetail;
+import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -21,10 +20,16 @@ public class ApprovalService {
     @Getter
     private static final ApprovalService instance = new ApprovalService();
 
+    private static final UserMapper USER_MAPPER = UserMapperImpl.getInstance();
+
+    private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
+
     private static final ApprovalFlowMapper APPROVAL_FLOW_MAPPER = ApprovalFlowMapperImpl.getInstance();
+
     private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
             ApprovalFlowDetailMapperImpl.getInstance();
-    private static final UserMapper USER_MAPPER = UserMapperImpl.getInstance();
+
+    private static final CourseMapper COURSE_MAPPER = CourseMapperImpl.getInstance();
 
 
     public Pair<VerifyCode.Service, List<ApplItem>> getApplItems(@NonNull Integer approverId) {
@@ -49,12 +54,10 @@ public class ApprovalService {
         return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
     }
 
-    // TODO: TEST
-
     /**
      * 获取一个ApplItem对象
      */
-    private Pair<VerifyCode.Service, ApplItem> getApplItem(@NonNull String flowNo) {
+    public Pair<VerifyCode.Service, ApplItem> getApplItem(@NonNull String flowNo) {
 
         var vc_af = APPROVAL_FLOW_MAPPER.select(flowNo);
 
@@ -86,6 +89,60 @@ public class ApprovalService {
 
                     return new ImmutablePair<>(VerifyCode.Service.OK, applItem);
                 }
+            }
+        }
+        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+    }
+
+
+    public Pair<VerifyCode.Service, CourseAppItemDetail> getDetail(@NonNull String flowNo) {
+        // TODO: 2023年4月20日 DEBUG
+        var vc_af = APPROVAL_FLOW_MAPPER.select(flowNo);
+
+        if (vc_af.getLeft() == VerifyCode.Mapper.OK) {
+            var approvalFlow = vc_af.getRight();
+            var vc_addUser = USER_MAPPER.selectUserById(approvalFlow.getAddUserId());
+
+            if (vc_addUser.getLeft() == VerifyCode.Mapper.OK) {
+
+                var addUser = vc_addUser.getRight();
+                var vc_afd = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo);
+
+                if (vc_afd.getLeft() == VerifyCode.Mapper.OK) {
+                    var approFlowDetail = vc_afd.getRight();
+
+                    var vc_ac = getAppliedCourses(flowNo);
+
+                    if (vc_ac.getLeft() == VerifyCode.Service.OK) {
+                        var appliedCourses = vc_ac.getRight();
+
+                        var result = CourseAppItemDetail.builder()
+                                .flowNo(flowNo)
+                                .title(approvalFlow.getTitle())
+                                .applicantId(addUser.getId())
+                                .applicantName(addUser.getUsername())
+                                .addTime(approvalFlow.getAddTime())
+                                .approStatus(approFlowDetail.getAuditStatus())
+                                .applCourses(appliedCourses)
+                                .build();
+
+                        return new ImmutablePair<>(VerifyCode.Service.OK, result);
+                    }
+                }
+            }
+        }
+        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+    }
+
+
+    private Pair<VerifyCode.Service, List<Course>> getAppliedCourses(@NonNull String flowNo) {
+        var vc_ca = COURSE_APPLICATION_MAPPER.selectByFlowNo(flowNo);
+        if (vc_ca.getLeft() == VerifyCode.Mapper.OK) {
+            var appl = vc_ca.getRight();
+            var courseIds = CourseUtil.getCourseCodes(appl.getApproCourseIds());
+            var vc_courses = COURSE_MAPPER.selectCourses(courseIds);
+            if (vc_courses.getLeft() == VerifyCode.Mapper.OK) {
+                return new ImmutablePair<>(VerifyCode.Service.OK, vc_courses.getRight());
             }
         }
         return new ImmutablePair<>(VerifyCode.Service.ERROR, null);

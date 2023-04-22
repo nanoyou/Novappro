@@ -118,7 +118,7 @@ public class ApplyCourseService {
         return VerifyCode.Service.ERROR;
     }
 
-    public Pair<VerifyCode.Service, List<CourseApplication>> getAppliedCourses(@NonNull Integer userId) {
+    public Pair<VerifyCode.Service, List<CourseApplication>> getCourseApplsByUserId(@NonNull Integer userId) {
         // 校验用户是否存在
         var vc_user = USER_MAPPER.selectUserById(userId);
         var vc = vc_user.getLeft();
@@ -137,5 +137,4 @@ public class ApplyCourseService {
         }
         return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
     }
-
 }
