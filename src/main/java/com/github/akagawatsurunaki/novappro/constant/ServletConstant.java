@@ -7,14 +7,6 @@ public class ServletConstant {
 
     public static final String INFO = "info";
 
-    public static class WebServletValue {
-         public final static String  MODIFY_COURSE_APPL = "/modify_course_appl";
-         public final static String COURSE_APPL_DETAIL = "/course_appl_detail";
-         public final static String GET_APPROS = "/get_appros";
-
-
-    }
-
     @AllArgsConstructor
     public enum JSPResource {
         WELCOME("welcome.jsp"),
@@ -23,12 +15,11 @@ public class ServletConstant {
         ERROR("error.jsp"),
         COURSE_APPL_DETAIL("course_appl_detail.jsp"),
         GET_APPLIED_COURSES("get_applied_courses.jsp"),
-        GET_APPROS("get_appros.jsp")
-        ;
+        GET_APPROS("get_appros.jsp"),
+        GET_CRS_APPL_ITEM("get_crs_appl_item.jsp");
 
         public final String name;
     }
-
 
     @AllArgsConstructor
     public enum RequestAttr {
@@ -40,11 +31,13 @@ public class ServletConstant {
         USER_USERNAME("user_username"),
         APPLIED_COURSES("applied_courses"),
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
-        APPL_ITEMS_WITH_GIVEN_APPROVER("APPL_ITEMS_WITH_GIVEN_APPROVER")
-        ;
+        APPL_ITEMS_WITH_GIVEN_APPROVER("APPL_ITEMS_WITH_GIVEN_APPROVER"),
+        SELECTED_APPL_ITEM("selected_appl_item"),
+        SELECTED_APPL_ITEM_DETAIL("selected_appl_item_detail");
 
         public final String name;
     }
+
 
     @AllArgsConstructor
     public enum RequestParam {
@@ -57,8 +50,16 @@ public class ServletConstant {
 
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
 
-;
+        SELECTED_APPL_ITEM_FLOW_NO("selected_appl_item_flow_no");;
 
         public final String name;
+    }
+
+    public static class WebServletValue {
+        public final static String MODIFY_COURSE_APPL = "/modify_course_appl";
+        public final static String COURSE_APPL_DETAIL = "/course_appl_detail";
+        public final static String GET_APPROS = "/get_appros";
+        public final static String GET_APPL_ITEM_DETAIL = "/get_appl_item_detail";
+
     }
 }
