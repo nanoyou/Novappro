@@ -1,6 +1,7 @@
 package com.github.akagawatsurunaki.novappro.util;
 
 import com.github.akagawatsurunaki.novappro.annotation.ZhField;
+import com.github.akagawatsurunaki.novappro.exception.NoZhFieldAnnotation;
 import lombok.NonNull;
 
 import java.lang.reflect.Field;
@@ -17,7 +18,7 @@ public class ZhFieldUtil {
                 }
             }
         }
-        return null;
+        throw new NoZhFieldAnnotation();
     }
 
     public static <T> String getZhDesc(Class<T> cls, @NonNull String fieldName) {
@@ -31,6 +32,6 @@ public class ZhFieldUtil {
                 }
             }
         }
-        return null;
+        throw new NoZhFieldAnnotation();
     }
 }
