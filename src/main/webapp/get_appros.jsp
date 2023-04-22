@@ -16,9 +16,14 @@
 <head>
     <title>我的审批</title>
 </head>
+<script>
+    function detail(flowNo) {
+        location.href =
+            '${pageContext.request.contextPath}<%=ServletConstant.WebServletValue.GET_APPL_ITEM_DETAIL%>' + '?<%=ServletConstant.RequestParam.SELECTED_APPL_ITEM_FLOW_NO.name%>=' + flowNo;
+    }
+</script>
 <body>
 <%
-
     List<ApplItem> applItemList =
             (List<ApplItem>) request.getAttribute(ServletConstant.RequestAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name);
 
@@ -66,38 +71,33 @@
 
     <%
         for (ApplItem applItem : applItemList) {
-
     %>
     <tr>
         <td>
             <%=applItem.getFlowNo()%>
         </td>
-    <td>
-        <%=applItem.getTitle()%>
-    </td>
-    <td>
-        <%=applItem.getApplicantName()%>
-    </td>
-    <td>
-        <%=applItem.getApproverName()%>
-    </td>
-    <td>
-        <%=applItem.getAddTime()%>
-    </td>
-    <td>
-        <%=applItem.getApprovalStatus().chinese%>
-    </td>
-    <td>
-        <input type="button" value="查看详情">
-    </td>
+        <td>
+            <%=applItem.getTitle()%>
+        </td>
+        <td>
+            <%=applItem.getApplicantName()%>
+        </td>
+        <td>
+            <%=applItem.getApproverName()%>
+        </td>
+        <td>
+            <%=applItem.getAddTime()%>
+        </td>
+        <td>
+            <%=applItem.getApprovalStatus().chinese%>
+        </td>
+        <td>
+            <input type="button" value="查看详情" onclick="detail('<%=applItem.getFlowNo()%>')">
+        </td>
     </tr>
     <%
         }
     %>
-
-
-
-
 </table>
 
 </body>
