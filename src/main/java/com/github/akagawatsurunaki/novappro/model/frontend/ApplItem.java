@@ -32,6 +32,4 @@ public class ApplItem {
     @ZhField(value = "申请状态")
     ApprovalStatus approvalStatus;
 
-
-
 }

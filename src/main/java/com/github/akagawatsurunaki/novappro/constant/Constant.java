@@ -23,7 +23,7 @@ public class Constant {
 
     public static final int MAX_LEN_COURSE_SERIAL_NUMBER = 7;
     public static final int MAX_LEN_COURSE_ONLINE_CONTACT_WAY = 255;
-    public static final int MAX_LEN_COURSE_COMMENT = 511;
+    public static final int MAX_LEN_COURSE_COMMENT = 500;
 
 
     public static final BigDecimal MAX_LEN_COURSE_CREDIT = new BigDecimal("10.00");
