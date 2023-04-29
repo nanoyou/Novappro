@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ApprovalStatus {
 
-    AUDITING("正在审批"),
-    WAITING_FOR_ME("等我审批"),
-    APPROVED("审批通过"),
-    REJECTED("审批拒绝");
+    SUBMITTED("申请已提交"),
+    LECTURE_TEACHER_EXAMING("课程主讲教师审批中"),
+    SUPERVISOR_TEACHER_EXAMING("课程主管教师审批中"),
+    APPROVED("审批成功"),
+    REJECTED("审批驳回");
 
     public final String chinese;
 }

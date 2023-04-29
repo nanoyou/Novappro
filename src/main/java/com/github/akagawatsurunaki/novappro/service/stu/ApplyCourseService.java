@@ -78,7 +78,7 @@ public class ApplyCourseService {
             var approvalFlow
                     = ApprovalFlow.builder()
                     .flowNo(flowNo)
-                    .approStatus(ApprovalStatus.AUDITING)
+                    .approStatus(ApprovalStatus.SUBMITTED)
                     .title("来自 " + user.getUsername() + "(" + user.getId() + ")的" + courseIds.size() + "门课程申请")
                     .busType(BusType.LINEAR)
                     .addUserId(user.getId())
@@ -91,7 +91,7 @@ public class ApplyCourseService {
                     = ApprovalFlowDetail.builder()
                     .flowNo(flowNo)
                     .auditUserId(approver.getId())
-                    .auditStatus(ApprovalStatus.WAITING_FOR_ME)
+                    .auditStatus(ApprovalStatus.LECTURE_TEACHER_EXAMING)
                     .auditRemark("")
                     .auditTime(date)
                     .build();

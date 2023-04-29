@@ -6,7 +6,6 @@ import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapper
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
-import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class Test {
 
     static void func2() {
         ApprovalFlowDetailMapper approvalFlowDetailMapper = ApprovalFlowDetailMapperImpl.getInstance();
-        var s = new ApprovalFlowDetail(111, "234", 12, "sdff", new Date(), ApprovalStatus.AUDITING);
+        var s = new ApprovalFlowDetail(111, "234", 12, "sdff", new Date(), ApprovalStatus.SUBMITTED);
         approvalFlowDetailMapper.insert(s);
     }
 
