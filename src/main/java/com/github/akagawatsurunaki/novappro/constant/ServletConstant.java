@@ -50,7 +50,11 @@ public class ServletConstant {
 
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
 
-        SELECTED_APPL_ITEM_FLOW_NO("selected_appl_item_flow_no");;
+        SELECTED_APPL_ITEM_FLOW_NO("selected_appl_item_flow_no"),
+        APPL_REMARK("appl_remark")
+        ;
+
+
 
         public final String name;
     }
