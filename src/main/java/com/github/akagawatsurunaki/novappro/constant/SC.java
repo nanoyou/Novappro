@@ -2,7 +2,10 @@ package com.github.akagawatsurunaki.novappro.constant;
 
 import lombok.AllArgsConstructor;
 
-public class ServletConstant {
+/**
+ * 即ServletConstant, 保存了一些防止硬编码的常量
+ */
+public class SC {
     public static final String GET_COURSE_SERVLET = "/get_courses";
 
     public static final String INFO = "info";

@@ -1,6 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
-import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
+import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.service.stu.CourseApplDetailService;
 
 import javax.servlet.*;
@@ -19,11 +19,11 @@ public class CourseApplDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        var flowCode = request.getParameter(ServletConstant.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+        var flowCode = request.getParameter(SC.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
         // 获取该流水号下的申请的课程 (可能有多个)
         var courses = instance.getAppliedCourses(flowCode);
-        request.setAttribute(ServletConstant.RequestAttr.SELECTED_COURSE_APPL_FLOW_NO.name, flowCode);
-        request.setAttribute(ServletConstant.RequestAttr.APPLIED_COURSES.name, courses);
-        request.getRequestDispatcher(ServletConstant.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
+        request.setAttribute(SC.RequestAttr.SELECTED_COURSE_APPL_FLOW_NO.name, flowCode);
+        request.setAttribute(SC.RequestAttr.APPLIED_COURSES.name, courses);
+        request.getRequestDispatcher(SC.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
     }
 }

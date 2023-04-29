@@ -1,4 +1,4 @@
-<%@ page import="com.github.akagawatsurunaki.novappro.constant.ServletConstant" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ApplItem" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
@@ -19,15 +19,15 @@
 <script>
     function detail(flowNo) {
         location.href =
-            '${pageContext.request.contextPath}<%=ServletConstant.WebServletValue.GET_APPL_ITEM_DETAIL%>' + '?<%=ServletConstant.RequestParam.SELECTED_APPL_ITEM_FLOW_NO.name%>=' + flowNo;
+            '${pageContext.request.contextPath}<%=SC.WebServletValue.GET_APPL_ITEM_DETAIL%>' + '?<%=SC.RequestParam.SELECTED_APPL_ITEM_FLOW_NO.name%>=' + flowNo;
     }
 </script>
 <body>
 <%
     List<ApplItem> applItemList =
-            (List<ApplItem>) request.getAttribute(ServletConstant.RequestAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name);
+            (List<ApplItem>) request.getAttribute(SC.RequestAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name);
 
-    User loginUser = (User) request.getAttribute(ServletConstant.RequestAttr.LOGIN_USER.name);
+    User loginUser = (User) request.getAttribute(SC.RequestAttr.LOGIN_USER.name);
 %>
 <h1>我的审批</h1>
 尊敬的<%=loginUser.getUsername()%> <%=ZhFieldUtil.getZhValue(UserType.class, UserType.TEACHER.name())%>，您好！

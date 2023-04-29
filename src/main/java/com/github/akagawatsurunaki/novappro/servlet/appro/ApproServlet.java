@@ -1,6 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.appro;
 
-import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
+import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "ApproServlet", value = ServletConstant.WebServletValue.GET_APPROS)
+@WebServlet(name = "ApproServlet", value = SC.WebServletValue.GET_APPROS)
 public class ApproServlet extends HttpServlet {
 
     private static final ApprovalService APPROVAL_SERVICE = ApprovalService.getInstance();
@@ -22,7 +22,7 @@ public class ApproServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        var loginUserId = (Integer) request.getSession().getAttribute(ServletConstant.RequestAttr.LOGIN_USER_ID.name);
+        var loginUserId = (Integer) request.getSession().getAttribute(SC.RequestAttr.LOGIN_USER_ID.name);
 
 
         // 如果用户已经登录
@@ -35,13 +35,13 @@ public class ApproServlet extends HttpServlet {
             if (vc_applItems.getLeft() == VerifyCode.Service.OK) {
 
                 var applItems = vc_applItems.getRight();
-                request.setAttribute(ServletConstant.RequestAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name, applItems);
-                request.getRequestDispatcher(ServletConstant.JSPResource.GET_APPROS.name).forward(request, response);
+                request.setAttribute(SC.RequestAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name, applItems);
+                request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
                 return;
 
             }
         }
-        request.getRequestDispatcher(ServletConstant.JSPResource.ERROR.name).forward(request, response);
+        request.getRequestDispatcher(SC.JSPResource.ERROR.name).forward(request, response);
     }
 
     @Override

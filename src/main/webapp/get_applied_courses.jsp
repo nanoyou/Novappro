@@ -1,8 +1,8 @@
-<%@ page import="com.github.akagawatsurunaki.novappro.constant.ServletConstant" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication" %>
 <%@ page
-        import="static com.github.akagawatsurunaki.novappro.constant.ServletConstant.RequestParam.SELECTED_COURSE_APPL_FLOW_NO" %>
+        import="static com.github.akagawatsurunaki.novappro.constant.SC.RequestParam.SELECTED_COURSE_APPL_FLOW_NO" %>
 Created by IntelliJ IDEA.
 User: 96514
 Date: 2023/4/16
@@ -24,7 +24,7 @@ To change this template use File | Settings | File Templates.
 <body>
 <%
     List<CourseApplication> crsApps =
-            (List<CourseApplication>) request.getAttribute(ServletConstant.RequestAttr.COURSE_APPLICATIONS.name);
+            (List<CourseApplication>) request.getAttribute(SC.RequestAttr.COURSE_APPLICATIONS.name);
 %>
 
 <h1>您的课程申请</h1>

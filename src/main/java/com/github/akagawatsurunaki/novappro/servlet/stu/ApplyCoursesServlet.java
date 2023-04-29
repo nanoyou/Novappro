@@ -1,6 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
-import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
+import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.service.stu.ApplyCourseService;
 
 import javax.servlet.ServletException;
@@ -47,9 +47,9 @@ public class ApplyCoursesServlet extends HttpServlet {
         var courseApplications = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id).getRight();
 
         // 设置到 Request 中
-        request.setAttribute(ServletConstant.RequestAttr.COURSE_APPLICATIONS.name, courseApplications);
+        request.setAttribute(SC.RequestAttr.COURSE_APPLICATIONS.name, courseApplications);
 
         // 跳转页面
-        request.getRequestDispatcher(ServletConstant.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);
+        request.getRequestDispatcher(SC.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);
     }
 }

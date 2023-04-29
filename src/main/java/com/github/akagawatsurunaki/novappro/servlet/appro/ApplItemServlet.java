@@ -1,6 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.appro;
 
-import com.github.akagawatsurunaki.novappro.constant.ServletConstant;
+import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 
@@ -20,7 +20,7 @@ public class ApplItemServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
 
-        String flowNo = request.getParameter(ServletConstant.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+        String flowNo = request.getParameter(SC.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
 
         if (flowNo == null || flowNo.isBlank()) {
             // 空号
@@ -30,11 +30,11 @@ public class ApplItemServlet extends HttpServlet {
         var vc_applItem = APPROVAL_SERVICE.getApplItem(flowNo);
         if (vc_applItem.getLeft() == VerifyCode.Service.OK) {
             var selectedApplItem = vc_applItem.getRight();
-            request.setAttribute(ServletConstant.RequestAttr.SELECTED_APPL_ITEM.name, selectedApplItem);
-            request.getRequestDispatcher(ServletConstant.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
+            request.setAttribute(SC.RequestAttr.SELECTED_APPL_ITEM.name, selectedApplItem);
+            request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
             return;
         }
-        response.sendRedirect(ServletConstant.JSPResource.ERROR.name);
+        response.sendRedirect(SC.JSPResource.ERROR.name);
     }
 
     @Override

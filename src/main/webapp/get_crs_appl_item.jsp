@@ -1,7 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.course.Course" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.CourseAppItemDetail" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.constant.ServletConstant" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
 <%@ page import="static com.github.akagawatsurunaki.novappro.constant.Constant.MAX_LEN_COURSE_COMMENT" %>
 <%--
@@ -19,7 +19,7 @@
 <body>
 <%
     CourseAppItemDetail caid = (CourseAppItemDetail)
-            request.getAttribute(ServletConstant.RequestAttr.SELECTED_APPL_ITEM_DETAIL.name);
+            request.getAttribute(SC.RequestAttr.SELECTED_APPL_ITEM_DETAIL.name);
 %>
 <%-- 审批人点击一个详细的ApplicationItem就可以跳转到这个界面 --%>
 这是一份详细的申请。
@@ -141,7 +141,7 @@
             <td>
                 <label>
                     <input type="text"
-                           name="<%=ServletConstant.RequestParam.APPL_REMARK.name%>>"
+                           name="<%=SC.RequestParam.APPL_REMARK.name%>>"
                            maxlength="<%=MAX_LEN_COURSE_COMMENT%>>"
                            placeholder="如果同意审批，可以此栏可以不填写；如果驳回审批，请输入不大于<%=MAX_LEN_COURSE_COMMENT%>个字符的驳回理由，理由不能为空。"
                            style="width:200px; height:20px;"
