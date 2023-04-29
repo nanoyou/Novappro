@@ -20,7 +20,7 @@ public class ApplItemServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
 
-        String flowNo = request.getParameter(SC.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+        String flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
 
         if (flowNo == null || flowNo.isBlank()) {
             // 空号
@@ -30,7 +30,7 @@ public class ApplItemServlet extends HttpServlet {
         var vc_applItem = APPROVAL_SERVICE.getApplItem(flowNo);
         if (vc_applItem.getLeft() == VerifyCode.Service.OK) {
             var selectedApplItem = vc_applItem.getRight();
-            request.setAttribute(SC.RequestAttr.SELECTED_APPL_ITEM.name, selectedApplItem);
+            request.setAttribute(SC.ReqAttr.SELECTED_APPL_ITEM.name, selectedApplItem);
             request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
             return;
         }

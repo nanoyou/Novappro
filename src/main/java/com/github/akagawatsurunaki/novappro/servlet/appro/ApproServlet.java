@@ -22,7 +22,7 @@ public class ApproServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        var loginUserId = (Integer) request.getSession().getAttribute(SC.RequestAttr.LOGIN_USER_ID.name);
+        var loginUserId = (Integer) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER_ID.name);
 
 
         // 如果用户已经登录
@@ -35,7 +35,7 @@ public class ApproServlet extends HttpServlet {
             if (vc_applItems.getLeft() == VerifyCode.Service.OK) {
 
                 var applItems = vc_applItems.getRight();
-                request.setAttribute(SC.RequestAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name, applItems);
+                request.setAttribute(SC.ReqAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name, applItems);
                 request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
                 return;
 

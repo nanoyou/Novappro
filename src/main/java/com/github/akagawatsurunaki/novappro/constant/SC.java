@@ -25,7 +25,7 @@ public class SC {
     }
 
     @AllArgsConstructor
-    public enum RequestAttr {
+    public enum ReqAttr {
         USER_ID("user_id"),
         LOGIN_USER_ID("login_user_id"),
 
@@ -43,7 +43,7 @@ public class SC {
 
 
     @AllArgsConstructor
-    public enum RequestParam {
+    public enum ReqParam {
         USER_ID("userId"),
         RAW_PASSWORD("rawPassword"),
         USER_TYPE("user_type"),

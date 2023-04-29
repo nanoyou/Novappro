@@ -47,7 +47,7 @@ public class ApplyCoursesServlet extends HttpServlet {
         var courseApplications = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id).getRight();
 
         // 设置到 Request 中
-        request.setAttribute(SC.RequestAttr.COURSE_APPLICATIONS.name, courseApplications);
+        request.setAttribute(SC.ReqAttr.COURSE_APPLICATIONS.name, courseApplications);
 
         // 跳转页面
         request.getRequestDispatcher(SC.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);

@@ -48,8 +48,8 @@ public class LoginServlet extends HttpServlet {
     void loginBySession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 测试用例: http://localhost:8080/Novappro_war_exploded/login?username=1&rawPassword=12345678
 
-        Integer userId = Integer.valueOf(request.getParameter(SC.RequestParam.USER_ID.name));
-        String rawPassword = request.getParameter(SC.RequestParam.RAW_PASSWORD.name);
+        Integer userId = Integer.valueOf(request.getParameter(SC.ReqParam.USER_ID.name));
+        String rawPassword = request.getParameter(SC.ReqParam.RAW_PASSWORD.name);
 
         if (rawPassword == null) {
             return;
@@ -62,11 +62,11 @@ public class LoginServlet extends HttpServlet {
 
         if (verifyCode == VerifyCode.Service.OK) {
 
-            request.getSession().setAttribute(SC.RequestAttr.LOGIN_USER_ID.name, user.getId());
-            request.getSession().setAttribute(SC.RequestAttr.USER_USERNAME.name, user.getUsername());
-            request.getSession().setAttribute(SC.RequestParam.USER_TYPE.name, user.getType().name());
+            request.getSession().setAttribute(SC.ReqAttr.LOGIN_USER_ID.name, user.getId());
+            request.getSession().setAttribute(SC.ReqAttr.USER_USERNAME.name, user.getUsername());
+            request.getSession().setAttribute(SC.ReqParam.USER_TYPE.name, user.getType().name());
 
-            request.setAttribute(SC.RequestAttr.LOGIN_USER.name,user);
+            request.setAttribute(SC.ReqAttr.LOGIN_USER.name,user);
 
             // 根据不同的身份发送到不同的页面
             if (user.getType().equals(UserType.STUDENT)){
@@ -87,8 +87,8 @@ public class LoginServlet extends HttpServlet {
     void loginByCookie(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 测试用例: http://localhost:8080/Novappro_war_exploded/login?username=1&rawPassword=12345678
 
-        Integer userId = Integer.valueOf(request.getParameter(SC.RequestParam.USER_ID.name));
-        String rawPassword = request.getParameter(SC.RequestParam.RAW_PASSWORD.name);
+        Integer userId = Integer.valueOf(request.getParameter(SC.ReqParam.USER_ID.name));
+        String rawPassword = request.getParameter(SC.ReqParam.RAW_PASSWORD.name);
 
         if (rawPassword == null) {
             return;
@@ -101,8 +101,8 @@ public class LoginServlet extends HttpServlet {
         if (verifyCode == VerifyCode.Service.OK) {
 
             List<Cookie> cookies = new ArrayList<>();
-            cookies.add(new Cookie(SC.RequestAttr.USER_USERNAME.name, user.getUsername()));
-            cookies.add(new Cookie(SC.RequestParam.USER_TYPE.name,
+            cookies.add(new Cookie(SC.ReqAttr.USER_USERNAME.name, user.getUsername()));
+            cookies.add(new Cookie(SC.ReqParam.USER_TYPE.name,
                     ZhFieldUtil.getZhValue(User.class, user.getType().name())));
             cookies.forEach(response::addCookie);
 
@@ -115,8 +115,8 @@ public class LoginServlet extends HttpServlet {
     void loginByURL(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 测试用例: http://localhost:8080/Novappro_war_exploded/login?userId=1&rawPassword=12345678
 
-        Integer userId = Integer.valueOf(request.getParameter(SC.RequestParam.USER_ID.name));
-        String rawPassword = request.getParameter(SC.RequestParam.RAW_PASSWORD.name);
+        Integer userId = Integer.valueOf(request.getParameter(SC.ReqParam.USER_ID.name));
+        String rawPassword = request.getParameter(SC.ReqParam.RAW_PASSWORD.name);
 
         if (rawPassword == null) {
             return;

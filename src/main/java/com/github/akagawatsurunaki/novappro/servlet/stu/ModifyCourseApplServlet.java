@@ -21,14 +21,14 @@ public class ModifyCourseApplServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         request.setCharacterEncoding("UTF-8");
-        var flowNo = request.getParameter(SC.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+        var flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
 
         if (flowNo == null) {
             request.getRequestDispatcher(SC.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
 
         }
 
-        var s = request.getParameterValues(SC.RequestParam.UPDATED_COURSES.name);
+        var s = request.getParameterValues(SC.ReqParam.UPDATED_COURSES.name);
 
         // 校验是否为空
         var updatedCourseCodes = new java.util.ArrayList<>(Arrays.stream(s).toList());
@@ -49,9 +49,9 @@ public class ModifyCourseApplServlet extends HttpServlet {
         }
 
         // 删除要更新的课程参数
-        request.removeAttribute(SC.RequestParam.UPDATED_COURSES.name);
-        request.setAttribute(SC.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name, flowNo);
-        request.setAttribute(SC.RequestAttr.APPLIED_COURSES.name, vc_courses.getRight());
+        request.removeAttribute(SC.ReqParam.UPDATED_COURSES.name);
+        request.setAttribute(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name, flowNo);
+        request.setAttribute(SC.ReqAttr.APPLIED_COURSES.name, vc_courses.getRight());
 
         // 刷新页面
         request.getRequestDispatcher(SC.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);

@@ -2,7 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.course.Course" %>
 <%@ page
-        import="static com.github.akagawatsurunaki.novappro.constant.SC.RequestAttr.SELECTED_COURSE_APPL_FLOW_NO" %>
+        import="static com.github.akagawatsurunaki.novappro.constant.SC.ReqAttr.SELECTED_COURSE_APPL_FLOW_NO" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
 <%--
   Created by IntelliJ IDEA.
@@ -33,7 +33,7 @@
         const crsTable = document.getElementById("courses_table");
         crsTable.insertRow();
         // const row = crsTable.rows[crsTable.rows.length - 1];
-        const elem = '<input type="hidden" name="<%=SC.RequestParam.UPDATED_COURSES.name%>" value="' +
+        const elem = '<input type="hidden" name="<%=SC.ReqParam.UPDATED_COURSES.name%>" value="' +
             code + '">';
         const input = document.createElement('input');
 
@@ -45,12 +45,12 @@
 <h1>查看课程申请详细内容</h1>
 
 <%
-    String flowNo = (String) request.getAttribute(SC.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+    String flowNo = (String) request.getAttribute(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
 %>
 <form method="post" action="${pageContext.request.contextPath}
 <%=SC.WebServletValue.MODIFY_COURSE_APPL%>">
     单号 <%=flowNo%>
-    <input type="hidden" name="<%=SC.RequestParam.SELECTED_COURSE_APPL_FLOW_NO.name%>" value="<%=flowNo%>">
+    <input type="hidden" name="<%=SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name%>" value="<%=flowNo%>">
     <table id="courses_table" border="1">
         <%-- 表头 --%>
         <tr>
@@ -76,7 +76,7 @@
 
         <%
             List<Course> courses =
-                    (List<Course>) request.getAttribute(SC.RequestAttr.APPLIED_COURSES.name);
+                    (List<Course>) request.getAttribute(SC.ReqAttr.APPLIED_COURSES.name);
             int index = 1;
             for (Course c :
                     courses) {
@@ -104,7 +104,7 @@
                     <input type="button" value="删除" onclick="removeCourse('<%=c.getCode()%>')"/>
                 </label>
             </td>
-            <input type="hidden" name="<%=SC.RequestParam.UPDATED_COURSES.name%>"
+            <input type="hidden" name="<%=SC.ReqParam.UPDATED_COURSES.name%>"
                     value="<%=c.getCode()%>">
         </tr>
         <%
@@ -113,7 +113,7 @@
     </table>
     <label>
         输入课程代码
-        <input id="text_add_course" type="text" name="<%=SC.RequestParam.UPDATED_COURSES.name%>" value=""/>
+        <input id="text_add_course" type="text" name="<%=SC.ReqParam.UPDATED_COURSES.name%>" value=""/>
     </label>
     <label>
         <input type="submit" value="增加课程" onclick="refresh('<%=flowNo%>')" />
