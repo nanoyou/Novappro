@@ -3,6 +3,7 @@ package com.github.akagawatsurunaki.novappro.mapper.impl;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowMapper;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.util.EntityUtil;
@@ -52,4 +53,22 @@ public class ApprovalFlowMapperImpl implements ApprovalFlowMapper {
             return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
     }
+
+    @Override
+    public VerifyCode.Mapper updateApproStatus(@NonNull String flowNo, @NonNull ApprovalStatus status) {
+        try {
+            String sql = "UPDATE audit_flow \n" +
+                    "SET audit_flow.appro_status = ?\n" +
+                    "WHERE audit_flow.flow_no = ?;";
+            Db.use().execute(sql, status.name(), flowNo);
+
+            return VerifyCode.Mapper.OK;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return VerifyCode.Mapper.SQL_EXCEPTION;
+        }
+    }
+
+
 }
