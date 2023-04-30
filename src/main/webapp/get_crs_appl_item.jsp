@@ -23,7 +23,9 @@
 %>
 <%-- 审批人点击一个详细的ApplicationItem就可以跳转到这个界面 --%>
 这是一份详细的申请。
-<form method="post" action="">
+<form method="post" action="submit_appro_ret">
+
+
 
     <table border="1">
         <caption style="font-size: large">
@@ -33,6 +35,7 @@
                 :
                 <%=caid.getFlowNo()%>
             </p>
+            <input style="display: none" name="<%=SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name%>" value="<%=caid.getFlowNo()%>">
         </caption>
         <tbody>
         <tr>
@@ -141,8 +144,8 @@
             <td>
                 <label>
                     <input type="text"
-                           name="<%=SC.ReqParam.APPL_REMARK.name%>>"
-                           maxlength="<%=MAX_LEN_COURSE_COMMENT%>>"
+                           name="<%=SC.ReqParam.APPL_REMARK.name%>"
+                           maxlength="<%=MAX_LEN_COURSE_COMMENT%>"
                            placeholder="如果同意审批，可以此栏可以不填写；如果驳回审批，请输入不大于<%=MAX_LEN_COURSE_COMMENT%>个字符的驳回理由，理由不能为空。"
                            style="width:200px; height:20px;"
                     >
@@ -154,14 +157,11 @@
             <td>
                 审批同意或失败
             </td>
-            <td>
-
-            </td>
         </tr>
         </tbody>
     </table>
-    <input type="submit" value="驳回审批">
-    <input type="submit" value="同意审批">
+    <input type="submit" name="<%=SC.ReqParam.APPL_ITEM_CONFIRM.name%>" value="驳回审批">
+    <input type="submit" name="<%=SC.ReqParam.APPL_ITEM_CONFIRM.name%>" value="同意审批">
 </form>
 
 </body>
