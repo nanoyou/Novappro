@@ -17,7 +17,6 @@ import static com.github.akagawatsurunaki.novappro.constant.SC.GET_COURSE_SERVLE
 @WebServlet(name = "GetCoursesServlet", urlPatterns = GET_COURSE_SERVLET)
 public class GetCoursesServlet extends HttpServlet {
 
-    public static final String JSP_RESOURCE = "courses.jsp";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
@@ -35,7 +34,7 @@ public class GetCoursesServlet extends HttpServlet {
 
         request.setAttribute(verifyCode.getClass().getSimpleName(), verifyCode);
         request.setAttribute(COURSES, courses);
-        request.getRequestDispatcher(JSP_RESOURCE).forward(request, response);
+        request.getRequestDispatcher("courses.jsp").forward(request, response);
     }
 
 }
