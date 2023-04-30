@@ -21,7 +21,8 @@ public final class VerifyCode {
         NO_SUCH_USER,
         NO_SUCH_COURSE_APPL,
         NO_SUCH_COURSE,
-        TOO_LONG_PASSWORD
+        TOO_LONG_PASSWORD,
+        REMARK_IS_BLANK
         ;
     }
 }
