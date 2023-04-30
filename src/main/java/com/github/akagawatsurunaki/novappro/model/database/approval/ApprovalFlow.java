@@ -5,6 +5,7 @@ import com.github.akagawatsurunaki.novappro.annotation.Table;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 import java.util.Date;
 
@@ -19,6 +20,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldNameConstants
 @Table(table = "audit_flow")
 public class ApprovalFlow {
 
