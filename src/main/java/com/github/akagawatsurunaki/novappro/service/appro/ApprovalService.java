@@ -1,6 +1,7 @@
 package com.github.akagawatsurunaki.novappro.service.appro;
 
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.*;
 import com.github.akagawatsurunaki.novappro.mapper.impl.*;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
@@ -12,6 +13,7 @@ import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class ApprovalService {
 
     private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
 
+    private static final CourseApproFlowMapper COURSE_APPRO_FLOW_MAPPER = CourseApproFlowMapperImpl.getInstance();
     private static final ApprovalFlowMapper APPROVAL_FLOW_MAPPER = ApprovalFlowMapperImpl.getInstance();
 
     private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
@@ -148,62 +151,39 @@ public class ApprovalService {
         return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
     }
 
-
-    /*
-    TODO: 默认于老师为课程申请的审批人, 登录后, 网页上将会显示当前需要审批的审批.
-
-    登陆后跳转到审批人的界面, 界面显示了loginUser的可以进行审批的审批列表.
-
-
-    appl_list
-
-    |---------------------------------------------|
-    |审批流号  |标题|发起人|审批人|申请时间|申请状态 |操作  |
-    -----------------------------------------------
-    | weuusa  你好  我      待我审批    |查看详情   |
-    -----------------------------------------------
-    |...                                          |
-
-    点入其中一个审批列表
-
-    其中有一分类为课程审批, 将会
-
-    appl_detail
-
-    申请详情
-
-    flowNo applTitle
-    applicant..
-    applDate
-    applCourses
-    applStatus
-    --------------------------------------------
-    | 显示流水号:           |          申请标题  |
-    --------------------------------------------
-    |申请人信息
-    --------------------------------------------
-    |学号: 2398833
-    |姓名: 你好
-    --------------------------------------------
-    |申请内容
-    --------------------------------------------
-    |申请时间: 2023年4月18日 12:12
-    |申请内容: 申请人请求申请如下的课程
-    | 课程名称(课程编号) | 授课教师
-    |
-    --------------------------------------------
-    |审批状态: 待审批
-    --------------------------------------------
-
-    appro_comment
-
-    审批意见
-    [
-                                                ]
-    submit_appl_status
-
-    [同意]              [拒绝]               [取消]
-
+    /**
+     * 审批人完成审批, 调用此方法
+     *
+     * @param flowNo   审批流编号
+     * @param remark   同意原因或驳回原因
+     * @param approSuc 是否同意
+     * @return
      */
+    public VerifyCode.Service saveApproResult(@NonNull String flowNo,
+                                              @NonNull String remark,
+                                              boolean approSuc) {
+        try {
+            // 如果同意审批
+            if (!approSuc && remark.isBlank()) {
+                return VerifyCode.Service.REMARK_IS_BLANK;
+            }
 
+            // 更新 申请流程 表
+            var status = approSuc ? ApprovalStatus.APPROVED : ApprovalStatus.REJECTED;
+            APPROVAL_FLOW_MAPPER.updateApproStatus(flowNo, status);
+
+            // 更新 申请流程细节 表
+            var maxIdOfCourseApproFlow = COURSE_APPRO_FLOW_MAPPER.findMaxIdOfCourseApproFlow(flowNo);
+            APPROVAL_FLOW_DETAIL_MAPPER.updateApproStatus(flowNo, maxIdOfCourseApproFlow, status);
+            APPROVAL_FLOW_DETAIL_MAPPER.updateApproRemark(flowNo, maxIdOfCourseApproFlow, remark);
+
+            return VerifyCode.Service.OK;
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+            return VerifyCode.Service.ERROR;
+
+        }
+    }
 }
