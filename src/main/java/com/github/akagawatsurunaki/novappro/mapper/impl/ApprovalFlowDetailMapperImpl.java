@@ -3,6 +3,7 @@ package com.github.akagawatsurunaki.novappro.mapper.impl;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowDetailMapper;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.util.EntityUtil;
@@ -84,5 +85,33 @@ public class ApprovalFlowDetailMapperImpl implements ApprovalFlowDetailMapper {
             return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
         }
     }
+
+    @Override
+    public VerifyCode.Mapper updateApproStatus(@NonNull String flowNo, @NonNull Integer id,
+                                               @NonNull ApprovalStatus status) throws SQLException {
+
+        String sql = "UPDATE audit_flow_detail\n" +
+                "SET audit_flow_detail.audit_status = ?\n" +
+                "WHERE audit_flow_detail.flow_no = ? AND audit_flow_detail.id = ?";
+
+        Db.use().execute(sql, status.name(), flowNo, id);
+
+        return VerifyCode.Mapper.OK;
+
+    }
+
+    @Override
+    public VerifyCode.Mapper updateApproRemark(@NonNull String flowNo, @NonNull Integer id,
+                                               @NonNull String remark) throws SQLException {
+
+        String sql = "UPDATE audit_flow_detail\n" +
+                "SET audit_flow_detail.audit_remark = ?\n" +
+                "WHERE audit_flow_detail.flow_no = ? AND audit_flow_detail.id = ?";
+
+        Db.use().execute(sql, remark, flowNo, id);
+
+        return VerifyCode.Mapper.OK;
+    }
+
 
 }
