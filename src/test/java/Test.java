@@ -53,4 +53,9 @@ public class Test {
 //        System.out.println(s);
 //    }
 
+    static void func7() {
+
+
+    }
+
 }
