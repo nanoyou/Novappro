@@ -11,8 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class EntityUtil {
 
-    public static <T> String getTableName(Object obj){
-        var tClass = obj.getClass();
+    public static <T> String getTableName(Class<T> tClass){
 
         // 是否拥有@Table注解
         if (!tClass.isAnnotationPresent(Table.class)) {
@@ -20,6 +19,12 @@ public class EntityUtil {
         }
 
         return tClass.getAnnotation(Table.class).table();
+    }
+
+    public static <T> String getTableName(Object obj){
+        var tClass = obj.getClass();
+
+        return getTableName(tClass);
     }
 
     public static <T> String getFieldName(@NonNull Class<T> tClass, @NonNull String fieldName){
