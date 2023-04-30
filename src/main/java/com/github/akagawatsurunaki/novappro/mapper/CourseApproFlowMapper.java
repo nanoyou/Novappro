@@ -5,9 +5,13 @@ import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApproF
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.sql.SQLException;
+
 public interface CourseApproFlowMapper {
 
     Pair<VerifyCode.Mapper, CourseApproFlow> insert(@NonNull CourseApproFlow courseApproFlow);
 
     Pair<VerifyCode.Mapper, CourseApproFlow> select();
+
+    Integer findMaxIdOfCourseApproFlow(@NonNull String flowNo) throws SQLException;
 }

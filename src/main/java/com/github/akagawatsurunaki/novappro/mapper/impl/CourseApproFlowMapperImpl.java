@@ -38,4 +38,20 @@ public class CourseApproFlowMapperImpl implements CourseApproFlowMapper {
     public Pair<VerifyCode.Mapper, CourseApproFlow> select() {
         return null;
     }
+
+    @Override
+    public Integer findMaxIdOfCourseApproFlow(@NonNull String flowNo) throws SQLException {
+
+        var sql = "SELECT audit_flow_detail.id\n" +
+                "FROM audit_flow_detail\n" +
+                "WHERE audit_flow_detail.flow_no = ?\n" +
+                "ORDER BY audit_flow_detail.id DESC\n" +
+                "LIMIT 1;";
+        var s = Db.use().query(sql, flowNo);
+        if (s.isEmpty()) {
+            return -1;
+        }
+        return s.get(0).getInt("id");
+
+    }
 }
