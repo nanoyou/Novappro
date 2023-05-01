@@ -2,7 +2,6 @@ package com.github.akagawatsurunaki.novappro.mapper.impl;
 
 import cn.hutool.db.Db;
 import com.github.akagawatsurunaki.novappro.constant.VC;
-import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.util.EntityUtil;
@@ -11,7 +10,6 @@ import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
