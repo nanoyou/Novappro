@@ -34,10 +34,11 @@ public class ApprovalFlowMapperImpl implements ApprovalFlowMapper {
         }
     }
 
-    String sql = "SELECT * FROM `audit_flow` WHERE `audit_flow`.`flow_no` = ?";
+
     @Override
     public Pair<VerifyCode.Mapper, ApprovalFlow> select(@NonNull String flowNo) {
         try {
+            String sql = "SELECT * FROM `audit_flow` WHERE `audit_flow`.`flow_no` = ?";
             var entities = Db.use().query(sql, flowNo);
 
             if (entities.size() != 1){
@@ -57,9 +58,10 @@ public class ApprovalFlowMapperImpl implements ApprovalFlowMapper {
     @Override
     public VerifyCode.Mapper updateApproStatus(@NonNull String flowNo, @NonNull ApprovalStatus status) {
         try {
-            String sql = "UPDATE audit_flow \n" +
-                    "SET audit_flow.appro_status = ?\n" +
-                    "WHERE audit_flow.flow_no = ?;";
+            String sql = """
+                    UPDATE audit_flow
+                    SET audit_flow.appro_status = ?
+                    WHERE audit_flow.flow_no = ?;""";
             Db.use().execute(sql, status.name(), flowNo);
 
             return VerifyCode.Mapper.OK;

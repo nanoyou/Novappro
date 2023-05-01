@@ -16,14 +16,7 @@ import java.io.IOException;
 
 @WebFilter(filterName = "LoginFilter",
         urlPatterns = {
-        "/login",
-                SC.WebServletValue.GET_APPROS,
-                SC.WebServletValue.GET_APPL_ITEM_DETAIL,
-                SC.WebServletValue.MODIFY_COURSE_APPL,
-                SC.WebServletValue.COURSE_APPL_DETAIL,
-                SC.WebServletValue.APPL_ITEM,
-                SC.WebServletValue.APPLY_COURSES,
-                SC.WebServletValue.SUBMIT_APPRO_RET,
+                "/login",
                 "/welcome.jsp"
         })
 public class LoginFilter extends HttpFilter {
@@ -77,16 +70,16 @@ public class LoginFilter extends HttpFilter {
             request.getSession().setAttribute(SC.ReqAttr.USER_USERNAME.name, user.getUsername());
             request.getSession().setAttribute(SC.ReqParam.USER_TYPE.name, user.getType().name());
 
-            request.setAttribute(SC.ReqAttr.LOGIN_USER.name,user);
+            request.setAttribute(SC.ReqAttr.LOGIN_USER.name, user);
 
             // 根据不同的身份发送到不同的页面
-            if (user.getType().equals(UserType.STUDENT)){
+            if (user.getType().equals(UserType.STUDENT)) {
                 response.sendRedirect(SC.JSPResource.WELCOME_SESSION.name);
             } else if (user.getType().equals(UserType.TEACHER)) {
                 // ServletConstant.JSPResource.GET_APPROS.name
                 request.getRequestDispatcher(SC.WebServletValue.GET_APPROS).forward(request, response);
-              //  response.sendRedirect(ServletConstant.JSPResource.GET_APPROS.name);
-            } else if(user.getType().equals(UserType.ADMIN)){
+                //  response.sendRedirect(ServletConstant.JSPResource.GET_APPROS.name);
+            } else if (user.getType().equals(UserType.ADMIN)) {
                 return;
             }
 

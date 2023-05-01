@@ -1,8 +1,6 @@
 package com.github.akagawatsurunaki.novappro.mapper.impl;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
-import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.annotation.Database;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.enumeration.UserType;

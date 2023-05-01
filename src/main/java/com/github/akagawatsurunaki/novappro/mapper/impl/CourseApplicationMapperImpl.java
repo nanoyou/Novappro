@@ -84,7 +84,6 @@ public class CourseApplicationMapperImpl implements CourseApplicationMapper {
 
     @Override
     public Pair<VerifyCode.Mapper, CourseApplication> update(@NonNull CourseApplication courseApplication) {
-        // TODO: 准备更新实体
         try {
             var entity = EntityUtil.getEntity(courseApplication);
 
@@ -96,8 +95,6 @@ public class CourseApplicationMapperImpl implements CourseApplicationMapper {
             if (tableName == null) {
                 return new ImmutablePair<>(VerifyCode.Mapper.FAILED_TO_PARSE_ENTITY, courseApplication);
             }
-            // TODO: TEST
-
             Db.use().update(entity, Entity.create(EntityUtil.getTableName(courseApplication)).set("flow_no",
                     courseApplication.getFlowNo()));
             return new ImmutablePair<>(VerifyCode.Mapper.OK, courseApplication);
@@ -116,8 +113,6 @@ public class CourseApplicationMapperImpl implements CourseApplicationMapper {
 
     @Override
     public Pair<VerifyCode.Mapper, CourseApplication> delete(@NonNull CourseApplication courseApplication) {
-        // TODO: TEST
-
         try {
             var entity = EntityUtil.getEntity(courseApplication);
             int row = Db.use().del(entity);
