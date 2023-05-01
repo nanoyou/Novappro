@@ -50,11 +50,12 @@ public class CourseApproFlowMapperImpl implements CourseApproFlowMapper {
     @Override
     public Integer findMaxIdOfCourseApproFlow(@NonNull String flowNo) throws SQLException {
 
-        var sql = "SELECT audit_flow_detail.id\n" +
-                "FROM audit_flow_detail\n" +
-                "WHERE audit_flow_detail.flow_no = ?\n" +
-                "ORDER BY audit_flow_detail.id DESC\n" +
-                "LIMIT 1;";
+        var sql = """
+                SELECT audit_flow_detail.id
+                FROM audit_flow_detail
+                WHERE audit_flow_detail.flow_no = ?
+                ORDER BY audit_flow_detail.id DESC
+                LIMIT 1;""";
         var s = Db.use().query(sql, flowNo);
         if (s.isEmpty()) {
             return -1;
