@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-@WebServlet(name = "ApplyCoursesServlet", value = "/apply_courses")
+@WebServlet(name = "ApplyCoursesServlet", value = SC.WebServletValue.APPLY_COURSES)
 public class ApplyCoursesServlet extends HttpServlet {
 
     private static final ApplyCourseService APPLY_COURSE_SERVICE = ApplyCourseService.getInstance();

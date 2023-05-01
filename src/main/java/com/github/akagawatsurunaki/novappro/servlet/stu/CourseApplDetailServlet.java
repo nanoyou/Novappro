@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * 用来查看一个申请实体内的详细内容, 这里的申请是课程类型的申请.
  */
-@WebServlet(name = "CourseApplDetailServlet", value = "/course_appl_detail")
+@WebServlet(name = "CourseApplDetailServlet", value = SC.WebServletValue.COURSE_APPL_DETAIL)
 public class CourseApplDetailServlet extends HttpServlet {
 
     private final static CourseApplDetailService instance = new CourseApplDetailService();

@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * 提交审批(Appro)结果, 持久化保存
  */
-@WebServlet(name = "SubmitApproResultServlet", value = "/submit_appro_ret")
+@WebServlet(name = "SubmitApproResultServlet", value = SC.WebServletValue.SUBMIT_APPRO_RET)
 public class SubmitApproResultServlet extends HttpServlet {
 
 

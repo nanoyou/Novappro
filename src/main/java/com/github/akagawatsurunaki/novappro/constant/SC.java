@@ -66,10 +66,15 @@ public class SC {
     }
 
     public static class WebServletValue {
+        public final static String SIGNUP = "/signup";
+        public final static String LOGIN = "/login";
         public final static String MODIFY_COURSE_APPL = "/modify_course_appl";
         public final static String COURSE_APPL_DETAIL = "/course_appl_detail";
         public final static String GET_APPROS = "/get_appros";
         public final static String GET_APPL_ITEM_DETAIL = "/get_appl_item_detail";
+        public final static String APPLY_COURSES = "/apply_courses";
+        public final static String SUBMIT_APPRO_RET = "/submit_appro_ret";
+        public final static String APPL_ITEM = "/ApplItemServlet";
 
     }
 }
