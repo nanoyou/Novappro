@@ -14,9 +14,10 @@ import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
 import lombok.Getter;
 import lombok.NonNull;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -118,23 +119,32 @@ public class ApplyCourseService {
         return VerifyCode.Service.ERROR;
     }
 
-    public Pair<VerifyCode.Service, List<CourseApplication>> getCourseApplsByUserId(@NonNull Integer userId) {
+    public Triple<VerifyCode.Service, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@NonNull Integer userId) {
         // 校验用户是否存在
         var vc_user = USER_MAPPER.selectUserById(userId);
         var vc = vc_user.getLeft();
 
         if (vc == VerifyCode.Mapper.NO_SUCH_ENTITY) {
-            return new ImmutablePair<>(VerifyCode.Service.NO_SUCH_USER, null);
+            return new ImmutableTriple<>(VerifyCode.Service.NO_SUCH_USER, null, null);
         }
 
         var user = vc_user.getRight();
 
         var vc_l = COURSE_APPLICATION_MAPPER.select(user.getId());
+        var courseApplicationList = vc_l.getRight();
+
+        List<ApprovalStatus> approvalStatusList = new ArrayList<>();
+
+        for (var ca : courseApplicationList) {
+            var s = APPROVAL_FLOW_DETAIL_MAPPER.select(ca.getFlowNo()).getRight();
+            var st = s.getAuditStatus();
+            approvalStatusList.add(st);
+        }
+
 
         if (vc_l.getLeft() == VerifyCode.Mapper.OK) {
-
-            return new ImmutablePair<>(VerifyCode.Service.OK, vc_l.getRight());
+            return new ImmutableTriple<>(VerifyCode.Service.OK, courseApplicationList, approvalStatusList);
         }
-        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        return new ImmutableTriple<>(VerifyCode.Service.ERROR, null, null);
     }
 }
