@@ -36,7 +36,9 @@ public class SC {
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
         APPL_ITEMS_WITH_GIVEN_APPROVER("APPL_ITEMS_WITH_GIVEN_APPROVER"),
         SELECTED_APPL_ITEM("selected_appl_item"),
-        SELECTED_APPL_ITEM_DETAIL("selected_appl_item_detail");
+        SELECTED_APPL_ITEM_DETAIL("selected_appl_item_detail"),
+        APPRO_STATUS_LIST("appro_status_list")
+        ;
 
         public final String name;
     }
