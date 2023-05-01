@@ -25,23 +25,28 @@ public class CourseMapperImpl implements CourseMapper {
     @Getter
     private static final CourseMapperImpl instance = new CourseMapperImpl();
 
-    private static final String selectAllCoursesSQL;
-    private static final String selectCourseByCodeSQL;
-
-    static {
-        selectAllCoursesSQL = FileUtil.readString(ResourceUtil.getResource("mysql/select_all_courses.sql"),
-                StandardCharsets.UTF_8);
-
-        selectCourseByCodeSQL = FileUtil.readString(ResourceUtil.getResource("mysql/select_course_by_code.sql"),
-                StandardCharsets.UTF_8);
-    }
-
     @Override
     public Pair<VC.Mapper, List<Course>> selectAllCourses() {
 
         try {
 
-            List<Entity> courseEntities = Db.use().query(selectAllCoursesSQL);
+            final String sql = """
+                    SELECT
+                        ANY_VALUE ( `teacher_id` ) AS `teacher_id`,
+                        group_concat( `username` SEPARATOR ', ' ) AS `teachers`,
+                        ANY_VALUE ( `code` ) AS `code`,
+                        ANY_VALUE ( `name` ) AS `name`,
+                        ANY_VALUE ( `credit` ) AS `credit`,
+                        ANY_VALUE ( `serial_number` ) AS `serial_number`,
+                        ANY_VALUE ( `online_contact_way` ) AS `online_contact_way`,
+                        ANY_VALUE ( `comment` ) AS `comment`
+                    FROM
+                        ( SELECT `teacher_id`, `username`, `course_code` FROM `user` INNER JOIN `teaches` ON `user`.`id` = `teaches`.teacher_id ) AS teacher_name_table
+                            INNER JOIN course ON course.`code` = `course_code`
+                    GROUP BY
+                        `course_code`;""";
+
+            List<Entity> courseEntities = Db.use().query(sql);
 
             List<Course> courses = new ArrayList<>();
             courseEntities.forEach(entity -> {
@@ -60,7 +65,29 @@ public class CourseMapperImpl implements CourseMapper {
     public Pair<VC.Mapper, Course> selectCourseByCode(@NonNull String code) {
 
         try {
-            List<Entity> courseEntities = Db.use().query(selectCourseByCodeSQL, code);
+            final String sql = """
+                    SELECT
+                        ANY_VALUE ( `teacher_id` ) AS `teacher_id`,
+                        group_concat( `username` SEPARATOR ', ' ) AS `teachers`,
+                        ANY_VALUE ( `code` ) AS `code`,
+                        ANY_VALUE ( `name` ) AS `name`,
+                        ANY_VALUE ( `credit` ) AS `credit`,
+                        ANY_VALUE ( `serial_number` ) AS `serial_number`,
+                        ANY_VALUE ( `online_contact_way` ) AS `online_contact_way`,
+                        ANY_VALUE ( `comment` ) AS `comment`
+                    FROM
+                        (
+                            SELECT
+                                *
+                            FROM
+                                ( SELECT * FROM course AS c WHERE c.`code` = ? ) AS tmp
+                                    INNER JOIN teaches AS tc ON tmp.`code` = tc.course_code
+                        ) AS course_tmp
+                            INNER JOIN `user` AS u ON u.id = course_tmp.`teacher_id`
+                    GROUP BY
+                        `code`;""";
+
+            List<Entity> courseEntities = Db.use().query(sql, code);
 
             if (courseEntities == null || courseEntities.isEmpty()) {
                 return new ImmutablePair<>(VC.Mapper.NO_SUCH_ENTITY, null);
