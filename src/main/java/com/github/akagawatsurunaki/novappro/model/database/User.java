@@ -32,26 +32,4 @@ public class User {
     @Field(field = "type")
     UserType type;
 
-//    @AllArgsConstructor
-//    @ToString
-//    public enum Type {
-//
-//        ADMIN(233, "管理员"),
-//        TEACHER(10, "教师"),
-//        STUDENT(3, "学生");
-//
-//        @Getter
-//        public final int value;
-//        @Getter
-//        public final String chineseName;
-//
-//        public static Type getType(String chineseName) {
-//            for (var t : Type.values()) {
-//                if (t.getChineseName().equals(chineseName)) {
-//                    return t;
-//                }
-//            }
-//            throw new IllegalArgumentException(Type.class.getName() + "无法解析的错误");
-//        }
-//    }
 }

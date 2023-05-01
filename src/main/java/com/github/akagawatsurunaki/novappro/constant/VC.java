@@ -7,6 +7,8 @@ public final class VC {
 
     public enum Mapper{
         NO_SUCH_ENTITY,
+        EMPTY_ENTITY_LIST,
+        MORE_THAN_ONE_ENTITY,
         SQL_EXCEPTION,
         OTHER_EXCEPTION,
         FAILED_TO_PARSE_ENTITY,

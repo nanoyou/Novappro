@@ -1,7 +1,6 @@
 package com.github.akagawatsurunaki.novappro.mapper.impl;
 
 import cn.hutool.db.Db;
-import com.github.akagawatsurunaki.novappro.annotation.Database;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
@@ -12,7 +11,8 @@ import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,42 +21,29 @@ public class UserMapperImpl implements UserMapper {
     @Getter
     private static final UserMapperImpl instance = new UserMapperImpl();
 
-    @Database
-    private static Connection connection;
-    String selectUserById = " SELECT * FROM `user` WHERE `user`.`id` = ?;";
-
-    public static List<User> parseResultSet(ResultSet rs) {
-        List<User> result = new ArrayList<>();
-
-        try {
-            while (rs.next()) {
-
-                Integer id = rs.getInt("id");
-                String username = rs.getString("username");
-                String rawPassword = rs.getString("raw_password");
-                String strType = rs.getString("type");
-                UserType type = UserType.valueOf(strType);
-                User user = new User(id, username, rawPassword, type);
-
-                result.add(user);
-                return result;
-            }
-        } catch (Exception ignored) {
-            ;
-        }
-        return result;
-    }
-
     @Override
-    public Pair<VC.Mapper, List<User>> getUsers() {
+    public Pair<VC.Mapper, List<User>> selectAllUsers() {
         try {
-            Statement statement;
-            ResultSet resultSet;
-            List<User> users = new ArrayList<>();
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("select id, username, raw_password, type from user");
-            users = parseResultSet(resultSet);
-            return new ImmutablePair<>(VC.Mapper.OK, users);
+
+            String sql = "SELECT * FROM user";
+            var entities = Db.use().query(sql);
+
+            // 空查询
+            if (entities.isEmpty()) {
+                return new ImmutablePair<>(VC.Mapper.EMPTY_ENTITY_LIST, null);
+            }
+
+            List<User> result = new ArrayList<>();
+
+            // 解析每一个用户实体类
+            entities.forEach(entity -> result.add(EntityUtil.parseEntity(User.class, entity)));
+
+            // 如果查询到的Entity个数与解析后User对象个数的不一致
+            if (result.size() != entities.size()) {
+                return new ImmutablePair<>(VC.Mapper.FAILED_TO_PARSE_ENTITY, null);
+            }
+
+            return new ImmutablePair<>(VC.Mapper.OK, result);
         } catch (SQLException e) {
             e.printStackTrace();
             return new ImmutablePair<>(VC.Mapper.SQL_EXCEPTION, null);
@@ -67,28 +54,39 @@ public class UserMapperImpl implements UserMapper {
     public Pair<VC.Mapper, User> insertUser(@NonNull User user) {
 
         try {
-            PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO `user` (`username`, `raw_password`, `type`) VALUES (?, ?, ?);"
-            );
-            statement.setString(1, user.getUsername());
-            statement.setString(2, user.getRawPassword());
-            statement.setString(3, user.getType().name());
-            if (statement.execute()) {
-                return new ImmutablePair<>(VC.Mapper.OK, user);
+
+            var entity = EntityUtil.getEntity(user);
+
+            var rows = Db.use().insert(entity);
+
+            if (rows != 1) {
+                return new ImmutablePair<>(VC.Mapper.OTHER_EXCEPTION, user);
             }
+
+            return new ImmutablePair<>(VC.Mapper.OK, user);
+
         } catch (SQLException e) {
             e.printStackTrace();
+            return new ImmutablePair<>(VC.Mapper.SQL_EXCEPTION, user);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return new ImmutablePair<>(VC.Mapper.SQL_EXCEPTION, user);
+
     }
 
     @Override
     public Pair<VC.Mapper, User> selectUserById(@NonNull Integer id) {
         try {
-            var entities = Db.use().query(selectUserById, id);
+            var sql = "SELECT * FROM `user` WHERE `user`.`id` = ?;";
+            var entities = Db.use().query(sql, id);
 
-            if (entities.size() != 1) {
+            if (entities.isEmpty()) {
                 return new ImmutablePair<>(VC.Mapper.NO_SUCH_ENTITY, null);
+            }
+
+            if (entities.size() > 1) {
+                return new ImmutablePair<>(VC.Mapper.MORE_THAN_ONE_ENTITY, null);
             }
 
             var entity = entities.get(0);
