@@ -1,6 +1,7 @@
 package com.github.akagawatsurunaki.novappro.mapper.impl;
 
 import cn.hutool.db.Db;
+import cn.hutool.db.Entity;
 import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
 import com.github.akagawatsurunaki.novappro.mapper.CourseApproFlowMapper;
 import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApproFlow;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class CourseApproFlowMapperImpl implements CourseApproFlowMapper {
 
@@ -35,7 +37,13 @@ public class CourseApproFlowMapperImpl implements CourseApproFlowMapper {
     }
 
     @Override
-    public Pair<VerifyCode.Mapper, CourseApproFlow> select() {
+    public CourseApproFlow select(@NonNull String flowNo) throws SQLException {
+
+        String sql = "SELECT * FROM crs_appro_flow WHERE crs_appro_flow.appro_flow_nos = ?";
+        List<Entity> entities = Db.use().query(sql, flowNo);
+        if (entities.size() == 1) {
+            return EntityUtil.parseEntity(CourseApproFlow.class, entities.get(0));
+        }
         return null;
     }
 

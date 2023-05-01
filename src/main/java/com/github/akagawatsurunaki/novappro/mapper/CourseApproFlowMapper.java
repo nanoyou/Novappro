@@ -11,7 +11,7 @@ public interface CourseApproFlowMapper {
 
     Pair<VerifyCode.Mapper, CourseApproFlow> insert(@NonNull CourseApproFlow courseApproFlow);
 
-    Pair<VerifyCode.Mapper, CourseApproFlow> select();
+    CourseApproFlow select(@NonNull String flowNo) throws SQLException;
 
     Integer findMaxIdOfCourseApproFlow(@NonNull String flowNo) throws SQLException;
 }
