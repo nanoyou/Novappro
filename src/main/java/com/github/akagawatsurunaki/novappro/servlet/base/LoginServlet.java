@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "ServletLogin", urlPatterns = SC.WebServletValue.LOGIN)
+@Deprecated
+@WebServlet(name = "ServletLogin", urlPatterns = "/jhkf")
 public class LoginServlet extends HttpServlet {
 
     private static final By CURRENT_LOGIN_MODE = By.SESSION;
