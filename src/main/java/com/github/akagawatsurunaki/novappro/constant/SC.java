@@ -13,6 +13,7 @@ public class SC {
     @AllArgsConstructor
     public enum JSPResource {
         WELCOME("welcome.jsp"),
+        INDEX("index.jsp"),
         WELCOME_SESSION("welcome_session.jsp"),
         WELCOME_COOKIE("welcome_cookie.jsp"),
         ERROR("error.jsp"),
