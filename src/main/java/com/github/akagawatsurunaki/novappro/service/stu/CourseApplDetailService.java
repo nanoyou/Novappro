@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.service.stu;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.mapper.CourseApplicationMapper;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
@@ -32,7 +32,7 @@ public class CourseApplDetailService {
         }
 
         var vc_courseAppl = COURSE_APPLICATION_MAPPER.selectByFlowNo(flowNo);
-        if (vc_courseAppl.getLeft() == VerifyCode.Mapper.OK) {
+        if (vc_courseAppl.getLeft() == VC.Mapper.OK) {
             var courseAppl = vc_courseAppl.getRight();
             var courseCodeList = courseAppl.getApproCourseIds();
 
@@ -49,7 +49,7 @@ public class CourseApplDetailService {
             courseCodes.forEach(
                     code -> {
                         var vc_course = COURSE_MAPPER.selectCourseByCode(code);
-                        if (vc_course.getLeft() == VerifyCode.Mapper.OK) {
+                        if (vc_course.getLeft() == VC.Mapper.OK) {
                             approCourses.add(vc_course.getRight());
                         }
                     }
@@ -59,13 +59,13 @@ public class CourseApplDetailService {
         return null;
     }
 
-    public Pair<VerifyCode.Service, List<Course>> updateAppliedCourses(@NonNull String flowNo,
-                                                                       @NonNull List<String> courseCodesToUpdate) {
+    public Pair<VC.Service, List<Course>> updateAppliedCourses(@NonNull String flowNo,
+                                                               @NonNull List<String> courseCodesToUpdate) {
         // 校验单号是否存在
         var vc_ca = COURSE_APPLICATION_MAPPER.selectByFlowNo(flowNo);
 
-        if (vc_ca.getLeft() != VerifyCode.Mapper.OK) {
-            return new ImmutablePair<>(VerifyCode.Service.NO_SUCH_COURSE_APPL, null);
+        if (vc_ca.getLeft() != VC.Mapper.OK) {
+            return new ImmutablePair<>(VC.Service.NO_SUCH_COURSE_APPL, null);
         }
 
         // 如果有课程重复, 则去重
@@ -75,8 +75,8 @@ public class CourseApplDetailService {
 
         var vc_courses = COURSE_MAPPER.selectCourses(courseCodesToUpdate);
 
-        if (vc_courses.getLeft() != VerifyCode.Mapper.OK) {
-            return new ImmutablePair<>(VerifyCode.Service.NO_SUCH_COURSE, null);
+        if (vc_courses.getLeft() != VC.Mapper.OK) {
+            return new ImmutablePair<>(VC.Service.NO_SUCH_COURSE, null);
         }
 
         // 修改对应的course申请
@@ -86,32 +86,32 @@ public class CourseApplDetailService {
         // 校验更改是否成功
         var vc_ = COURSE_APPLICATION_MAPPER.update(courseAppl);
 
-        if (vc_.getLeft() != VerifyCode.Mapper.OK) {
-            return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        if (vc_.getLeft() != VC.Mapper.OK) {
+            return new ImmutablePair<>(VC.Service.ERROR, null);
         }
-        return new ImmutablePair<>(VerifyCode.Service.OK, vc_courses.getRight());
+        return new ImmutablePair<>(VC.Service.OK, vc_courses.getRight());
     }
 
-    public Pair<VerifyCode.Service, List<Course>> delAppliedCourses(@NonNull String flowNo,
-                                                                    @NonNull List<String> courseCodesToDel) {
+    public Pair<VC.Service, List<Course>> delAppliedCourses(@NonNull String flowNo,
+                                                            @NonNull List<String> courseCodesToDel) {
         List<Course> result = new ArrayList<>();
 
         if (courseCodesToDel.isEmpty()) {
-            return new ImmutablePair<>(VerifyCode.Service.MEANINGLESS, result);
+            return new ImmutablePair<>(VC.Service.MEANINGLESS, result);
         }
 
         // 要删除的课程在课程表中
         var vc_courses = COURSE_MAPPER.selectCourses(courseCodesToDel);
 
-        if (vc_courses.getLeft() != VerifyCode.Mapper.OK) {
-            return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        if (vc_courses.getLeft() != VC.Mapper.OK) {
+            return new ImmutablePair<>(VC.Service.ERROR, null);
         }
 
         // 要删除的课程在申请中
         var vc_courseAppl = COURSE_APPLICATION_MAPPER.selectByFlowNo(flowNo);
 
-        if (vc_courseAppl.getLeft() != VerifyCode.Mapper.OK) {
-            return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        if (vc_courseAppl.getLeft() != VC.Mapper.OK) {
+            return new ImmutablePair<>(VC.Service.ERROR, null);
         }
 
         var courseApplication = vc_courseAppl.getRight();
@@ -124,8 +124,8 @@ public class CourseApplDetailService {
         // 再次获取要删除的课程
         var vc_delCourses = COURSE_MAPPER.selectCourses(intersectedCourseCodes);
 
-        if (vc_delCourses.getLeft() != VerifyCode.Mapper.OK) {
-            return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        if (vc_delCourses.getLeft() != VC.Mapper.OK) {
+            return new ImmutablePair<>(VC.Service.ERROR, null);
         }
 
         // 修改申请实体
@@ -133,9 +133,9 @@ public class CourseApplDetailService {
 
         var vc_ = COURSE_APPLICATION_MAPPER.update(courseApplication);
 
-        if (vc_.getLeft() != VerifyCode.Mapper.OK) {
-            return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        if (vc_.getLeft() != VC.Mapper.OK) {
+            return new ImmutablePair<>(VC.Service.ERROR, null);
         }
-        return new ImmutablePair<>(VerifyCode.Service.OK, null);
+        return new ImmutablePair<>(VC.Service.OK, null);
     }
 }

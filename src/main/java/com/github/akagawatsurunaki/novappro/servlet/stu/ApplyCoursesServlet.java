@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.stu.ApplyCourseService;
 
 import javax.servlet.ServletException;
@@ -47,7 +47,7 @@ public class ApplyCoursesServlet extends HttpServlet {
         // 获取这些课程
         var vc_cal_asl = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
 
-        if (vc_cal_asl.getLeft()== VerifyCode.Service.OK){
+        if (vc_cal_asl.getLeft()== VC.Service.OK){
             var courseApplications = vc_cal_asl.getMiddle();
             var approStatusList = vc_cal_asl.getRight();
 

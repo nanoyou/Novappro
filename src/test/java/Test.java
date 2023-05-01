@@ -31,7 +31,7 @@ public class Test {
 
 //    static void func3() {
 //        ApprovalFlowDetailMapper approvalFlowDetailMapper = ApprovalFlowDetailMapperImpl.getInstance();
-//        Pair<VerifyCode.Mapper, ApprovalFlowDetail> pair = approvalFlowDetailMapper.select(111);
+//        Pair<VC.Mapper, ApprovalFlowDetail> pair = approvalFlowDetailMapper.select(111);
 //        ApprovalFlowDetail approvalFlowDetail = pair.getRight();
 //        System.out.println("approvalFlowDetail = " + approvalFlowDetail);
 //    }

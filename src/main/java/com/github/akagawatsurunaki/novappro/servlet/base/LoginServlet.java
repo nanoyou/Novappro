@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.base;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.base.LoginService;
@@ -61,7 +61,7 @@ public class LoginServlet extends HttpServlet {
         var verifyCode = verifyCodeUserPair.getLeft();
         User user = verifyCodeUserPair.getRight();
 
-        if (verifyCode == VerifyCode.Service.OK) {
+        if (verifyCode == VC.Service.OK) {
 
             request.getSession().setAttribute(SC.ReqAttr.LOGIN_USER_ID.name, user.getId());
             request.getSession().setAttribute(SC.ReqAttr.USER_USERNAME.name, user.getUsername());
@@ -99,7 +99,7 @@ public class LoginServlet extends HttpServlet {
         var verifyCode = verifyCodeUserPair.getLeft();
         User user = verifyCodeUserPair.getRight();
 
-        if (verifyCode == VerifyCode.Service.OK) {
+        if (verifyCode == VC.Service.OK) {
 
             List<Cookie> cookies = new ArrayList<>();
             cookies.add(new Cookie(SC.ReqAttr.USER_USERNAME.name, user.getUsername()));
@@ -127,7 +127,7 @@ public class LoginServlet extends HttpServlet {
         var verifyCode = verifyCodeUserPair.getLeft();
         // User user = verifyCodeUserPair.getRight();
 
-        if (verifyCode == VerifyCode.Service.OK) {
+        if (verifyCode == VC.Service.OK) {
             request.getRequestDispatcher(SC.JSPResource.WELCOME.name).forward(request, response);
         } else {
             request.getRequestDispatcher(SC.JSPResource.ERROR.name).forward(request, response);

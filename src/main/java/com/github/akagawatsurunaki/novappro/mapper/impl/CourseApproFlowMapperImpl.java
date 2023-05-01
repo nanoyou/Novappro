@@ -2,7 +2,7 @@ package com.github.akagawatsurunaki.novappro.mapper.impl;
 
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.mapper.CourseApproFlowMapper;
 import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApproFlow;
 import com.github.akagawatsurunaki.novappro.util.EntityUtil;
@@ -20,19 +20,19 @@ public class CourseApproFlowMapperImpl implements CourseApproFlowMapper {
     private final static CourseApproFlowMapper instance = new CourseApproFlowMapperImpl();
 
     @Override
-    public Pair<VerifyCode.Mapper, CourseApproFlow> insert(@NonNull CourseApproFlow courseApproFlow) {
+    public Pair<VC.Mapper, CourseApproFlow> insert(@NonNull CourseApproFlow courseApproFlow) {
         try {
             int rows = Db.use().insert(EntityUtil.getEntity(courseApproFlow));
             if (rows > 0) {
-                return new ImmutablePair<>(VerifyCode.Mapper.OK, courseApproFlow);
+                return new ImmutablePair<>(VC.Mapper.OK, courseApproFlow);
             }
-            return new ImmutablePair<>(VerifyCode.Mapper.OTHER_EXCEPTION, courseApproFlow);
+            return new ImmutablePair<>(VC.Mapper.OTHER_EXCEPTION, courseApproFlow);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, courseApproFlow);
+            return new ImmutablePair<>(VC.Mapper.SQL_EXCEPTION, courseApproFlow);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            return new ImmutablePair<>(VerifyCode.Mapper.OTHER_EXCEPTION, courseApproFlow);
+            return new ImmutablePair<>(VC.Mapper.OTHER_EXCEPTION, courseApproFlow);
         }
     }
 

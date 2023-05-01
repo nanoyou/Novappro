@@ -1,14 +1,15 @@
 package com.github.akagawatsurunaki.novappro.constant;
 
-public final class VerifyCode {
+/**
+ * Verify Code
+ */
+public final class VC {
 
     public enum Mapper{
         NO_SUCH_ENTITY,
         SQL_EXCEPTION,
         OTHER_EXCEPTION,
-
         FAILED_TO_PARSE_ENTITY,
-
         OK;
     }
 

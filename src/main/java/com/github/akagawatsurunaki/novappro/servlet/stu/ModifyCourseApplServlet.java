@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.stu.CourseApplDetailService;
 
 import javax.servlet.ServletException;
@@ -43,7 +43,7 @@ public class ModifyCourseApplServlet extends HttpServlet {
 
         var vc_courses = COURSE_APPL_DETAIL_SERVICE.updateAppliedCourses(flowNo, updatedCourseCodes);
 
-        if (vc_courses.getLeft()!= VerifyCode.Service.OK) {
+        if (vc_courses.getLeft()!= VC.Service.OK) {
             request.getRequestDispatcher(SC.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
 
         }

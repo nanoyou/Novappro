@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.stu.CourseService;
 
 import javax.servlet.ServletException;
@@ -26,7 +26,7 @@ public class GetCoursesServlet extends HttpServlet {
         var verifyCode = resultPair.getLeft();
         var courses = resultPair.getRight();
 
-        if (verifyCode == VerifyCode.Service.OK) {
+        if (verifyCode == VC.Service.OK) {
             request.setAttribute(SC.INFO, "成功查询到" + courses.size() + "门课程。");
         } else {
             request.setAttribute(SC.INFO, "查询服务故障，请联系管理员。");

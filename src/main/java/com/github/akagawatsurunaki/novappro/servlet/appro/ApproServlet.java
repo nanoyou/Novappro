@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.appro;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 
 import javax.servlet.ServletException;
@@ -32,7 +32,7 @@ public class ApproServlet extends HttpServlet {
 
             var vc_applItems = APPROVAL_SERVICE.getApplItems(loginUserId);
 
-            if (vc_applItems.getLeft() == VerifyCode.Service.OK) {
+            if (vc_applItems.getLeft() == VC.Service.OK) {
 
                 var applItems = vc_applItems.getRight();
                 request.setAttribute(SC.ReqAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name, applItems);

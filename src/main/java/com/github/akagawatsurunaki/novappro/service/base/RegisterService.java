@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ReUtil;
 import com.github.akagawatsurunaki.novappro.annotation.ZhField;
 import com.github.akagawatsurunaki.novappro.constant.Constant;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
@@ -58,7 +59,7 @@ public class RegisterService {
         var verifyCodeUserPair = USER_MAPPER.insertUser(user);
 
         // 数据库插入是否成功
-        if (verifyCodeUserPair.getLeft() == com.github.akagawatsurunaki.novappro.constant.VerifyCode.Mapper.OK) {
+        if (verifyCodeUserPair.getLeft() == VC.Mapper.OK) {
             return new ImmutablePair<>(INFO.OK, user);
         }
         return new ImmutablePair<>(INFO.MAPPER_FAILED, user);

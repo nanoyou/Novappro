@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.appro;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 
 import javax.servlet.ServletException;
@@ -23,7 +23,7 @@ public class ApplItemDetailServlet extends HttpServlet {
 
         var vc_aid = APPROVAL_SERVICE.getDetail(flowNo);
 
-        if (vc_aid.getLeft() == VerifyCode.Service.OK) {
+        if (vc_aid.getLeft() == VC.Service.OK) {
             var aid = vc_aid.getRight();
             request.setAttribute(SC.ReqAttr.SELECTED_APPL_ITEM_DETAIL.name, aid);
             request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);

@@ -1,6 +1,6 @@
 package com.github.akagawatsurunaki.novappro.service.appro;
 
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.*;
 import com.github.akagawatsurunaki.novappro.mapper.impl.*;
@@ -35,48 +35,48 @@ public class ApprovalService {
     private static final CourseMapper COURSE_MAPPER = CourseMapperImpl.getInstance();
 
 
-    public Pair<VerifyCode.Service, List<ApplItem>> getApplItems(@NonNull Integer approverId) {
+    public Pair<VC.Service, List<ApplItem>> getApplItems(@NonNull Integer approverId) {
         var vc_flowNos = APPROVAL_FLOW_DETAIL_MAPPER.selectFlowNoByApproverId(approverId);
 
-        if (vc_flowNos.getLeft() == VerifyCode.Mapper.OK) {
+        if (vc_flowNos.getLeft() == VC.Mapper.OK) {
 
             var flowNoList = vc_flowNos.getRight();
             List<ApplItem> result = new ArrayList<>();
 
             for (String flowNo : flowNoList) {
                 var vc_applItem = getApplItem(flowNo);
-                if (vc_applItem.getLeft() != VerifyCode.Service.OK) {
-                    return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+                if (vc_applItem.getLeft() != VC.Service.OK) {
+                    return new ImmutablePair<>(VC.Service.ERROR, null);
                 }
                 result.add(vc_applItem.getRight());
             }
 
-            return new ImmutablePair<>(VerifyCode.Service.OK, result);
+            return new ImmutablePair<>(VC.Service.OK, result);
 
         }
-        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        return new ImmutablePair<>(VC.Service.ERROR, null);
     }
 
     /**
      * 获取一个ApplItem对象
      */
-    public Pair<VerifyCode.Service, ApplItem> getApplItem(@NonNull String flowNo) {
+    public Pair<VC.Service, ApplItem> getApplItem(@NonNull String flowNo) {
 
         var vc_af = APPROVAL_FLOW_MAPPER.select(flowNo);
 
-        if (vc_af.getLeft() == VerifyCode.Mapper.OK) {
+        if (vc_af.getLeft() == VC.Mapper.OK) {
 
             var approFlow = vc_af.getRight();
             var vc_afd = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo);
 
-            if (vc_afd.getLeft() == VerifyCode.Mapper.OK) {
+            if (vc_afd.getLeft() == VC.Mapper.OK) {
 
                 var applFlowDetail = vc_afd.getRight();
 
                 var vc_addUser = USER_MAPPER.selectUserById(approFlow.getAddUserId());
                 var vc_approver = USER_MAPPER.selectUserById(applFlowDetail.getAuditUserId());
 
-                if (vc_addUser.getLeft() == VerifyCode.Mapper.OK && vc_approver.getLeft() == VerifyCode.Mapper.OK) {
+                if (vc_addUser.getLeft() == VC.Mapper.OK && vc_approver.getLeft() == VC.Mapper.OK) {
 
                     var applicant = vc_addUser.getRight();
                     var approver = vc_approver.getRight();
@@ -90,33 +90,33 @@ public class ApprovalService {
                             .approvalStatus(applFlowDetail.getAuditStatus())
                             .build();
 
-                    return new ImmutablePair<>(VerifyCode.Service.OK, applItem);
+                    return new ImmutablePair<>(VC.Service.OK, applItem);
                 }
             }
         }
-        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        return new ImmutablePair<>(VC.Service.ERROR, null);
     }
 
 
-    public Pair<VerifyCode.Service, CourseAppItemDetail> getDetail(@NonNull String flowNo) {
+    public Pair<VC.Service, CourseAppItemDetail> getDetail(@NonNull String flowNo) {
         // TODO: 2023年4月20日 DEBUG
         var vc_af = APPROVAL_FLOW_MAPPER.select(flowNo);
 
-        if (vc_af.getLeft() == VerifyCode.Mapper.OK) {
+        if (vc_af.getLeft() == VC.Mapper.OK) {
             var approvalFlow = vc_af.getRight();
             var vc_addUser = USER_MAPPER.selectUserById(approvalFlow.getAddUserId());
 
-            if (vc_addUser.getLeft() == VerifyCode.Mapper.OK) {
+            if (vc_addUser.getLeft() == VC.Mapper.OK) {
 
                 var addUser = vc_addUser.getRight();
                 var vc_afd = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo);
 
-                if (vc_afd.getLeft() == VerifyCode.Mapper.OK) {
+                if (vc_afd.getLeft() == VC.Mapper.OK) {
                     var approFlowDetail = vc_afd.getRight();
 
                     var vc_ac = getAppliedCourses(flowNo);
 
-                    if (vc_ac.getLeft() == VerifyCode.Service.OK) {
+                    if (vc_ac.getLeft() == VC.Service.OK) {
                         var appliedCourses = vc_ac.getRight();
 
                         var result = CourseAppItemDetail.builder()
@@ -129,26 +129,26 @@ public class ApprovalService {
                                 .applCourses(appliedCourses)
                                 .build();
 
-                        return new ImmutablePair<>(VerifyCode.Service.OK, result);
+                        return new ImmutablePair<>(VC.Service.OK, result);
                     }
                 }
             }
         }
-        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        return new ImmutablePair<>(VC.Service.ERROR, null);
     }
 
 
-    private Pair<VerifyCode.Service, List<Course>> getAppliedCourses(@NonNull String flowNo) {
+    private Pair<VC.Service, List<Course>> getAppliedCourses(@NonNull String flowNo) {
         var vc_ca = COURSE_APPLICATION_MAPPER.selectByFlowNo(flowNo);
-        if (vc_ca.getLeft() == VerifyCode.Mapper.OK) {
+        if (vc_ca.getLeft() == VC.Mapper.OK) {
             var appl = vc_ca.getRight();
             var courseIds = CourseUtil.getCourseCodes(appl.getApproCourseIds());
             var vc_courses = COURSE_MAPPER.selectCourses(courseIds);
-            if (vc_courses.getLeft() == VerifyCode.Mapper.OK) {
-                return new ImmutablePair<>(VerifyCode.Service.OK, vc_courses.getRight());
+            if (vc_courses.getLeft() == VC.Mapper.OK) {
+                return new ImmutablePair<>(VC.Service.OK, vc_courses.getRight());
             }
         }
-        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        return new ImmutablePair<>(VC.Service.ERROR, null);
     }
 
     /**
@@ -159,13 +159,13 @@ public class ApprovalService {
      * @param approSuc 是否同意
      * @return
      */
-    public VerifyCode.Service saveApproResult(@NonNull String flowNo,
-                                              @NonNull String remark,
-                                              boolean approSuc) {
+    public VC.Service saveApproResult(@NonNull String flowNo,
+                                      @NonNull String remark,
+                                      boolean approSuc) {
         try {
             // 如果同意审批
             if (!approSuc && remark.isBlank()) {
-                return VerifyCode.Service.REMARK_IS_BLANK;
+                return VC.Service.REMARK_IS_BLANK;
             }
 
             // 更新 申请流程 表
@@ -177,12 +177,12 @@ public class ApprovalService {
             APPROVAL_FLOW_DETAIL_MAPPER.updateApproStatus(flowNo, maxIdOfCourseApproFlow, status);
             APPROVAL_FLOW_DETAIL_MAPPER.updateApproRemark(flowNo, maxIdOfCourseApproFlow, remark);
 
-            return VerifyCode.Service.OK;
+            return VC.Service.OK;
 
         } catch (SQLException e) {
 
             e.printStackTrace();
-            return VerifyCode.Service.ERROR;
+            return VC.Service.ERROR;
 
         }
     }

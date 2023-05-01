@@ -2,7 +2,7 @@ package com.github.akagawatsurunaki.novappro.mapper.impl;
 
 import cn.hutool.db.Db;
 import com.github.akagawatsurunaki.novappro.annotation.Database;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.database.User;
@@ -48,7 +48,7 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public Pair<VerifyCode.Mapper, List<User>> getUsers() {
+    public Pair<VC.Mapper, List<User>> getUsers() {
         try {
             Statement statement;
             ResultSet resultSet;
@@ -56,15 +56,15 @@ public class UserMapperImpl implements UserMapper {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select id, username, raw_password, type from user");
             users = parseResultSet(resultSet);
-            return new ImmutablePair<>(VerifyCode.Mapper.OK, users);
+            return new ImmutablePair<>(VC.Mapper.OK, users);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
+            return new ImmutablePair<>(VC.Mapper.SQL_EXCEPTION, null);
         }
     }
 
     @Override
-    public Pair<VerifyCode.Mapper, User> insertUser(@NonNull User user) {
+    public Pair<VC.Mapper, User> insertUser(@NonNull User user) {
 
         try {
             PreparedStatement statement = connection.prepareStatement(
@@ -74,31 +74,31 @@ public class UserMapperImpl implements UserMapper {
             statement.setString(2, user.getRawPassword());
             statement.setString(3, user.getType().name());
             if (statement.execute()) {
-                return new ImmutablePair<>(VerifyCode.Mapper.OK, user);
+                return new ImmutablePair<>(VC.Mapper.OK, user);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, user);
+        return new ImmutablePair<>(VC.Mapper.SQL_EXCEPTION, user);
     }
 
     @Override
-    public Pair<VerifyCode.Mapper, User> selectUserById(@NonNull Integer id) {
+    public Pair<VC.Mapper, User> selectUserById(@NonNull Integer id) {
         try {
             var entities = Db.use().query(selectUserById, id);
 
             if (entities.size() != 1) {
-                return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
+                return new ImmutablePair<>(VC.Mapper.NO_SUCH_ENTITY, null);
             }
 
             var entity = entities.get(0);
             var result = EntityUtil.parseEntity(User.class, entity);
 
-            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+            return new ImmutablePair<>(VC.Mapper.OK, result);
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
+            return new ImmutablePair<>(VC.Mapper.SQL_EXCEPTION, null);
         }
     }
 

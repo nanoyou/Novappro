@@ -1,6 +1,6 @@
 package com.github.akagawatsurunaki.novappro.service.stu;
 
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import com.github.akagawatsurunaki.novappro.mapper.*;
@@ -44,21 +44,21 @@ public class ApplyCourseService {
         approver = USER_MAPPER.selectUserById(20210004).getRight();
     }
 
-    public VerifyCode.Service apply(@NonNull Integer userId, @NonNull List<String> courseIds) {
+    public VC.Service apply(@NonNull Integer userId, @NonNull List<String> courseIds) {
 
         // 校验用户是否存在
         var vc_user = USER_MAPPER.selectUserById(userId);
         var vc = vc_user.getLeft();
 
-        if (vc == VerifyCode.Mapper.NO_SUCH_ENTITY) {
-            return VerifyCode.Service.NO_SUCH_USER;
+        if (vc == VC.Mapper.NO_SUCH_ENTITY) {
+            return VC.Service.NO_SUCH_USER;
         }
 
         // TODO: 校验课程是否存在
 
         // 用户存在
 
-        if (vc == VerifyCode.Mapper.OK) {
+        if (vc == VC.Mapper.OK) {
 
             var user = vc_user.getRight();
             var flowNo = IdUtil.genFlowNo(user.getId());
@@ -114,18 +114,18 @@ public class ApplyCourseService {
 
             COURSE_APPRO_FLOW_MAPPER.insert(courseApproFlow);
 
-            return VerifyCode.Service.OK;
+            return VC.Service.OK;
         }
-        return VerifyCode.Service.ERROR;
+        return VC.Service.ERROR;
     }
 
-    public Triple<VerifyCode.Service, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@NonNull Integer userId) {
+    public Triple<VC.Service, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@NonNull Integer userId) {
         // 校验用户是否存在
         var vc_user = USER_MAPPER.selectUserById(userId);
         var vc = vc_user.getLeft();
 
-        if (vc == VerifyCode.Mapper.NO_SUCH_ENTITY) {
-            return new ImmutableTriple<>(VerifyCode.Service.NO_SUCH_USER, null, null);
+        if (vc == VC.Mapper.NO_SUCH_ENTITY) {
+            return new ImmutableTriple<>(VC.Service.NO_SUCH_USER, null, null);
         }
 
         var user = vc_user.getRight();
@@ -142,9 +142,9 @@ public class ApplyCourseService {
         }
 
 
-        if (vc_l.getLeft() == VerifyCode.Mapper.OK) {
-            return new ImmutableTriple<>(VerifyCode.Service.OK, courseApplicationList, approvalStatusList);
+        if (vc_l.getLeft() == VC.Mapper.OK) {
+            return new ImmutableTriple<>(VC.Service.OK, courseApplicationList, approvalStatusList);
         }
-        return new ImmutableTriple<>(VerifyCode.Service.ERROR, null, null);
+        return new ImmutableTriple<>(VC.Service.ERROR, null, null);
     }
 }

@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.filter;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.base.LoginService;
@@ -20,7 +20,6 @@ import java.io.IOException;
                 "/welcome.jsp"
         })
 public class LoginFilter extends HttpFilter {
-    private String loginSessionKey = null;
 
     @Override
     public void init() throws ServletException {
@@ -64,7 +63,7 @@ public class LoginFilter extends HttpFilter {
         var verifyCode = verifyCodeUserPair.getLeft();
         User user = verifyCodeUserPair.getRight();
 
-        if (verifyCode == VerifyCode.Service.OK) {
+        if (verifyCode == VC.Service.OK) {
 
             request.getSession().setAttribute(SC.ReqAttr.LOGIN_USER_ID.name, user.getId());
             request.getSession().setAttribute(SC.ReqAttr.USER_USERNAME.name, user.getUsername());

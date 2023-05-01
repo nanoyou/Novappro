@@ -1,6 +1,6 @@
 package com.github.akagawatsurunaki.novappro.service.stu;
 
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
@@ -21,18 +21,18 @@ public class CourseService {
 
     private static final CourseMapper COURSE_MAPPER = CourseMapperImpl.getInstance();
 
-    public Pair<VerifyCode.Service, List<Course>> getAllCourses() {
+    public Pair<VC.Service, List<Course>> getAllCourses() {
 
         var verifyCodeListPair = COURSE_MAPPER.selectAllCourses();
         // 如果校验正确
-        if (verifyCodeListPair.getLeft() == VerifyCode.Mapper.OK) {
+        if (verifyCodeListPair.getLeft() == VC.Mapper.OK) {
             List<Course> courses = verifyCodeListPair.getRight();
-            return new ImmutablePair<>(VerifyCode.Service.OK, courses);
+            return new ImmutablePair<>(VC.Service.OK, courses);
         }
-        return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+        return new ImmutablePair<>(VC.Service.ERROR, null);
     }
 
-    public Pair<VerifyCode.Service, List<Course>> getCoursesByCodes(@NonNull List<String> codes) {
+    public Pair<VC.Service, List<Course>> getCoursesByCodes(@NonNull List<String> codes) {
 
         List<Course> courses = new ArrayList<>();
 
@@ -40,13 +40,13 @@ public class CourseService {
             var verifyCode = COURSE_MAPPER.selectCourseByCode(code).getLeft();
             Course course = COURSE_MAPPER.selectCourseByCode(code).getRight();
 
-            if (verifyCode != VerifyCode.Mapper.OK) {
-                return new ImmutablePair<>(VerifyCode.Service.ERROR, null);
+            if (verifyCode != VC.Mapper.OK) {
+                return new ImmutablePair<>(VC.Service.ERROR, null);
             }
             courses.add(course);
         }
 
-        return new ImmutablePair<>(VerifyCode.Service.OK, courses);
+        return new ImmutablePair<>(VC.Service.OK, courses);
     }
 
 }

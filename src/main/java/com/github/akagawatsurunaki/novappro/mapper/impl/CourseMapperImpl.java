@@ -5,7 +5,7 @@ import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
-import com.github.akagawatsurunaki.novappro.constant.VerifyCode;
+import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class CourseMapperImpl implements CourseMapper {
     }
 
     @Override
-    public Pair<VerifyCode.Mapper, List<Course>> selectAllCourses() {
+    public Pair<VC.Mapper, List<Course>> selectAllCourses() {
 
         try {
 
@@ -49,52 +49,52 @@ public class CourseMapperImpl implements CourseMapper {
                 courses.add(course);
             });
 
-            return new ImmutablePair<>(VerifyCode.Mapper.OK, courses);
+            return new ImmutablePair<>(VC.Mapper.OK, courses);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
+            return new ImmutablePair<>(VC.Mapper.SQL_EXCEPTION, null);
         }
     }
 
     @Override
-    public Pair<VerifyCode.Mapper, Course> selectCourseByCode(@NonNull String code) {
+    public Pair<VC.Mapper, Course> selectCourseByCode(@NonNull String code) {
 
         try {
             List<Entity> courseEntities = Db.use().query(selectCourseByCodeSQL, code);
 
             if (courseEntities == null || courseEntities.isEmpty()) {
-                return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
+                return new ImmutablePair<>(VC.Mapper.NO_SUCH_ENTITY, null);
             }
 
             Course course = parseCourseEntity(courseEntities.get(0));
 
-            return new ImmutablePair<>(VerifyCode.Mapper.OK, course);
+            return new ImmutablePair<>(VC.Mapper.OK, course);
         } catch (SQLException e) {
-            return new ImmutablePair<>(VerifyCode.Mapper.SQL_EXCEPTION, null);
+            return new ImmutablePair<>(VC.Mapper.SQL_EXCEPTION, null);
         }
     }
 
     @Override
-    public Pair<VerifyCode.Mapper, List<Course>> selectCourses(@NonNull List<String> codes) {
+    public Pair<VC.Mapper, List<Course>> selectCourses(@NonNull List<String> codes) {
 
         List<Course> result = new ArrayList<>();
 
         if (codes.isEmpty()) {
-            return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+            return new ImmutablePair<>(VC.Mapper.OK, result);
         }
 
         for (String code : codes) {
             var vc_course = selectCourseByCode(code);
-            if (vc_course.getLeft() == VerifyCode.Mapper.OK) {
+            if (vc_course.getLeft() == VC.Mapper.OK) {
                 result.add(vc_course.getRight());
-            } else if (vc_course.getLeft() == VerifyCode.Mapper.NO_SUCH_ENTITY) {
-                return new ImmutablePair<>(VerifyCode.Mapper.NO_SUCH_ENTITY, null);
+            } else if (vc_course.getLeft() == VC.Mapper.NO_SUCH_ENTITY) {
+                return new ImmutablePair<>(VC.Mapper.NO_SUCH_ENTITY, null);
             } else {
-                return new ImmutablePair<>(VerifyCode.Mapper.OTHER_EXCEPTION, null);
+                return new ImmutablePair<>(VC.Mapper.OTHER_EXCEPTION, null);
             }
         }
 
-        return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+        return new ImmutablePair<>(VC.Mapper.OK, result);
 
     }
 
