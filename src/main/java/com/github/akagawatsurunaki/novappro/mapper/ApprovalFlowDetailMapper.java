@@ -16,6 +16,8 @@ public interface ApprovalFlowDetailMapper {
 
     Pair<VerifyCode.Mapper, ApprovalFlowDetail> select(@NonNull String flowNo);
 
+    Pair<VerifyCode.Mapper, List<ApprovalFlowDetail>> selectList(@NonNull List<String> flowNos);
+
     Pair<VerifyCode.Mapper, List<String>> selectFlowNoByApproverId(@NonNull Integer approverId);
 
 

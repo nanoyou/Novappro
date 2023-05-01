@@ -60,6 +60,21 @@ public class ApprovalFlowDetailMapperImpl implements ApprovalFlowDetailMapper {
     }
 
     @Override
+    public Pair<VerifyCode.Mapper, List<ApprovalFlowDetail>> selectList(@NonNull List<String> flowNos) {
+        List<ApprovalFlowDetail> result = new ArrayList<>();
+        for (String flowNo : flowNos) {
+            var vc_afd = select(flowNo);
+            if (vc_afd.getLeft() == VerifyCode.Mapper.OK){
+                var afd = vc_afd.getRight();
+                result.add(afd);
+            } else {
+                return new ImmutablePair<>(vc_afd.getLeft(), null);
+            }
+        }
+        return new ImmutablePair<>(VerifyCode.Mapper.OK, result);
+    }
+
+    @Override
     public Pair<VerifyCode.Mapper, List<String>> selectFlowNoByApproverId(@NonNull Integer approverId) {
         try {
             var query = Db.use().query(selectFlowNoByApproverIdSQL, approverId);
