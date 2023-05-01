@@ -3,6 +3,7 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication" %>
 <%@ page
         import="static com.github.akagawatsurunaki.novappro.constant.SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus" %>
 Created by IntelliJ IDEA.
 User: 96514
 Date: 2023/4/16
@@ -18,13 +19,15 @@ To change this template use File | Settings | File Templates.
     function detail(
         self, flowNo
     ) {
-        location.href = "${pageContext.request.contextPath}/course_appl_detail?<%=SELECTED_COURSE_APPL_FLOW_NO.name%>="+flowNo;
+        location.href = "${pageContext.request.contextPath}/course_appl_detail?<%=SELECTED_COURSE_APPL_FLOW_NO.name%>=" + flowNo;
     }
 </script>
 <body>
 <%
     List<CourseApplication> crsApps =
             (List<CourseApplication>) request.getAttribute(SC.ReqAttr.COURSE_APPLICATIONS.name);
+    List<ApprovalStatus> approvalStatusList =
+            (List<ApprovalStatus>) request.getAttribute(SC.ReqAttr.APPRO_STATUS_LIST.name);
 %>
 
 <h1>您的课程申请</h1>
@@ -35,10 +38,12 @@ To change this template use File | Settings | File Templates.
             <th>流水号</th>
             <th>工号</th>
             <th>选课编号</th>
+            <th>审批状态</th>
             <th>操作</th>
         </tr>
 
         <%
+            int i = 0;
             for (CourseApplication crsApp : crsApps) {
         %>
 
@@ -50,14 +55,19 @@ To change this template use File | Settings | File Templates.
             <td><%=crsApp.getApproCourseIds()%>
             </td>
             <td>
+                <%=approvalStatusList.get(i).chinese%>
+            </td>
+            <td>
                 <label>
-                    <input id="<%= "btn" + crsApp.getFlowNo() %>>" type="button" name="<%=SELECTED_COURSE_APPL_FLOW_NO.name%>"
+                    <input id="<%= "btn" + crsApp.getFlowNo() %>>" type="button"
+                           name="<%=SELECTED_COURSE_APPL_FLOW_NO.name%>"
                            value="查看详情" onclick="detail(this, '<%= crsApp.getFlowNo() %>')"/>
                 </label>
             </td>
         </tr>
 
         <%
+                i++;
             }
         %>
     </table>
