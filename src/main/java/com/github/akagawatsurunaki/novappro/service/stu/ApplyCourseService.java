@@ -1,5 +1,8 @@
 package com.github.akagawatsurunaki.novappro.service.stu;
 
+import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.io.FileUtil;
+import com.github.akagawatsurunaki.novappro.config.ResourceConfig;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
@@ -10,13 +13,18 @@ import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
 import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApproFlow;
+import com.github.akagawatsurunaki.novappro.model.database.file.UploadFile;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
+import com.github.akagawatsurunaki.novappro.util.ImgUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,6 +45,8 @@ public class ApplyCourseService {
 
     private static final CourseApproFlowMapper COURSE_APPRO_FLOW_MAPPER = CourseApproFlowMapperImpl.getInstance();
 
+    private static final UploadFileMapper UPLOAD_FILE_MAPPER = UploadFileMapperImpl.getInstance();
+
     private static final User approver;
 
     static {
@@ -44,77 +54,106 @@ public class ApplyCourseService {
         approver = USER_MAPPER.selectUserById(20210004).getRight();
     }
 
-    public VC.Service apply(@NonNull Integer userId, @NonNull List<String> courseIds) {
+    public VC.Service apply(@NonNull Integer userId, @NonNull List<String> courseIds, @NonNull InputStream is) {
 
         // 校验用户是否存在
-        var vc_user = USER_MAPPER.selectUserById(userId);
-        var vc = vc_user.getLeft();
+        try {
+            var vc_user = USER_MAPPER.selectUserById(userId);
+            var vc = vc_user.getLeft();
 
-        if (vc == VC.Mapper.NO_SUCH_ENTITY) {
-            return VC.Service.NO_SUCH_USER;
-        }
+            if (vc == VC.Mapper.NO_SUCH_ENTITY) {
+                return VC.Service.NO_SUCH_USER;
+            }
 
-        // TODO: 校验课程是否存在
+            // TODO: 校验课程是否存在
 
-        // 用户存在
+            // 用户存在
 
-        if (vc == VC.Mapper.OK) {
+            if (vc == VC.Mapper.OK) {
 
-            var user = vc_user.getRight();
-            var flowNo = IdUtil.genFlowNo(user.getId());
-            Date date = new Date();
+                var user = vc_user.getRight();
+                var flowNo = IdUtil.genFlowNo(user.getId());
+                Date date = new Date();
 
-            // 创建Approval对象
+                // 上传文件
 
-            var approval
-                    = CourseApplication.builder()
-                    .approCourseIds(CourseUtil.toCourseCodesStr(courseIds))
-                    .flowNo(flowNo)
-                    .addUserId(user.getId())
-                    .addTime(date)
-                    .build();
+                var fileType = FileTypeUtil.getType(is);
+                // 如果不调用此方法, 文件写入将无法被识别为图片文件, 图片文件将会无法打开.
+                is.reset();
 
-            // 创建ApprovalFlow
+                var path = ResourceConfig.UPLOADED_IMG_PATH;
+                var name = ImgUtil.genImgName(userId);
+                var file = new File(path + "/" + name + "." + fileType);
 
-            var approvalFlow
-                    = ApprovalFlow.builder()
-                    .flowNo(flowNo)
-                    .approStatus(ApprovalStatus.SUBMITTED)
-                    .title("来自 " + user.getUsername() + "(" + user.getId() + ")的" + courseIds.size() + "门课程申请")
-                    .busType(BusType.LINEAR)
-                    .addUserId(user.getId())
-                    .addTime(date)
-                    .build();
+                var uploadFile = UploadFile.builder()
+                        .fileName(name + "." + fileType)
+                        .flowNo(flowNo)
+                        .userId(userId)
+                        .build();
 
-            // 创建ApprovalFlowDetail
+                // 将文件关系存储至数据库
+                var vc_uf = UPLOAD_FILE_MAPPER.insert(uploadFile);
+                if (vc_uf.getLeft() != VC.Mapper.OK) {
+                    return VC.Service.ERROR;
+                }
 
-            var approvalFlowDetail
-                    = ApprovalFlowDetail.builder()
-                    .flowNo(flowNo)
-                    .auditUserId(approver.getId())
-                    .auditStatus(ApprovalStatus.LECTURE_TEACHER_EXAMING)
-                    .auditRemark("")
-                    .auditTime(date)
-                    .build();
+                // 将文件存储至硬盘
+                FileUtil.writeFromStream(is, file, true);
 
-            APPROVAL_FLOW_DETAIL_MAPPER.insert(approvalFlowDetail);
-            approvalFlowDetail = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo).getRight();
+                // 创建Approval对象
 
-            // 创建CourseApproFlow
+                var approval
+                        = CourseApplication.builder()
+                        .approCourseIds(CourseUtil.toCourseCodesStr(courseIds))
+                        .flowNo(flowNo)
+                        .addUserId(user.getId())
+                        .addTime(date)
+                        .build();
 
-            var courseApproFlow = CourseApproFlow.builder()
-                    .approFlowNos(flowNo)
-                    .approFlowDetailIds(Arrays.toString(new String[]{approvalFlowDetail.getId().toString()}))
-                    .currentNodeNo(approvalFlowDetail.getId())
-                    .build();
+                // 创建ApprovalFlow
 
-            // 向数据库插入
-            COURSE_APPLICATION_MAPPER.insert((CourseApplication) approval);
-            APPROVAL_FLOW_MAPPER.insert(approvalFlow);
+                var approvalFlow
+                        = ApprovalFlow.builder()
+                        .flowNo(flowNo)
+                        .approStatus(ApprovalStatus.SUBMITTED)
+                        .title("来自 " + user.getUsername() + "(" + user.getId() + ")的" + courseIds.size() + "门课程申请")
+                        .busType(BusType.LINEAR)
+                        .addUserId(user.getId())
+                        .addTime(date)
+                        .build();
 
-            COURSE_APPRO_FLOW_MAPPER.insert(courseApproFlow);
+                // 创建ApprovalFlowDetail
 
-            return VC.Service.OK;
+                var approvalFlowDetail
+                        = ApprovalFlowDetail.builder()
+                        .flowNo(flowNo)
+                        .auditUserId(approver.getId())
+                        .auditStatus(ApprovalStatus.LECTURE_TEACHER_EXAMING)
+                        .auditRemark("")
+                        .auditTime(date)
+                        .build();
+
+                APPROVAL_FLOW_DETAIL_MAPPER.insert(approvalFlowDetail);
+                approvalFlowDetail = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo).getRight();
+
+                // 创建CourseApproFlow
+
+                var courseApproFlow = CourseApproFlow.builder()
+                        .approFlowNos(flowNo)
+                        .approFlowDetailIds(Arrays.toString(new String[]{approvalFlowDetail.getId().toString()}))
+                        .currentNodeNo(approvalFlowDetail.getId())
+                        .build();
+
+                // 向数据库插入
+                COURSE_APPLICATION_MAPPER.insert((CourseApplication) approval);
+                APPROVAL_FLOW_MAPPER.insert(approvalFlow);
+
+                COURSE_APPRO_FLOW_MAPPER.insert(courseApproFlow);
+
+                return VC.Service.OK;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return VC.Service.ERROR;
     }

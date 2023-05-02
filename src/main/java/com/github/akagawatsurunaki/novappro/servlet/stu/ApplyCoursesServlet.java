@@ -3,16 +3,23 @@ package com.github.akagawatsurunaki.novappro.servlet.stu;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.stu.ApplyCourseService;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+@MultipartConfig
 @WebServlet(name = "ApplyCoursesServlet", value = SC.WebServletValue.APPLY_COURSES)
 public class ApplyCoursesServlet extends HttpServlet {
 
@@ -27,27 +34,56 @@ public class ApplyCoursesServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        request.setCharacterEncoding("UTF-8");
 
         // 获取登录人ID
         Integer id = (Integer) request.getSession().getAttribute("login_user_id");
 
-        // 获取选取的课程列表
-        String[] selectedCourseCodes = request.getParameterValues("selected_course[]");
+        if (!ServletFileUpload.isMultipartContent(request)) {
+            return;
+        }
+        var factory = new DiskFileItemFactory();
+        var upload = new ServletFileUpload(factory);
+        String selectedCourseCode = null;
+        InputStream is = null;
+        try {
 
-        if (selectedCourseCodes != null) {
-            if (selectedCourseCodes.length > 0) {
+            var items = upload.parseRequest(request);
+            for (FileItem item : items) {
 
-                List<String> selectedCourseCodeList = Arrays.stream(selectedCourseCodes).toList();
-                // 申请这些课程
-                APPLY_COURSE_SERVICE.apply(id, selectedCourseCodeList);
+                // i是普通表单项
+                if (item.isFormField()) {
+                    if ("selected_course[]".equals(item.getFieldName())) {
+                        selectedCourseCode = item.getString();
+                    }
+                } else {
+                    is = item.getInputStream();
+                }
             }
+
+        } catch (FileUploadException | IOException e) {
+            System.out.println("InputStream 不能获取。");
+            e.printStackTrace();
+        }
+
+        if (is == null){
+            return;
+        }
+
+        // 获取选取的课程列表
+        if (selectedCourseCode != null) {
+
+
+                List<String> selectedCourseCodeList = new ArrayList<>();
+                selectedCourseCodeList.add(selectedCourseCode);
+                // 申请这些课程
+                APPLY_COURSE_SERVICE.apply(id, selectedCourseCodeList, is);
+
         }
 
         // 获取这些课程
         var vc_cal_asl = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
 
-        if (vc_cal_asl.getLeft()== VC.Service.OK){
+        if (vc_cal_asl.getLeft() == VC.Service.OK) {
             var courseApplications = vc_cal_asl.getMiddle();
             var approStatusList = vc_cal_asl.getRight();
 
