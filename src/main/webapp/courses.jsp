@@ -70,7 +70,7 @@
             </td>
             <td>
                 <label>
-                    <input type="checkbox" name="selected_course[]" value="<%= c.getCode()%>"/>
+                    <input type="radio" name="selected_course[]" value="<%= c.getCode()%>"/>
                 </label>
             </td>
         </tr>
@@ -83,7 +83,7 @@
         <input name="remark" type="text" placeholder="请输入申请原因">
     </label>
     <label>
-        <input name="upload_img" type="file" placeholder="请输入申请原因" alt="">
+        <input name="upload_img" type="file" alt="">
     </label>
     <label>
         <input id="confirm_btn" type="submit" value="确认申请课程"/>

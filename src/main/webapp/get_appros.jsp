@@ -29,7 +29,7 @@
     User loginUser = (User) request.getAttribute(SC.ReqAttr.LOGIN_USER.name);
 %>
 <h1>我的审批</h1>
-尊敬的<%=loginUser.getUsername()%> <%=ZhFieldUtil.getZhValue(UserType.class, UserType.TEACHER.name())%>，您好！
+尊敬的<%=loginUser.getUsername()%> <%=loginUser.getType().chinese%>，您好！
 <table border="1">
     <tr>
         <th>
