@@ -67,41 +67,49 @@ public class LoginFilter extends HttpFilter {
                 return;
             }
 
-            // 尝试利用密码登陆
-            var vc_user = LOGIN_SERVICE.tryLoginWithUserId(userId.map(Integer::parseInt).get(), rawPassword.get());
+            try
+            {
 
-            switch (vc_user.getLeft()) {
+                // 尝试利用密码登陆
+                var vc_user = LOGIN_SERVICE.tryLoginWithUserId(userId.map(Integer::parseInt).get(), rawPassword.get());
 
-                case TOO_LONG_PASSWORD ->
-                        request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.TOO_LONG_PASSWORD.message);
-                case PASSWORD_ERROR ->
-                        request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.PASSWORD_ERROR.message);
-                case NO_SUCH_USER ->
-                        request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.NO_SUCH_USER.message);
-                case OK -> {
+                switch (vc_user.getLeft()) {
 
-                    // 安全地取出用户对象
-                    var user = vc_user.getRight();
+                    case TOO_LONG_PASSWORD ->
+                            request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.TOO_LONG_PASSWORD.message);
+                    case PASSWORD_ERROR ->
+                            request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.PASSWORD_ERROR.message);
+                    case NO_SUCH_USER ->
+                            request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.NO_SUCH_USER.message);
+                    case OK -> {
 
-                    request.getSession().setAttribute(SC.ReqAttr.LOGIN_USER_ID.name, user.getId());
-                    request.getSession().setAttribute(SC.ReqAttr.USER_USERNAME.name, user.getUsername());
-                    request.getSession().setAttribute(SC.ReqParam.USER_TYPE.name, user.getType().name());
-                    request.getSession().setAttribute(SC.ReqAttr.LOGIN_USER.name, user);
-                    request.setAttribute(SC.ReqAttr.LOGIN_USER.name, user);
+                        // 安全地取出用户对象
+                        var user = vc_user.getRight();
 
-                    // 根据不同的身份发送到不同的页面
-                    switch (user.getType()) {
-                        case STUDENT -> response.sendRedirect(SC.JSPResource.WELCOME_SESSION.name);
-                        case LECTURE_TEACHER ->
-                                request.getRequestDispatcher(SC.WebServletValue.GET_APPROS).forward(request, response);
-                        case ADMIN -> System.out.println("尚未实现");
+                        request.getSession().setAttribute(SC.ReqAttr.LOGIN_USER_ID.name, user.getId());
+                        request.getSession().setAttribute(SC.ReqAttr.USER_USERNAME.name, user.getUsername());
+                        request.getSession().setAttribute(SC.ReqParam.USER_TYPE.name, user.getType().name());
+                        request.getSession().setAttribute(SC.ReqAttr.LOGIN_USER.name, user);
+                        request.setAttribute(SC.ReqAttr.LOGIN_USER.name, user);
+
+                        // 根据不同的身份发送到不同的页面
+                        switch (user.getType()) {
+                            case STUDENT -> response.sendRedirect(SC.JSPResource.WELCOME_SESSION.name);
+                            case LECTURE_TEACHER ->
+                                    request.getRequestDispatcher(SC.WebServletValue.GET_APPROS).forward(request, response);
+                            case ADMIN -> System.out.println("尚未实现");
+                        }
+                        return;
                     }
                 }
+            }catch (NumberFormatException e){
+                e.printStackTrace();
+                request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.USER_ID_NAN.message);
             }
 
         }
 
-        request.getRequestDispatcher(SC.JSPResource.ERROR.name).forward(request, response);
+        request.getRequestDispatcher(SC.JSPResource.INDEX.name).forward(request, response);
     }
 
 }
