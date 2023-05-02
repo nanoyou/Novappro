@@ -1,4 +1,6 @@
 <%@ page import="java.util.Date" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.database.User" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%--
   Created by IntelliJ IDEA.
   User: 96514
@@ -12,14 +14,11 @@
     <title>欢迎回来</title>
     <h1>欢迎回来</h1>
     <p>
-        <%! String userUsername = ""; %>
-        <%! String userType = ""; %>
         <%
-            userUsername = (String) session.getAttribute("user_username");
-            userType = (String) session.getAttribute("user_type");
+            User loginUser = (User) session.getAttribute(SC.ReqAttr.LOGIN_USER.name);
         %>
-        <%= userType %>
-        <%= userUsername %>
+        <%= loginUser.getType().chinese %>
+        <%= loginUser.getUsername() %>
     </p>
     成功登录于
     <%=

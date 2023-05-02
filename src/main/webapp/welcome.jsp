@@ -13,7 +13,7 @@
     <h1>欢迎回来</h1>
     <p>
         <% User user = (User) request.getAttribute(User.class.getName()); %>
-        <%= user.getType().getChineseName() %>
+        <%= user.getType().chinese %>
         <%= user.getUsername() %>
     </p>
     成功登录于

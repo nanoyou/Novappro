@@ -7,12 +7,11 @@ import lombok.experimental.FieldNameConstants;
 @AllArgsConstructor
 @FieldNameConstants
 public enum UserType {
-    @ZhField(value = "管理员")
-    ADMIN,
-    @ZhField(value = "教师")
-    TEACHER,
-    @ZhField(value = "学生")
-    STUDENT
+    ADMIN("管理员"),
+    LECTURE_TEACHER("课程主讲教师"),
+    SUPERVISOR_TEACHER("课程主管教师"),
+    STUDENT("学生");
 
+    public final String chinese;
 
 }
