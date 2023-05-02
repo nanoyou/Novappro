@@ -1,4 +1,5 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.Constant" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -6,60 +7,65 @@
     <title>JSP - Hello World</title>
 </head>
 <style>
-    /* 控制元素排列居中 */
-    form {
+    html,
+    body {
+        margin: 0;
+        font-family: "PingFang SC", "Microsoft Yahei", sans-serif;
+    }
+
+    .container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: url("http://localhost:8080/Novappro_war_exploded/img/index.png") fixed no-repeat;
+        background-size: cover;
+    }
+
+    .login-form {
+        width: 240px;
+        height: 220px;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        padding: 40px;
+        text-align: center;
+        position: relative;
+        z-index: 100;
+        /*background: inherit;*/
+        border-radius: 18px;
+        background-color: rgba(255, 255, 255, 0.6);
+        overflow: hidden; /* 隐藏多余的模糊效果*/
     }
 
-    /* 登录标题样式 */
-    h1 {
+    .login-form h2 {
         font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 30px;
+        font-weight: 400;
+        color: #3d5245;
     }
 
-    /* 输入框样式 */
-    input[type="number"], input[type="password"] {
-        width: 300px;
-        height: 40px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 10px;
-        margin-bottom: 20px;
-        font-size: 16px;
-    }
-
-    /* 按钮样式 */
-    input[type="submit"], input[type="button"] {
-        width: 180px;
-        height: 40px;
+    .login-form input,
+    .login-form button {
+        margin: 6px 0;
+        height: 36px;
         border: none;
-        border-radius: 5px;
-        background-color: #0074D9;
-        color: #fff;
-        font-size: 16px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 4px;
+        padding: 0 14px;
+        color: #3d5245;
+
+    }
+
+    .login-form button:hover {
         cursor: pointer;
-        margin-bottom: 20px;
     }
 
-    /* 鼠标悬停样式 */
-    input[type="submit"]:hover, input[type="button"]:hover {
-        background-color: #005DAB;
-    }
-
-    /* 取消数字输入的上下箭头 */
-    /* google、safari */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button{
-        -webkit-appearance: none !important;
-        margin: 0;
-    }
-    /* 火狐 */
-    input[type="number"]{
-        -moz-appearance: textfield;
+    .login-form a {
+        text-align: right;
+        padding-left: 156px;
+        font-size: 10px;
+        text-decoration: none;
+        color: rgb(73, 73, 73);
     }
 
 </style>
@@ -78,26 +84,44 @@
     }
 </script>
 <body>
-<form action="http://localhost:8080/Novappro_war_exploded/login" method="post" onsubmit="checkForm()">
-    <h1 style="text-align: center">登录</h1>
-    <label>
-        学号/工号
-        <input id="user_id" type="number" minlength="<%= Constant.MIN_LEN_USER_ID %>" maxlength="<%=
-        Constant.MAX_LEN_USER_ID %>" name="userId">
-    </label>
-    <label>
-        密码
-        <input id="password_input" type="password" minlength="<%= Constant.MIN_LEN_PASSWORD %>" maxlength="<%= Constant.MAX_LEN_PASSWORD %>" name="rawPassword">
-    </label>
+<div class="container">
+    <form action="http://localhost:8080/Novappro_war_exploded/login"
+          method="post" onsubmit="checkForm()"
+          class="login-form">
+        <h2> NOVAPPRO </h2>
 
-    <label>
-        <input id="login_btn" type="submit" name="submit" value="登录">
-    </label>
+        <label>
+            <input id="user_id" name="userId" type="tel"
+                   placeholder="工号/学号"
+                   minlength="<%= Constant.MIN_LEN_USER_ID %>"
+                   maxlength="<%= Constant.MAX_LEN_USER_ID %>">
+        </label>
 
-    <label>
-        <input type="button" value="注册" onclick='location.href=("/Novappro_war_exploded/signup.jsp")'/>
-    </label>
-</form>
+        <label>
+            <input id="password_input" name="rawPassword" type="password"
+                   placeholder="密码"
+                   minlength="<%= Constant.MIN_LEN_PASSWORD %>"
+                   maxlength="<%= Constant.MAX_LEN_PASSWORD %>">
+        </label>
 
+        <label>
+            <a href="${pageContext.request.contextPath}/signup.jsp">注册</a>
+        </label>
+
+        <label>
+            <button id="login_btn" name="submit" type="submit" value="登录">
+                登录
+            </button>
+        </label>
+
+
+    </form>
+</div>
+
+<%-- 显示错误信息 --%>
+<%--<% if (request.getAttribute(SC.ReqAttr.ERROR_MESSAGE.name) != null) { %>--%>
+<%--<p style="color: red; text-align: center"><%= request.getAttribute(SC.ReqAttr.ERROR_MESSAGE.name) %>--%>
+<%--</p>--%>
+<%--<% } %>--%>
 </body>
 </html>
