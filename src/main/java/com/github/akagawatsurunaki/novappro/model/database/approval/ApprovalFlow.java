@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * Course Appro Flow 1...1 Approval Flow
  * Approval Flow 1...n Approval Flow Detail
- *
+ * <p>
  * Approval Flow 1...1 Approval
  */
 @Data
@@ -32,6 +32,7 @@ public class ApprovalFlow {
 
     /**
      * 审批流ApprovalFlow的状态
+     *
      * @implNote 如果实现了LinearBus审批流程模式, 那么审批流ApprovalFlow的状态应与最后一个审批明细的状态一致
      */
     @Field(field = "appro_status")
@@ -45,6 +46,7 @@ public class ApprovalFlow {
 
     /**
      * 审批流ApprovalFlow的总线类型
+     *
      * @implNote LinearBus将审批流程组成一条直线, 即是一个线性流程图.
      */
     @Field(field = "bus_type")
@@ -61,5 +63,11 @@ public class ApprovalFlow {
      */
     @Field(field = "add_time")
     Date addTime;
+
+    /**
+     * 申请人填写的申请原因
+     */
+    @Field(field = "remark")
+    String remark;
 
 }

@@ -54,7 +54,8 @@ public class ApplyCourseService {
         approver = USER_MAPPER.selectUserById(20210004).getRight();
     }
 
-    public VC.Service apply(@NonNull Integer userId, @NonNull List<String> courseIds, @NonNull InputStream is) {
+    public VC.Service apply(@NonNull Integer userId, @NonNull List<String> courseIds, @NonNull InputStream is,
+                            @NonNull String remark) {
 
         // 校验用户是否存在
         try {
@@ -62,6 +63,11 @@ public class ApplyCourseService {
             var vc = vc_user.getLeft();
 
             if (vc == VC.Mapper.NO_SUCH_ENTITY) {
+                return VC.Service.NO_SUCH_USER;
+            }
+
+            // 只允许申请一个课程
+            if (courseIds.size() != 1) {
                 return VC.Service.NO_SUCH_USER;
             }
 
@@ -110,6 +116,7 @@ public class ApplyCourseService {
                         .addTime(date)
                         .build();
 
+
                 // 创建ApprovalFlow
 
                 var approvalFlow
@@ -120,6 +127,7 @@ public class ApplyCourseService {
                         .busType(BusType.LINEAR)
                         .addUserId(user.getId())
                         .addTime(date)
+                        .remark(remark)
                         .build();
 
                 // 创建ApprovalFlowDetail

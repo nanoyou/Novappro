@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +36,12 @@ public class ApplyCoursesServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
 
+        // 防止中文乱码
+        request.setCharacterEncoding("UTF-8");
+
         // 获取登录人ID
         Integer id = (Integer) request.getSession().getAttribute("login_user_id");
+        String remark = null;
 
         if (!ServletFileUpload.isMultipartContent(request)) {
             return;
@@ -54,6 +59,10 @@ public class ApplyCoursesServlet extends HttpServlet {
                 if (item.isFormField()) {
                     if ("selected_course[]".equals(item.getFieldName())) {
                         selectedCourseCode = item.getString();
+                        continue;
+                    }
+                    if ("remark".equals(item.getFieldName())) {
+                        remark = item.getString(StandardCharsets.UTF_8.name());
                     }
                 } else {
                     is = item.getInputStream();
@@ -65,18 +74,18 @@ public class ApplyCoursesServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        if (is == null){
+        if (is == null || remark == null) {
+            System.out.println("is 和 remark 不可以为空.");
             return;
         }
 
         // 获取选取的课程列表
         if (selectedCourseCode != null) {
 
-
-                List<String> selectedCourseCodeList = new ArrayList<>();
-                selectedCourseCodeList.add(selectedCourseCode);
-                // 申请这些课程
-                APPLY_COURSE_SERVICE.apply(id, selectedCourseCodeList, is);
+            List<String> selectedCourseCodeList = new ArrayList<>();
+            selectedCourseCodeList.add(selectedCourseCode);
+            // 申请这些课程
+            APPLY_COURSE_SERVICE.apply(id, selectedCourseCodeList, is, remark);
 
         }
 
