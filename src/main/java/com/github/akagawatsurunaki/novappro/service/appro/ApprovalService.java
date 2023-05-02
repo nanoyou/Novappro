@@ -163,7 +163,7 @@ public class ApprovalService {
                                       @NonNull String remark,
                                       boolean approSuc) {
         try {
-            // 如果同意审批
+            // 如果不同意审批
             if (!approSuc && remark.isBlank()) {
                 return VC.Service.REMARK_IS_BLANK;
             }
@@ -186,4 +186,13 @@ public class ApprovalService {
 
         }
     }
+
+    /**
+     * 调用该方法, 将会新建一个
+     * 如果, 就不创建
+     */
+    public void func() {
+
+    }
+
 }

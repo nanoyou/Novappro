@@ -62,9 +62,9 @@ public class ApprovalFlowMapperImpl implements ApprovalFlowMapper {
                     UPDATE audit_flow
                     SET audit_flow.appro_status = ?
                     WHERE audit_flow.flow_no = ?;""";
-            Db.use().execute(sql, status.name(), flowNo);
 
-            return VC.Mapper.OK;
+            // 如果更新行数不是1, 那么返回错误; 否则返回
+            return Db.use().execute(sql, status.name(), flowNo) != 1 ? VC.Mapper.UPDATE_FAILED : VC.Mapper.OK;
 
         } catch (SQLException e) {
             e.printStackTrace();

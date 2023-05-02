@@ -9,6 +9,7 @@ public final class VC {
         NO_SUCH_ENTITY,
         EMPTY_ENTITY_LIST,
         MORE_THAN_ONE_ENTITY,
+        UPDATE_FAILED,
         SQL_EXCEPTION,
         OTHER_EXCEPTION,
         FAILED_TO_PARSE_ENTITY,
