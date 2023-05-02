@@ -20,7 +20,7 @@
 </script>
 <body>
 <h1>当前课程表</h1>
-<form action="${pageContext.request.contextPath}/apply_courses" method="post">
+<form action="${pageContext.request.contextPath}/apply_courses" method="post" enctype="multipart/form-data">
     <table border="1">查询到的课程
         <%-- 表头 --%>
         <tr>
@@ -79,6 +79,12 @@
             }
         %>
     </table>
+    <label>
+        <input name="remark" type="text" placeholder="请输入申请原因">
+    </label>
+    <label>
+        <input name="upload_img" type="file" placeholder="请输入申请原因" alt="">
+    </label>
     <label>
         <input id="confirm_btn" type="submit" value="确认申请课程"/>
     </label>
