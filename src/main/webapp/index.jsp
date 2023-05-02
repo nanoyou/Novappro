@@ -25,7 +25,7 @@
 
     .login-form {
         width: 240px;
-        height: 220px;
+        height: 250px;
         display: flex;
         flex-direction: column;
         padding: 40px;
@@ -34,7 +34,7 @@
         z-index: 100;
         /*background: inherit;*/
         border-radius: 18px;
-        background-color: rgba(255, 255, 255, 0.6);
+        background-color: rgba(255, 255, 255, 0.7);
         overflow: hidden; /* 隐藏多余的模糊效果*/
     }
 
@@ -66,6 +66,34 @@
         font-size: 10px;
         text-decoration: none;
         color: rgb(73, 73, 73);
+    }
+
+    .err-msg {
+        position: relative;
+        font-size: 10px;
+        float: top;
+        color: rgb(255, 0, 0);
+        /* 错误提示闪烁 */
+        animation: blink 1.5s linear 3;
+        -webkit-animation: blink 1.5s linear 3;
+        -moz-animation: blink 1.5s linear 3;
+        -ms-animation: blink 1.5s linear 3;
+        -o-animation: blink 1.5s linear 3;
+    }
+
+
+    @keyframes blink {
+        0% {
+            color: red;
+        }
+
+        50% {
+            color: transparent;
+        }
+
+        100% {
+            color: red;
+        }
     }
 
 </style>
@@ -105,6 +133,18 @@
         </label>
 
         <label>
+            <% if (request.getAttribute(SC.ReqAttr.ERROR_MESSAGE.name) != null) { %>
+            <p class="err-msg"><%=
+            request.getAttribute(SC.ReqAttr.ERROR_MESSAGE.name) %>
+            </p>
+            <% } else {
+            %>
+            <p class="err-msg">&nbsp</p>
+            <%
+                }%>
+        </label>
+
+        <label>
             <a href="${pageContext.request.contextPath}/signup.jsp">注册</a>
         </label>
 
@@ -118,10 +158,6 @@
     </form>
 </div>
 
-<%-- 显示错误信息 --%>
-<%--<% if (request.getAttribute(SC.ReqAttr.ERROR_MESSAGE.name) != null) { %>--%>
-<%--<p style="color: red; text-align: center"><%= request.getAttribute(SC.ReqAttr.ERROR_MESSAGE.name) %>--%>
-<%--</p>--%>
-<%--<% } %>--%>
+
 </body>
 </html>
