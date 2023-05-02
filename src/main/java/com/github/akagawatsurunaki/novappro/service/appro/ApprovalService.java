@@ -188,7 +188,7 @@ public class ApprovalService {
     }
 
     /**
-     * 调用该方法, 将会新建一个
+     * 调用该方法, 将会创建一个新的节点
      * 如果, 就不创建
      */
     public void func() {
