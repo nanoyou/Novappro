@@ -4,22 +4,22 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ReUtil;
 import com.github.akagawatsurunaki.novappro.annotation.ZhField;
 import com.github.akagawatsurunaki.novappro.constant.Constant;
-import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.UserType;
-import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.database.User;
+import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.ibatis.session.SqlSession;
 
 @NoArgsConstructor
 public class RegisterService {
     @Getter
     private static final RegisterService instance = new RegisterService();
 
-    private static final UserMapperImpl USER_MAPPER = UserMapperImpl.getInstance();
 
     public Pair<INFO, User> trySignUp(Object uname, Object rawPwd, Object cRawPwd) {
 
@@ -56,13 +56,16 @@ public class RegisterService {
         user.setType(UserType.STUDENT);
 
         // 调用Mapper对数据库执行INSERT语句
-        var verifyCodeUserPair = USER_MAPPER.insertUser(user);
+        try (SqlSession session = MyDb.use().openSession()) {
 
-        // 数据库插入是否成功
-        if (verifyCodeUserPair.getLeft() == VC.Mapper.OK) {
-            return new ImmutablePair<>(INFO.OK, user);
+            var userMapper = session.getMapper(UserMapper.class);
+            var rows = userMapper.insert(user);
+            session.commit();
+            if (rows == 1) {
+                return new ImmutablePair<>(INFO.OK, user);
+            }
+            return new ImmutablePair<>(INFO.MAPPER_FAILED, user);
         }
-        return new ImmutablePair<>(INFO.MAPPER_FAILED, user);
     }
 
     public enum INFO {
@@ -83,8 +86,7 @@ public class RegisterService {
                 desc = "用户名必须在" + Constant.MIN_LEN_USERNAME + "位到" + Constant.MAX_LEN_USERNAME + "位范围内。")
         USERNAME_OUT_OF_BOUND,
 
-        @ZhField(value = "下层服务错误",
-                desc = "")
+        @ZhField(value = "下层服务错误")
         MAPPER_FAILED,
 
         OK
