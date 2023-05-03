@@ -25,6 +25,7 @@
           <element id="library" level="project" name="Maven: cn.hutool:hutool-all:5.8.16" />
           <element id="library" level="project" name="Maven: commons-fileupload:commons-fileupload:1.5" />
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.11.0" />
+          <element id="library" level="project" name="Maven: org.mybatis:mybatis:3.5.13" />
         </element>
       </element>
       <element id="directory" name="META-INF">
