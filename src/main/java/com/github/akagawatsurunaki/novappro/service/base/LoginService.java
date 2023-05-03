@@ -2,19 +2,19 @@ package com.github.akagawatsurunaki.novappro.service.base;
 
 import com.github.akagawatsurunaki.novappro.constant.Constant;
 import com.github.akagawatsurunaki.novappro.constant.VC;
-import com.github.akagawatsurunaki.novappro.mapper.impl.UserMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.database.User;
+import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.ibatis.session.SqlSession;
 
 public class LoginService {
 
     @Getter
     private static final LoginService instance = new LoginService();
-
-    private static final UserMapperImpl USER_MAPPER = UserMapperImpl.getInstance();
 
     public Pair<VC.Service, User> tryLoginWithUserId(@NonNull Integer id, @NonNull String rawPassword) {
 
@@ -23,26 +23,25 @@ public class LoginService {
             return new ImmutablePair<>(VC.Service.TOO_LONG_PASSWORD, null);
         }
 
-        var pair = USER_MAPPER.selectUserById(id);
-        // 判断用户是否存在
+        try (SqlSession session = MyDb.use().openSession()) {
+            var userMapper = session.getMapper(UserMapper.class);
 
-        var vc = pair.getLeft();
-        if (vc == VC.Mapper.NO_SUCH_ENTITY) {
+            // 获取用户对象
+            var user = userMapper.selectById(id);
+
+            // 判断用户是否存在
+            if (user != null) {
+
+                // 密码正确
+                if (user.getRawPassword().equals(rawPassword)) {
+                    return new ImmutablePair<>(VC.Service.OK, user);
+                }
+
+                return new ImmutablePair<>(VC.Service.PASSWORD_ERROR, null);
+            }
+
             return new ImmutablePair<>(VC.Service.NO_SUCH_USER, null);
         }
-
-        // 获取用户对象
-        var user = pair.getRight();
-
-        // 校验密码
-
-        // 密码正确
-        if (user.getRawPassword().equals(rawPassword)) {
-            return new ImmutablePair<>(VC.Service.OK, user);
-        }
-
-        // 密码错误
-        return new ImmutablePair<>(VC.Service.PASSWORD_ERROR, null);
 
     }
 
