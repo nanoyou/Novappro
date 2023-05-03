@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -29,7 +28,7 @@ public class Course {
     String serialNumber;
 
     @ZhField(value = "教师组姓名", desc = "至少有1位教师")
-    List<String> teachers;
+    String teachers;
 
     @ZhField(value = "线上联系方式", desc = "最多" + Constant.MAX_LEN_COURSE_ONLINE_CONTACT_WAY + "个字符")
     String onlineContactWay;

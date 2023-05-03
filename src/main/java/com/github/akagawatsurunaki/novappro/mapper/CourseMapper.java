@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface CourseMapper {
 
-    Pair<VC.Mapper, List<Course>> selectAllCourses();
+    List<Course> selectAllCourses();
 
-    Pair<VC.Mapper, Course> selectCourseByCode(@NonNull String code);
+    Course selectCourseByCode(@NonNull String code);
 
-    Pair<VC.Mapper, List<Course>> selectCourses(@NonNull List<String> codes);
+    List<Course> selectCourses(@NonNull List<String> codes);
 
 }

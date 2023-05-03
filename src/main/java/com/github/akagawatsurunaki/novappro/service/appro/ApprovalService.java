@@ -3,7 +3,10 @@ package com.github.akagawatsurunaki.novappro.service.appro;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.*;
-import com.github.akagawatsurunaki.novappro.mapper.impl.*;
+import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
+import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApproFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
 import com.github.akagawatsurunaki.novappro.model.frontend.CourseAppItemDetail;
@@ -31,8 +34,6 @@ public class ApprovalService {
 
     private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
             ApprovalFlowDetailMapperImpl.getInstance();
-
-    private static final CourseMapper COURSE_MAPPER = CourseMapperImpl.getInstance();
 
 
     public Pair<VC.Service, List<ApplItem>> getApplItems(@NonNull Integer approverId) {
@@ -148,9 +149,16 @@ public class ApprovalService {
         if (vc_ca.getLeft() == VC.Mapper.OK) {
             var appl = vc_ca.getRight();
             var courseIds = CourseUtil.getCourseCodes(appl.getApproCourseIds());
-            var vc_courses = COURSE_MAPPER.selectCourses(courseIds);
-            if (vc_courses.getLeft() == VC.Mapper.OK) {
-                return new ImmutablePair<>(VC.Service.OK, vc_courses.getRight());
+
+            try (SqlSession session = MyDb.use().openSession(true)) {
+
+                var courseMapper = session.getMapper(CourseMapper.class);
+
+                var courses = courseMapper.selectCourses(courseIds);
+
+                if (courses != null) {
+                    return new ImmutablePair<>(VC.Service.OK, courses);
+                }
             }
         }
         return new ImmutablePair<>(VC.Service.ERROR, null);
