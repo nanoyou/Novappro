@@ -12,10 +12,6 @@ public class Constant {
 
     public static final int MIN_LEN_USER_ID = 8;
 
-    public static final int NO_SELECTED_ITEM_ID = -1;
-
-    public static final int DEFAULT_APPLICATION_FORM_ID = -1;
-
     public static final int MIN_LEN_USERNAME = 1;
     public static final int MAX_LEN_USERNAME = 25;
 
@@ -24,10 +20,5 @@ public class Constant {
     public static final int MAX_LEN_COURSE_SERIAL_NUMBER = 7;
     public static final int MAX_LEN_COURSE_ONLINE_CONTACT_WAY = 255;
     public static final int MAX_LEN_COURSE_COMMENT = 500;
-
-
-    public static final BigDecimal MAX_LEN_COURSE_CREDIT = new BigDecimal("10.00");
-
-
 
 }

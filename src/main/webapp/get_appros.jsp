@@ -3,13 +3,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.User" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.enumeration.UserType" %><%--
-  Created by IntelliJ IDEA.
-  User: 96514
-  Date: 2023/4/19
-  Time: 17:14
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
