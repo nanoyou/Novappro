@@ -74,6 +74,11 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
+    public User selectById(int id) {
+        return null;
+    }
+
+    @Override
     public Pair<VC.Mapper, User> selectUserById(@NonNull Integer id) {
         try {
             var sql = "SELECT * FROM `user` WHERE `user`.`id` = ?;";

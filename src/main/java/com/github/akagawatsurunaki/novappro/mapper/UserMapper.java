@@ -9,9 +9,10 @@ import java.util.List;
 
 public interface UserMapper {
 
-    public Pair<VC.Mapper, User> selectUserById(@NonNull Integer id);
-    Pair<VC.Mapper, List<User>> selectAllUsers();
+    User selectById(int id);
 
+    Pair<VC.Mapper, User> selectUserById(@NonNull Integer id);
+    Pair<VC.Mapper, List<User>> selectAllUsers();
     Pair<VC.Mapper, User> insertUser(User user);
 
 }
