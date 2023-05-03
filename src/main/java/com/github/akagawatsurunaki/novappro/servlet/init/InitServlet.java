@@ -14,8 +14,6 @@ public class InitServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        MyDb.init();
-
         try(SqlSession session = MyDb.use().openSession()){
             var mapper = session.getMapper(UserMapper.class);
             var user = mapper.selectById(20210000);
