@@ -8,10 +8,10 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public interface ApprovalFlowMapper {
 
-    Pair<VC.Mapper, ApprovalFlow> insert(ApprovalFlow approvalFlow);
+    int insert(ApprovalFlow approvalFlow);
 
-    Pair<VC.Mapper, ApprovalFlow> select(@NonNull String flowNo);
+    ApprovalFlow select(@NonNull String flowNo);
 
-    VC.Mapper updateApproStatus(@NonNull String flowNo, @NonNull ApprovalStatus status);
+    int updateApproStatus(@NonNull String flowNo, @NonNull ApprovalStatus status);
 
 }

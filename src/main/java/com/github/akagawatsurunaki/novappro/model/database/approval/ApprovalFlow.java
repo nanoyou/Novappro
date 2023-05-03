@@ -21,7 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @FieldNameConstants
-@Table(table = "audit_flow")
+@Table(table = "approval_flow")
 public class ApprovalFlow {
 
     /**

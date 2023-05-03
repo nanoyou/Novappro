@@ -8,7 +8,6 @@ import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import com.github.akagawatsurunaki.novappro.mapper.*;
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
-import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApproFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
@@ -41,7 +40,6 @@ public class ApplyCourseService {
 
     private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
 
-    private static final ApprovalFlowMapper APPROVAL_FLOW_MAPPER = ApprovalFlowMapperImpl.getInstance();
 
     private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
             ApprovalFlowDetailMapperImpl.getInstance();
@@ -72,6 +70,8 @@ public class ApplyCourseService {
 
             var userMapper = session.getMapper(UserMapper.class);
             var uploadFileMapper = session.getMapper(UploadFileMapper.class);
+            var approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
+
 
             var user = userMapper.selectById(userId);
 
@@ -149,7 +149,12 @@ public class ApplyCourseService {
 
                     // 向数据库插入
                     COURSE_APPLICATION_MAPPER.insert((CourseApplication) approval);
-                    APPROVAL_FLOW_MAPPER.insert(approvalFlow);
+
+                    rows = approvalFlowMapper.insert(approvalFlow);
+
+                    if (rows != 1) {
+                        return VC.Service.ERROR;
+                    }
 
                     COURSE_APPRO_FLOW_MAPPER.insert(courseApproFlow);
 

@@ -32,6 +32,7 @@ public final class VC {
         REMARK_IS_BLANK("评论为空"),
         BLANK_PASSWORD("密码为空"),
         USER_ID_NAN("非法的用户ID"),
+        FAILED_UPDATE("更新失败")
         ;
 
         public final String message;

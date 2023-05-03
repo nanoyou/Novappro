@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowMapper">
+
+
+    <insert id="insert">
+        INSERT INTO `web_dev`.`approval_flow` (`flow_no`, `title`, `bus_type`, `add_user_id`, `add_time`, `appro_status`, `remark`)
+        VALUES (#{flowNo}, #{title}, #{busType}, #{addUserId}, #{addTime}, #{approStatus}, #{remark});
+    </insert>
+
+    <update id="updateApproStatus">
+        UPDATE `approval_flow`
+        SET `approval_flow`.appro_status = #{status}
+        WHERE `approval_flow`.flow_no = #{flowNo};
+    </update>
+
+    <select id="select"
+            resultType="com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow">
+        SELECT * FROM `approval_flow` WHERE `approval_flow`.`flow_no` = #{flowNo};
+    </select>
+</mapper>
