@@ -17,10 +17,12 @@ import com.github.akagawatsurunaki.novappro.model.database.file.UploadFile;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
 import com.github.akagawatsurunaki.novappro.util.ImgUtil;
+import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.ibatis.session.SqlSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,8 +35,6 @@ import java.util.List;
 public class ApplyCourseService {
     @Getter
     private static final ApplyCourseService instance = new ApplyCourseService();
-
-    private static final UserMapper USER_MAPPER = UserMapperImpl.getInstance();
 
     private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
 
@@ -51,33 +51,29 @@ public class ApplyCourseService {
 
     static {
         // TODO: 默认只允许于老师参与审批课程任务
-        approver = USER_MAPPER.selectUserById(20210004).getRight();
+        try (SqlSession session = MyDb.use().openSession()) {
+            var userMapper = session.getMapper(UserMapper.class);
+            approver = userMapper.selectById(20210004);
+        }
     }
 
     public VC.Service apply(@NonNull Integer userId, @NonNull List<String> courseIds, @NonNull InputStream is,
                             @NonNull String remark) {
 
-        // 校验用户是否存在
-        try {
-            var vc_user = USER_MAPPER.selectUserById(userId);
-            var vc = vc_user.getLeft();
+        // 只允许申请一个课程
+        if (courseIds.size() != 1) {
+            return VC.Service.NO_SUCH_USER;
+        }
 
-            if (vc == VC.Mapper.NO_SUCH_ENTITY) {
-                return VC.Service.NO_SUCH_USER;
-            }
+        try (SqlSession session = MyDb.use().openSession()) {
 
-            // 只允许申请一个课程
-            if (courseIds.size() != 1) {
-                return VC.Service.NO_SUCH_USER;
-            }
+            var userMapper = session.getMapper(UserMapper.class);
 
-            // TODO: 校验课程是否存在
+            var user = userMapper.selectById(userId);
 
-            // 用户存在
+            // 校验用户是否存在
+            if (user != null) {
 
-            if (vc == VC.Mapper.OK) {
-
-                var user = vc_user.getRight();
                 var flowNo = IdUtil.genFlowNo(user.getId());
                 Date date = new Date();
 
@@ -160,6 +156,9 @@ public class ApplyCourseService {
 
                 return VC.Service.OK;
             }
+
+            return VC.Service.NO_SUCH_USER;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -168,35 +167,35 @@ public class ApplyCourseService {
 
     /**
      * 根据用户的ID查询其下的所有课程申请
+     *
      * @param userId
      * @return
      */
     public Triple<VC.Service, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@NonNull Integer userId) {
-        // 校验用户是否存在
-        var vc_user = USER_MAPPER.selectUserById(userId);
-        var vc = vc_user.getLeft();
 
-        if (vc == VC.Mapper.NO_SUCH_ENTITY) {
+        try (SqlSession session = MyDb.use().openSession()) {
+
+            var userMapper = session.getMapper(UserMapper.class);
+            var user = userMapper.selectById(userId);
+
+            if (user != null) {
+                var vc_l = COURSE_APPLICATION_MAPPER.select(user.getId());
+                var courseApplicationList = vc_l.getRight();
+
+                List<ApprovalStatus> approvalStatusList = new ArrayList<>();
+
+                for (var ca : courseApplicationList) {
+                    var s = APPROVAL_FLOW_DETAIL_MAPPER.select(ca.getFlowNo()).getRight();
+                    var st = s.getAuditStatus();
+                    approvalStatusList.add(st);
+                }
+
+                if (vc_l.getLeft() == VC.Mapper.OK) {
+                    return new ImmutableTriple<>(VC.Service.OK, courseApplicationList, approvalStatusList);
+                }
+                return new ImmutableTriple<>(VC.Service.ERROR, null, null);
+            }
             return new ImmutableTriple<>(VC.Service.NO_SUCH_USER, null, null);
         }
-
-        var user = vc_user.getRight();
-
-        var vc_l = COURSE_APPLICATION_MAPPER.select(user.getId());
-        var courseApplicationList = vc_l.getRight();
-
-        List<ApprovalStatus> approvalStatusList = new ArrayList<>();
-
-        for (var ca : courseApplicationList) {
-            var s = APPROVAL_FLOW_DETAIL_MAPPER.select(ca.getFlowNo()).getRight();
-            var st = s.getAuditStatus();
-            approvalStatusList.add(st);
-        }
-
-
-        if (vc_l.getLeft() == VC.Mapper.OK) {
-            return new ImmutableTriple<>(VC.Service.OK, courseApplicationList, approvalStatusList);
-        }
-        return new ImmutableTriple<>(VC.Service.ERROR, null, null);
     }
 }
