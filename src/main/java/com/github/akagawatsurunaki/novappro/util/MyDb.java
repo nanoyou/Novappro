@@ -14,14 +14,19 @@ public class MyDb {
 
     private static boolean isInited = false;
 
-    public static SqlSessionFactory use() throws IOException {
+    public static SqlSessionFactory use(){
         if (!isInited){
-            init();
+            try {
+                init();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
         return sqlSessionFactory;
     }
 
-    public static void init() throws IOException {
+    static void init() throws IOException {
         var resource = ResourceUtil.getResource("config/mybatis/mybatis-config.xml");
         InputStream inputStream = Resources.getResourceAsStream("config/mybatis/mybatis-config.xml");
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
