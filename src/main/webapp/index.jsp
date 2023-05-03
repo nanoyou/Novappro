@@ -111,11 +111,17 @@
         // 如果都不为空，执行提交操作
         return true;
     }
+
+    function redirect(flag) {
+        if (flag) {
+            location.href = "${pageContext.request.contextPath}/get_appros";
+        }
+    }
 </script>
 <body>
 <div class="container">
-    <form action="http://localhost:8080/Novappro_war_exploded/login"
-          method="post" onsubmit="checkForm()"
+    <form action="${pageContext.request.contextPath}/login"
+          method="get" onsubmit="redirect(checkForm())"
           class="login-form">
         <h2> NOVAPPRO </h2>
 
@@ -150,7 +156,7 @@
         </label>
 
         <label>
-            <button id="login_btn" name="submit" type="submit" value="登录">
+            <button id="login_btn" name="submit" type="submit" value="登录" onclick="redirect()">
                 登录
             </button>
         </label>

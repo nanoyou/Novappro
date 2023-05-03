@@ -20,13 +20,18 @@
         location.href =
             '${pageContext.request.contextPath}<%=SC.WebServletValue.GET_APPL_ITEM_DETAIL%>' + '?<%=SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name%>=' + flowNo;
     }
+
+    function init(){
+        location.href ="${pageContext.request.contextPath}/get_appros";
+    }
+
 </script>
-<body>
+<body onload="init()">
 <%
     List<ApplItem> applItemList =
             (List<ApplItem>) request.getAttribute(SC.ReqAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name);
 
-    User loginUser = (User) request.getAttribute(SC.ReqAttr.LOGIN_USER.name);
+    User loginUser = (User) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name);
 %>
 <h1>我的审批</h1>
 尊敬的<%=loginUser.getUsername()%> <%=loginUser.getType().chinese%>，您好！
@@ -69,7 +74,8 @@
     </tr>
 
     <%
-        for (ApplItem applItem : applItemList) {
+        if (applItemList != null) {
+            for (ApplItem applItem : applItemList) {
     %>
     <tr>
         <td>
@@ -95,6 +101,7 @@
         </td>
     </tr>
     <%
+            }
         }
     %>
 </table>

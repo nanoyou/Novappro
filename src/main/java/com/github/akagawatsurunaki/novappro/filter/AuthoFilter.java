@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @WebFilter(filterName = "AuthoFilter",
 urlPatterns = {
-        SC.WebServletValue.APPL_ITEM,
+
 }
 )
 public class AuthoFilter extends HttpFilter {
