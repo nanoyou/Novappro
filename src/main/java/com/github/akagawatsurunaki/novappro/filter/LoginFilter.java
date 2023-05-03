@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @WebFilter(filterName = "LoginFilter",
         urlPatterns = {
-                "/login",
                 "/welcome.jsp"
         })
 public class LoginFilter extends HttpFilter {
@@ -36,7 +35,6 @@ public class LoginFilter extends HttpFilter {
         // 是否登录
         if (uid == null) {
             res.sendRedirect(SC.JSPResource.INDEX.name);
-            return;
         }
 
     }
@@ -54,7 +52,7 @@ public class LoginFilter extends HttpFilter {
         if (userId.isPresent() && rawPassword.isPresent()) {
 
             // 若用户ID为空
-            if (userId.get().isBlank()){
+            if (userId.get().isBlank()) {
                 request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.USER_ID_NAN.message);
                 response.sendRedirect(SC.JSPResource.INDEX.name);
                 return;
@@ -67,8 +65,7 @@ public class LoginFilter extends HttpFilter {
                 return;
             }
 
-            try
-            {
+            try {
 
                 // 尝试利用密码登陆
                 var vc_user = LOGIN_SERVICE.tryLoginWithUserId(userId.map(Integer::parseInt).get(), rawPassword.get());
@@ -95,14 +92,16 @@ public class LoginFilter extends HttpFilter {
                         // 根据不同的身份发送到不同的页面
                         switch (user.getType()) {
                             case STUDENT -> response.sendRedirect(SC.JSPResource.WELCOME_SESSION.name);
-                            case LECTURE_TEACHER ->
-                                    request.getRequestDispatcher(SC.WebServletValue.GET_APPROS).forward(request, response);
+                            case LECTURE_TEACHER, SUPERVISOR_TEACHER ->
+//                                response.sendRedirect(SC.JSPResource.GET_APPROS.name);
+                                    request.getRequestDispatcher(SC.WebServletValue.GET_APPROS).forward(request,
+                                            response);
                             case ADMIN -> System.out.println("尚未实现");
                         }
                         return;
                     }
                 }
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 e.printStackTrace();
                 request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.USER_ID_NAN.message);
             }
