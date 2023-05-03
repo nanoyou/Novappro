@@ -36,7 +36,16 @@ public class ApprovalFlowDetailMapperImpl implements ApprovalFlowDetailMapper {
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    public Pair<VC.Mapper, ApprovalFlowDetail> selectCurrentNode() {
+        return null;
+    }
+
     @Override
+    @Deprecated
     public Pair<VC.Mapper, ApprovalFlowDetail> select(@NonNull String flowNo) {
         try {
             String selectSQL = "SELECT * FROM `audit_flow_detail` WHERE `audit_flow_detail`.`flow_no` = ?;";

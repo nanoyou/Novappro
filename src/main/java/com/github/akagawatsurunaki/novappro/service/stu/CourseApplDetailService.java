@@ -92,7 +92,7 @@ public class CourseApplDetailService {
         return new ImmutablePair<>(VC.Service.OK, vc_courses.getRight());
     }
 
-    public Pair<VC.Service, List<Course>> delAppliedCourses(@NonNull String flowNo,
+    private Pair<VC.Service, List<Course>> delAppliedCourses(@NonNull String flowNo,
                                                             @NonNull List<String> courseCodesToDel) {
         List<Course> result = new ArrayList<>();
 

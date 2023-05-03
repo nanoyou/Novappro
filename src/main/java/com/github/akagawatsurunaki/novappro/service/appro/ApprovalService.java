@@ -99,7 +99,7 @@ public class ApprovalService {
 
 
     public Pair<VC.Service, CourseAppItemDetail> getDetail(@NonNull String flowNo) {
-        // TODO: 2023年4月20日 DEBUG
+
         var vc_af = APPROVAL_FLOW_MAPPER.select(flowNo);
 
         if (vc_af.getLeft() == VC.Mapper.OK) {

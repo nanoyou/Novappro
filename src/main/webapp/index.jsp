@@ -19,7 +19,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: url("http://localhost:8080/Novappro_war_exploded/img/index.png") fixed no-repeat;
+        /*background: url("http://localhost:8080/Novappro_war_exploded/img/index.png") fixed no-repeat;*/
+        background: url("${pageContext.request.contextPath}/img/index.png") fixed no-repeat;
         background-size: cover;
     }
 

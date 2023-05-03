@@ -166,6 +166,11 @@ public class ApplyCourseService {
         return VC.Service.ERROR;
     }
 
+    /**
+     * 根据用户的ID查询其下的所有课程申请
+     * @param userId
+     * @return
+     */
     public Triple<VC.Service, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@NonNull Integer userId) {
         // 校验用户是否存在
         var vc_user = USER_MAPPER.selectUserById(userId);
