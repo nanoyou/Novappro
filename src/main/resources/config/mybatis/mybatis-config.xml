@@ -21,6 +21,7 @@
 <!--        <mapper resource="org/mybatis/example/BlogMapper.xml"/>-->
         <mapper resource="mapper/user_mapper.xml"/>
         <mapper resource="mapper/course_mapper.xml"/>
+        <mapper resource="mapper/upload_file_mapper.xml"/>
     </mappers>
 
 </configuration>

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public interface UploadFileMapper {
 
-    Pair<VC.Mapper, UploadFile> selectByFlowNo(@NonNull String flowNo);
+    UploadFile selectByFlowNo(@NonNull String flowNo);
 
-    Pair<VC.Mapper, UploadFile> insert(@NonNull UploadFile uploadFile);
+    int insert(@NonNull UploadFile uploadFile);
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.akagawatsurunaki.novappro.mapper.UploadFileMapper">
+
+    <insert id="insert">
+        INSERT INTO `web_dev`.`upload_file` (`flow_no`, `user_id`, `file_name`)
+        VALUES (#{flowNo}, #{userId}, #{fileName});
+    </insert>
+
+    <select id="selectByFlowNo"
+            resultType="com.github.akagawatsurunaki.novappro.model.database.file.UploadFile">
+        SELECT * FROM upload_file WHERE upload_file.flow_no = #{flowNo};
+    </select>
+
+</mapper>
