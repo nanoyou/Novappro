@@ -19,4 +19,5 @@
     <select id="selectAllUsers" resultType="com.github.akagawatsurunaki.novappro.model.database.User">
         select * from user
     </select>
+
 </mapper>

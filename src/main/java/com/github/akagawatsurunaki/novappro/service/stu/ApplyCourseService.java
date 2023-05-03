@@ -51,7 +51,7 @@ public class ApplyCourseService {
 
     static {
         // TODO: 默认只允许于老师参与审批课程任务
-        try (SqlSession session = MyDb.use().openSession()) {
+        try (SqlSession session = MyDb.use().openSession(true)) {
             var userMapper = session.getMapper(UserMapper.class);
             approver = userMapper.selectById(20210004);
         }
@@ -65,7 +65,7 @@ public class ApplyCourseService {
             return VC.Service.NO_SUCH_USER;
         }
 
-        try (SqlSession session = MyDb.use().openSession()) {
+        try (SqlSession session = MyDb.use().openSession(true)) {
 
             var userMapper = session.getMapper(UserMapper.class);
 

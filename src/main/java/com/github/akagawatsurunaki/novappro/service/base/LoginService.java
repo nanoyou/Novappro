@@ -23,7 +23,7 @@ public class LoginService {
             return new ImmutablePair<>(VC.Service.TOO_LONG_PASSWORD, null);
         }
 
-        try (SqlSession session = MyDb.use().openSession()) {
+        try (SqlSession session = MyDb.use().openSession(true)) {
             var userMapper = session.getMapper(UserMapper.class);
 
             // 获取用户对象

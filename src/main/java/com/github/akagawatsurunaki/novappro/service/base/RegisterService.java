@@ -56,11 +56,10 @@ public class RegisterService {
         user.setType(UserType.STUDENT);
 
         // 调用Mapper对数据库执行INSERT语句
-        try (SqlSession session = MyDb.use().openSession()) {
+        try (SqlSession session = MyDb.use().openSession(true)) {
 
             var userMapper = session.getMapper(UserMapper.class);
             var rows = userMapper.insert(user);
-            session.commit();
             if (rows == 1) {
                 return new ImmutablePair<>(INFO.OK, user);
             }

@@ -73,7 +73,7 @@ public class ApprovalService {
 
                 var applFlowDetail = vc_afd.getRight();
 
-                try (SqlSession session = MyDb.use().openSession()) {
+                try (SqlSession session = MyDb.use().openSession(true)) {
 
                     var userMapper = session.getMapper(UserMapper.class);
 
@@ -101,7 +101,7 @@ public class ApprovalService {
 
     public Pair<VC.Service, CourseAppItemDetail> getDetail(@NonNull String flowNo) {
 
-        try (SqlSession session = MyDb.use().openSession()) {
+        try (SqlSession session = MyDb.use().openSession(true)) {
 
             var userMapper = session.getMapper(UserMapper.class);
             var vc_af = APPROVAL_FLOW_MAPPER.select(flowNo);
