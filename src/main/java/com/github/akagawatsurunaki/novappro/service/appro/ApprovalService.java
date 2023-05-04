@@ -256,45 +256,30 @@ public class ApprovalService {
 
         }
     }
-//    private ApprovalFlowDetail getCurrentApprovalFlowNode(@NonNull List<ApprovalFlowDetail> approvalFlowDetails) {
-//
-//        // 如果没有审批节点(即审批链不存在), 直接返回null
-//        if (approvalFlowDetails.isEmpty()){
-//            return null;
-//        }
-//
-//        int i = 0;
-//
-//        for (var approvalFlowDetail : approvalFlowDetails) {
-//            if (approvalFlowDetail.getAuditStatus() == ApprovalStatus.APPROVED || approvalFlowDetail.getAuditStatus
-//            () == ApprovalStatus.REJECTED){
-//                i++;
-//            } else {
-//                break;
-//            }
-//        }
-//
-//        return approvalFlowDetails.get(i);
-//
-//    }
 
     /**
-     * 获取指定的
+     * 获取当前审批节点
      *
      * @param flowNo
-     * @return
+     * @return 如果申请已经结束将会返回最后一个审批通过的节点; <br>如果其中有至少一个节点被驳回, 那么返回第一个被驳回的节点; <br>否则返回第一个既不是被驳回, 也不是被同意的节点.
      */
-    private ApprovalFlowDetail getCurrentApprovalFlowNode(@NonNull String flowNo) {
+    public ApprovalFlowDetail getCurrentApprovalFlowNode(@NonNull String flowNo) {
 
         try (var session = MyDb.use().openSession(true)) {
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
             var approvalFlowDetails = approvalFlowDetailMapper.selectByFlowNo(flowNo);
+
+            val lastDetail = approvalFlowDetails.get(approvalFlowDetails.size() - 1);
+            if (lastDetail.getAuditStatus() == ApprovalStatus.APPROVED) {
+                return lastDetail;
+            }
+
             return approvalFlowDetails.stream()
-                    .dropWhile(detail -> detail.getAuditStatus() == ApprovalStatus.APPROVED || detail.getAuditStatus() == ApprovalStatus.REJECTED)
+                    .filter(detail -> detail.getAuditStatus() == ApprovalStatus.REJECTED ||
+                            (detail.getAuditStatus() != ApprovalStatus.APPROVED && detail.getAuditStatus() != ApprovalStatus.REJECTED))
                     .findFirst()
                     .orElse(null);
         }
-
     }
 
 }
