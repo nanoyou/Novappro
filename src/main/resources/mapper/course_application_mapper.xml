@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.akagawatsurunaki.novappro.mapper.CourseApplicationMapper">
+
+    <insert id="insert">
+        INSERT INTO courses_application(flow_no, add_user_id, add_time, appro_courses)
+        VALUES (#{flowNo}, #{addUserId}, #{addTime}, #{approCourseIds})
+    </insert>
+    <update id="update">
+        UPDATE courses_application
+        SET add_user_id = #{addUserId}, add_time = #{addTime}, appro_courses = #{approCourseIds}
+        WHERE flow_no = #{flowNo}
+    </update>
+    <select id="selectByFlowNo"
+            resultType="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication">
+        SELECT *
+        FROM courses_application
+        WHERE flow_no = #{flowNo};
+    </select>
+    <select id="select"
+            resultType="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication">
+        SELECT *
+        FROM courses_application
+        WHERE add_user_id = #{addUserId};
+    </select>
+</mapper>

@@ -25,6 +25,7 @@
         <mapper resource="mapper/approval_flow_mapper.xml"/>
         <mapper resource="mapper/approval_authority_mapper.xml"/>
         <mapper resource="mapper/approval_flow_detail_mapper.xml"/>
+        <mapper resource="mapper/course_application_mapper.xml"/>
     </mappers>
 
 </configuration>
