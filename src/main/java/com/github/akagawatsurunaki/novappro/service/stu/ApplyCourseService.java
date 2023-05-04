@@ -48,17 +48,15 @@ public class ApplyCourseService {
     private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
             ApprovalFlowDetailMapperImpl.getInstance();
 
-    private static final CourseApproFlowMapper COURSE_APPRO_FLOW_MAPPER = CourseApproFlowMapperImpl.getInstance();
+//    private static final User approver;
 
-    private static final User approver;
-
-    static {
-        // TODO: 默认只允许于老师参与审批课程任务
-        try (SqlSession session = MyDb.use().openSession(true)) {
-            var userMapper = session.getMapper(UserMapper.class);
-            approver = userMapper.selectById(20210004);
-        }
-    }
+//    static {
+//        // TODO: 默认只允许于老师参与审批课程任务
+//        try (SqlSession session = MyDb.use().openSession(true)) {
+//            var userMapper = session.getMapper(UserMapper.class);
+//            approver = userMapper.selectById(20210004);
+//        }
+//    }
 
     public VC.Service apply(@NonNull Integer userId,
                             @NonNull List<String> courseIds,
@@ -206,6 +204,7 @@ public class ApplyCourseService {
      * 把审批人对应需要创建的ApproveDetail创建出来保存在数据库中
      */
     private List<User> getApproverList(@NonNull String courseCode) {
+
         throw new NotImplementedException();
     }
 
