@@ -7,6 +7,7 @@ import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapper
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApproFlowMapperImpl;
+import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
 import com.github.akagawatsurunaki.novappro.model.frontend.CourseAppItemDetail;
@@ -14,10 +15,13 @@ import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.val;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ibatis.session.SqlSession;
 
+import java.net.UnknownServiceException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +39,29 @@ public class ApprovalService {
     private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
             ApprovalFlowDetailMapperImpl.getInstance();
 
-
+    /**
+     * 根据审批人的ID获取对应的可审批对象
+     * TODO: 这里需要增加一部分的校验工作
+     *
+     * @apiNote ApplItem是前端使用的实体类
+     * @param approverId
+     * @return 服务响应码,
+     */
     public Pair<VC.Service, List<ApplItem>> getApplItems(@NonNull Integer approverId) {
+
+        // 判断用户的类型
+        // 获取审批人的权重
+        // 构建审批人链条, 按照权重排序
+        // 如果链条为空直接返回空
+
+        // 如果当前的ApplItem是第一个节点, 直接返回
+
+        // 如果当前的ApplItem还有前继节点, 检查它的status是否为(已通过or已拒绝)
+        //  如果(已拒绝) 则不显示
+        //  如果(已通过) 则可以开始审批
+        //  如果(审批|审批|审批...) 则不显示
+
+
         var vc_flowNos = APPROVAL_FLOW_DETAIL_MAPPER.selectFlowNoByApproverId(approverId);
 
         if (vc_flowNos.getLeft() == VC.Mapper.OK) {
@@ -100,6 +125,12 @@ public class ApprovalService {
     }
 
 
+    /**
+     * 根据流水号获取课程申请明细(CourseAppItemDetail)
+     * @param flowNo 指定的流水号
+     * @return 服务响应码, 课程申请明细(可能有多个?)
+     */
+    // TODO: 未校验此处的逻辑性, 可能有多个
     public Pair<VC.Service, CourseAppItemDetail> getDetail(@NonNull String flowNo) {
 
         try (SqlSession session = MyDb.use().openSession(true)) {
@@ -143,7 +174,13 @@ public class ApprovalService {
         }
     }
 
-
+    /**
+     * 按照指定的流水号查询课程, 即查询一个课程申请(ApprovalFlow)内包含的所有课程(可能有0, 1, 或更多)
+     *
+     * @param flowNo 指定了ApprovalFlow的流水号
+     * @return 服务响应码, 查询到的所有课程
+     * @implNote 该方法从MySQL数据库中抽取crs_appro? 数据, 按照其主键查询
+     */
     private Pair<VC.Service, List<Course>> getAppliedCourses(@NonNull String flowNo) {
         var vc_ca = COURSE_APPLICATION_MAPPER.selectByFlowNo(flowNo);
         if (vc_ca.getLeft() == VC.Mapper.OK) {
@@ -200,11 +237,31 @@ public class ApprovalService {
         }
     }
 
+    static List<User> approvers = new ArrayList<>();
+
+    static {
+        try (var session = MyDb.use().openSession(true)) {
+            val userMapper = session.getMapper(UserMapper.class);
+            // TODO: 查询一个固定的管理员
+            val approver1 = userMapper.selectById(20210000);
+            val approver2 = userMapper.selectById(20210000);
+            approvers.add(approver1);
+            approvers.add(approver2);
+            // throw new NotImplementedException("需要");
+        }
+    }
+
     /**
      * 调用该方法, 将会创建一个新的节点
      * 如果, 就不创建
      */
     public void func() {
+
+        // 从has_appro中查询审批人的权重和审批人能审批的课程code.
+        // who 审批权重 审批哪门课
+
+        // 如果课程code与当前需要审批的
+
 
     }
 

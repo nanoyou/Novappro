@@ -25,7 +25,7 @@ import java.util.Date;
 public class ApprovalFlow {
 
     /**
-     * 审批流ApprovalFlow的唯一标志号码
+     * 审批流ApprovalFlow的唯一标志号码, 又名流水号
      */
     @Field(field = "flow_no")
     String flowNo;

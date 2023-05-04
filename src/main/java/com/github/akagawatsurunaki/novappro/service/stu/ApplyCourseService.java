@@ -127,11 +127,14 @@ public class ApplyCourseService {
                             .remark(remark)
                             .build();
 
+                    // TODO: 每个ApprovalFlowDetail应该被创建多个, 形成一个链条
+                    // 应调用下面的方法
                     // 创建ApprovalFlowDetail
                     var approvalFlowDetail
                             = ApprovalFlowDetail.builder()
                             .flowNo(flowNo)
                             .auditUserId(approver.getId())
+                            // TODO: 这里需要更改status
                             .auditStatus(ApprovalStatus.LECTURE_TEACHER_EXAMING)
                             .auditRemark("")
                             .auditTime(date)
@@ -165,6 +168,12 @@ public class ApplyCourseService {
             return VC.Service.ERROR;
         }
     }
+
+
+    /**
+     * TODO: 获取审批人列表, 选择指定的课程, 按照权重值降序排序.(id -> get -> approvers)
+     * 把审批人对应需要创建的ApproveDetail创建出来保存在数据库中
+     */
 
     /**
      * 根据用户的ID查询其下的所有课程申请
