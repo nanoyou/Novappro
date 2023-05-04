@@ -74,7 +74,7 @@ public class ApplyCourseService {
 
             val userMapper = session.getMapper(UserMapper.class);
             val uploadFileMapper = session.getMapper(UploadFileMapper.class);
-
+            val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
             val user = userMapper.selectById(userId);
 
             // 校验用户是否存在
