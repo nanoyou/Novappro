@@ -1,8 +1,10 @@
 package com.github.akagawatsurunaki.novappro.servlet.init;
 
 import com.github.akagawatsurunaki.novappro.enumeration.UserType;
+import com.github.akagawatsurunaki.novappro.mapper.ApprovalAuthorityMapper;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
+import com.github.akagawatsurunaki.novappro.model.database.ApprovalAuthority;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import com.github.akagawatsurunaki.novappro.util.MyDb;
@@ -22,13 +24,10 @@ public class InitServlet extends HttpServlet {
             IOException {
         try(SqlSession session = MyDb.use().openSession()){
             // 测试用例: http://localhost:8080/Novappro_war_exploded/InitServlet
-            var mapper = session.getMapper(CourseMapper.class);
-
-             List<String> list = new ArrayList<>();
-             list.add("A0801051040");
-             list.add("A0801040070");
-            var c = mapper.selectCourses(list);
-            System.out.println("c = " + c);
+//            var mapper = session.getMapper(ApprovalAuthorityMapper.class);
+//            List<ApprovalAuthority> approvalAuthorities = mapper.selectByUserId(20210004);
+//            approvalAuthorities.forEach(System.out::println);
+//            System.out.println("这是一段测试");
         }
     }
 
