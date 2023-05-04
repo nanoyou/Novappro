@@ -79,12 +79,9 @@ public class LoginServlet extends HttpServlet {
                     }
                 }
             } catch (NumberFormatException e) {
-                e.printStackTrace();
                 request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.USER_ID_NAN.message);
             }
-
         }
-
         request.getRequestDispatcher(SC.JSPResource.INDEX.name).forward(request, response);
     }
 
