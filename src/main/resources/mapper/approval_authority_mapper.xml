@@ -5,15 +5,26 @@
 <mapper namespace="com.github.akagawatsurunaki.novappro.mapper.ApprovalAuthorityMapper">
 
     <insert id="insert">
-            INSERT INTO web_dev.approval_authority (user_id, appro_weight, course_code)
-            VALUES (#{userId}, #{approWeight}, #{courseCode});
+        INSERT INTO web_dev.approval_authority (user_id, appro_weight, course_code)
+        VALUES (#{userId}, #{approWeight}, #{courseCode});
     </insert>
 
     <select id="selectByUserId"
             resultType="com.github.akagawatsurunaki.novappro.model.database.ApprovalAuthority">
-            SELECT *
-            FROM web_dev.approval_authority
-            WHERE approval_authority.user_id = #{userId};
+        SELECT *
+        FROM web_dev.approval_authority
+        WHERE approval_authority.user_id = #{userId};
+    </select>
+    <select id="selectUserIdsByCourseCode" resultType="java.lang.Integer">
+        SELECT user_id
+        FROM web_dev.approval_authority
+        WHERE course_code = #{courseCode};
+    </select>
+    <select id="selectUserIdsByCourseCodeDesc" resultType="java.lang.Integer">
+        SELECT user_id
+        FROM web_dev.approval_authority
+        WHERE course_code = #{courseCode}
+        ORDER BY appro_weight DESC;
     </select>
 
 </mapper>

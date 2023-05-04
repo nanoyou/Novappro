@@ -10,4 +10,8 @@ public interface ApprovalAuthorityMapper {
     int insert(ApprovalAuthority approvalAuthority);
 
     List<ApprovalAuthority> selectByUserId(@NonNull Integer userId);
+
+    List<Integer> selectUserIdsByCourseCode(@NonNull String courseCode);
+
+    List<Integer> selectUserIdsByCourseCodeDesc(@NonNull String courseCode);
 }

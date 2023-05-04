@@ -9,12 +9,10 @@ import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import com.github.akagawatsurunaki.novappro.mapper.*;
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
-import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApproFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
-import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApproFlow;
 import com.github.akagawatsurunaki.novappro.model.database.file.UploadFile;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
@@ -23,20 +21,14 @@ import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.ibatis.session.SqlSession;
 
-import javax.crypto.spec.OAEPParameterSpec;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ApplyCourseService {
     @Getter
@@ -131,7 +123,8 @@ public class ApplyCourseService {
 
                     for (var courseId : courseIds) {
 
-                        var approverList = getApproverList(courseId);
+                        
+                        val approverList = getApproverList(courseId);
 
                         // 应调用下面的方法
                         // 创建ApprovalFlowDetail
@@ -200,12 +193,25 @@ public class ApplyCourseService {
 
 
     /**
-     * TODO: 获取审批人列表, 选择指定的课程, 按照权重值降序排序.(id -> get -> approvers)
-     * 把审批人对应需要创建的ApproveDetail创建出来保存在数据库中
+     * 按照指定的课程代码找到审批流程中的所有审批人, 并按照每个审批人的权重值来排序.
+     * @param courseCode 指定的课程代码, 即审批人可以进行审批的课程的课程代码
+     * @return 有顺序的
      */
     private List<User> getApproverList(@NonNull String courseCode) {
+        try (var session = MyDb.use().openSession(true)){
 
-        throw new NotImplementedException();
+            val approvalAuthorityMapper = session.getMapper(ApprovalAuthorityMapper.class);
+            val userMapper = session.getMapper(UserMapper.class);
+
+            // 顺序不能变, 已经按照权重值排序
+            val userIds = approvalAuthorityMapper.selectUserIdsByCourseCodeDesc(courseCode);
+            // 使其顺序不能更改
+            if (userIds == null || userIds.isEmpty()) {
+                return null;
+            }
+
+            return Collections.unmodifiableList(userMapper.selectByIds(userIds));
+        }
     }
 
     /**
@@ -228,6 +234,7 @@ public class ApplyCourseService {
                 List<ApprovalStatus> approvalStatusList = new ArrayList<>();
 
                 for (var ca : courseApplicationList) {
+                    // TODO: 2023年5月4日 BUG
                     var s = APPROVAL_FLOW_DETAIL_MAPPER.select(ca.getFlowNo()).getRight();
                     var st = s.getAuditStatus();
                     approvalStatusList.add(st);
