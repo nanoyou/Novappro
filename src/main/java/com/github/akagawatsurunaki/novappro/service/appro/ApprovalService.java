@@ -5,8 +5,8 @@ import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.*;
 import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
-import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApproFlowMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
+import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
 import com.github.akagawatsurunaki.novappro.model.frontend.CourseAppItemDetail;
@@ -15,12 +15,10 @@ import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ibatis.session.SqlSession;
 
-import java.net.UnknownServiceException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,18 +30,28 @@ public class ApprovalService {
 
     private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
 
-    private static final CourseApproFlowMapper COURSE_APPRO_FLOW_MAPPER = CourseApproFlowMapperImpl.getInstance();
-
     private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
             ApprovalFlowDetailMapperImpl.getInstance();
+    static List<User> approvers = new ArrayList<>();
+
+    static {
+        try (var session = MyDb.use().openSession(true)) {
+            val userMapper = session.getMapper(UserMapper.class);
+            // TODO: 查询一个固定的管理员
+            val approver1 = userMapper.selectById(20210000);
+            val approver2 = userMapper.selectById(20210000);
+            approvers.add(approver1);
+            approvers.add(approver2);
+        }
+    }
 
     /**
      * 根据审批人的ID获取对应的可审批对象
      * TODO: 这里需要增加一部分的校验工作
      *
-     * @apiNote ApplItem是前端使用的实体类
      * @param approverId
      * @return 服务响应码,
+     * @apiNote ApplItem是前端使用的实体类
      */
     public Pair<VC.Service, List<ApplItem>> getApplItems(@NonNull Integer approverId) {
 
@@ -124,9 +132,9 @@ public class ApprovalService {
         return new ImmutablePair<>(VC.Service.ERROR, null);
     }
 
-
     /**
      * 根据流水号获取课程申请明细(CourseAppItemDetail)
+     *
      * @param flowNo 指定的流水号
      * @return 服务响应码, 课程申请明细(可能有多个?)
      */
@@ -213,6 +221,8 @@ public class ApprovalService {
                                       boolean approSuc) {
         try (SqlSession session = MyDb.use().openSession(true)) {
             var approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
+            val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
+
             // 如果不同意审批
             if (!approSuc && remark.isBlank()) {
                 return VC.Service.REMARK_IS_BLANK;
@@ -222,12 +232,18 @@ public class ApprovalService {
             var status = approSuc ? ApprovalStatus.APPROVED : ApprovalStatus.REJECTED;
             var rows = approvalFlowMapper.updateApproStatus(flowNo, status);
 
-            if (rows != 1){
+            if (rows != 1) {
                 return VC.Service.FAILED_UPDATE;
             }
 
             // 更新 申请流程细节 表
-            var maxIdOfCourseApproFlow = COURSE_APPRO_FLOW_MAPPER.findMaxIdOfCourseApproFlow(flowNo);
+
+            var node = getCurrentApprovalFlowNode(flowNo);
+            if (node == null) {
+                return VC.Service.ERROR;
+            }
+            var maxIdOfCourseApproFlow = node.getId();
+
             APPROVAL_FLOW_DETAIL_MAPPER.updateApproStatus(flowNo, maxIdOfCourseApproFlow, status);
             APPROVAL_FLOW_DETAIL_MAPPER.updateApproRemark(flowNo, maxIdOfCourseApproFlow, remark);
 
@@ -240,32 +256,44 @@ public class ApprovalService {
 
         }
     }
-
-    static List<User> approvers = new ArrayList<>();
-
-    static {
-        try (var session = MyDb.use().openSession(true)) {
-            val userMapper = session.getMapper(UserMapper.class);
-            // TODO: 查询一个固定的管理员
-            val approver1 = userMapper.selectById(20210000);
-            val approver2 = userMapper.selectById(20210000);
-            approvers.add(approver1);
-            approvers.add(approver2);
-            // throw new NotImplementedException("需要");
-        }
-    }
+//    private ApprovalFlowDetail getCurrentApprovalFlowNode(@NonNull List<ApprovalFlowDetail> approvalFlowDetails) {
+//
+//        // 如果没有审批节点(即审批链不存在), 直接返回null
+//        if (approvalFlowDetails.isEmpty()){
+//            return null;
+//        }
+//
+//        int i = 0;
+//
+//        for (var approvalFlowDetail : approvalFlowDetails) {
+//            if (approvalFlowDetail.getAuditStatus() == ApprovalStatus.APPROVED || approvalFlowDetail.getAuditStatus
+//            () == ApprovalStatus.REJECTED){
+//                i++;
+//            } else {
+//                break;
+//            }
+//        }
+//
+//        return approvalFlowDetails.get(i);
+//
+//    }
 
     /**
-     * 调用该方法, 将会创建一个新的节点
-     * 如果, 就不创建
+     * 获取指定的
+     *
+     * @param flowNo
+     * @return
      */
-    public void func() {
+    private ApprovalFlowDetail getCurrentApprovalFlowNode(@NonNull String flowNo) {
 
-        // 从has_appro中查询审批人的权重和审批人能审批的课程code.
-        // who 审批权重 审批哪门课
-
-        // 如果课程code与当前需要审批的
-
+        try (var session = MyDb.use().openSession(true)) {
+            val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
+            var approvalFlowDetails = approvalFlowDetailMapper.selectByFlowNo(flowNo);
+            return approvalFlowDetails.stream()
+                    .dropWhile(detail -> detail.getAuditStatus() == ApprovalStatus.APPROVED || detail.getAuditStatus() == ApprovalStatus.REJECTED)
+                    .findFirst()
+                    .orElse(null);
+        }
 
     }
 
