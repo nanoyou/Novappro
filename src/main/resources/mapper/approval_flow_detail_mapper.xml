@@ -4,6 +4,24 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowDetailMapper">
 
+    <insert id="insert">
+        INSERT INTO audit_flow_detail(flow_no, audit_user_id, audit_remark, audit_time, audit_status)
+        VALUES (#{flowNo}, #{auditUserId}, #{auditRemark}, #{auditTime}, #{auditStatus});
+    </insert>
+
+    <update id="updateApproStatus">
+        UPDATE audit_flow_detail
+        SET audit_flow_detail.audit_status = #{status}
+        WHERE audit_flow_detail.flow_no = #{flowNo}
+          AND audit_flow_detail.id = #{id};
+    </update>
+
+    <update id="updateApproRemark">
+        UPDATE audit_flow_detail
+        SET audit_flow_detail.audit_remark = #{remark}
+        WHERE audit_flow_detail.flow_no = #{flowNo}
+          AND audit_flow_detail.id = #{id}
+    </update>
 
     <select id="selectByFlowNo"
             resultType="com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail">
@@ -12,6 +30,17 @@
         WHERE flow_no = #{flowNo};
     </select>
 
-
+    <select id="selectFlowNoByApproverId" resultType="java.lang.String">
+        SELECT `flow_no`
+        FROM `audit_flow_detail`
+        WHERE `audit_flow_detail`.`audit_user_id` = #{approverId};
+    </select>
+    <select id="select"
+            resultType="com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail">
+        SELECT *
+        FROM audit_flow_detail
+        WHERE flow_no = #{flowNo}
+          AND audit_user_id = #{auditUserId};
+    </select>
 
 </mapper>

@@ -6,23 +6,24 @@ import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.naming.InsufficientResourcesException;
 import java.sql.SQLException;
 import java.util.List;
 
 public interface ApprovalFlowDetailMapper {
 
-    Pair<VC.Mapper, ApprovalFlowDetail> insert(@NonNull ApprovalFlowDetail approvalFlowDetail);
+    int insert(@NonNull ApprovalFlowDetail approvalFlowDetail);
 
-    Pair<VC.Mapper, ApprovalFlowDetail> select(@NonNull String flowNo);
+    List<ApprovalFlowDetail> selectByFlowNo(@NonNull String flowNo);
 
-    Pair<VC.Mapper, List<ApprovalFlowDetail>> selectList(@NonNull List<String> flowNos);
+    ApprovalFlowDetail select(@NonNull String flowNo, @NonNull Integer auditUserId);
 
-    Pair<VC.Mapper, List<String>> selectFlowNoByApproverId(@NonNull Integer approverId);
+    List<String> selectFlowNoByApproverId(@NonNull Integer approverId);
 
 
-    VC.Mapper updateApproStatus(@NonNull String flowNo, @NonNull Integer id,
-                                @NonNull ApprovalStatus status) throws SQLException;
+    int updateApproStatus(@NonNull String flowNo, @NonNull Integer id,
+                                @NonNull ApprovalStatus status);
 
-    VC.Mapper updateApproRemark(@NonNull String flowNo, @NonNull Integer id,
+    int updateApproRemark(@NonNull String flowNo, @NonNull Integer id,
                                 @NonNull String remark) throws SQLException;
 }
