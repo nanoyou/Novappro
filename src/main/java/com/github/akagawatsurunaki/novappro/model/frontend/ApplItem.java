@@ -12,6 +12,9 @@ import java.util.Date;
 @Data
 @FieldNameConstants
 @Builder
+/**
+ * ApplItem是前端使用的实体类
+ */
 public class ApplItem {
 
     @ZhField(value = "审批流编号")
