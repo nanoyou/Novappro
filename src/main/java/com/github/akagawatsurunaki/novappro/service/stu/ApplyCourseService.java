@@ -23,10 +23,14 @@ import com.github.akagawatsurunaki.novappro.util.ImgUtil;
 import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.val;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.ibatis.session.SqlSession;
 
+import javax.crypto.spec.OAEPParameterSpec;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,16 +74,16 @@ public class ApplyCourseService {
 
         try (SqlSession session = MyDb.use().openSession(true)) {
 
-            var userMapper = session.getMapper(UserMapper.class);
-            var uploadFileMapper = session.getMapper(UploadFileMapper.class);
+            val userMapper = session.getMapper(UserMapper.class);
+            val uploadFileMapper = session.getMapper(UploadFileMapper.class);
 
-            var user = userMapper.selectById(userId);
+            val user = userMapper.selectById(userId);
 
             // 校验用户是否存在
             if (user != null) {
 
-                var flowNo = IdUtil.genFlowNo(user.getId());
-                Date date = new Date();
+                val flowNo = IdUtil.genFlowNo(user.getId());
+                val date = new Date();
 
                 // 上传文件
 
@@ -128,33 +132,57 @@ public class ApplyCourseService {
                             .build();
 
                     // TODO: 每个ApprovalFlowDetail应该被创建多个, 形成一个链条
-                    // 应调用下面的方法
-                    // 创建ApprovalFlowDetail
-                    var approvalFlowDetail
-                            = ApprovalFlowDetail.builder()
-                            .flowNo(flowNo)
-                            .auditUserId(approver.getId())
-                            // TODO: 这里需要更改status
-                            .auditStatus(ApprovalStatus.LECTURE_TEACHER_EXAMING)
-                            .auditRemark("")
-                            .auditTime(date)
-                            .build();
 
-                    APPROVAL_FLOW_DETAIL_MAPPER.insert(approvalFlowDetail);
-                    approvalFlowDetail = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo).getRight();
+                    for (var courseId : courseIds) {
+
+                        var approverList = getApproverList(courseId);
+
+                        // 应调用下面的方法
+                        // 创建ApprovalFlowDetail
+
+                        for (var approver : approverList) {
+                            var approvalFlowDetail
+                                    = ApprovalFlowDetail.builder()
+                                    .flowNo(flowNo)
+                                    .auditUserId(approver.getId())
+                                    // TODO: check if has any error
+//                                    .auditStatus(ApprovalStatus.LECTURE_TEACHER_EXAMING)
+                                    .auditStatus(
+                                            switch (approver.getType()) {
+                                                case LECTURE_TEACHER -> ApprovalStatus.LECTURE_TEACHER_EXAMING;
+                                                case SUPERVISOR_TEACHER -> ApprovalStatus.SUPERVISOR_TEACHER_EXAMING;
+                                                default ->
+                                                        throw new IllegalStateException("Unexpected value: " + approver.getType());
+                                            }
+                                    )
+                                    .auditRemark("")
+                                    .auditTime(date)
+                                    .build();
+
+                            // 插入数据库
+                            APPROVAL_FLOW_DETAIL_MAPPER.insert(approvalFlowDetail);
+                        }
+
+
+                        //   approvalFlowDetail = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo).getRight();
+
+                    }
+
+
+                    // TODO: crs_appro_flow may be deprecated later. To check safety.
 
                     // 创建CourseApproFlow
-                    var courseApproFlow = CourseApproFlow.builder()
-                            .approFlowNos(flowNo)
-                            .approFlowDetailIds(Arrays.toString(new String[]{approvalFlowDetail.getId().toString()}))
-                            .currentNodeNo(approvalFlowDetail.getId())
-                            .build();
+//                    var courseApproFlow = CourseApproFlow.builder()
+//                            .approFlowNos(flowNo)
+//                            .approFlowDetailIds(Arrays.toString(new String[]{approvalFlowDetail.getId().toString()}))
+//                            .currentNodeNo(approvalFlowDetail.getId())
+//                            .build();
 
                     // 向数据库插入
                     COURSE_APPLICATION_MAPPER.insert((CourseApplication) approval);
                     APPROVAL_FLOW_MAPPER.insert(approvalFlow);
 
-                    COURSE_APPRO_FLOW_MAPPER.insert(courseApproFlow);
+                    //  COURSE_APPRO_FLOW_MAPPER.insert(courseApproFlow);
 
                     return VC.Service.OK;
                 }
@@ -174,6 +202,9 @@ public class ApplyCourseService {
      * TODO: 获取审批人列表, 选择指定的课程, 按照权重值降序排序.(id -> get -> approvers)
      * 把审批人对应需要创建的ApproveDetail创建出来保存在数据库中
      */
+    private List<User> getApproverList(@NonNull String courseCode) {
+        throw new NotImplementedException();
+    }
 
     /**
      * 根据用户的ID查询其下的所有课程申请
