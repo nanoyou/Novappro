@@ -3,7 +3,6 @@ package com.github.akagawatsurunaki.novappro.service.appro;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.*;
-import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
@@ -30,8 +29,6 @@ public class ApprovalService {
 
     private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
 
-    private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
-            ApprovalFlowDetailMapperImpl.getInstance();
     static List<User> approvers = new ArrayList<>();
 
     static {
@@ -47,7 +44,6 @@ public class ApprovalService {
 
     /**
      * 根据审批人的ID获取对应的可审批对象
-     * TODO: 这里需要增加一部分的校验工作
      *
      * @param approverId
      * @return 服务响应码,
@@ -67,24 +63,25 @@ public class ApprovalService {
         //  如果(已通过) 则可以开始审批
         //  如果(审批|审批|审批...) 则不显示
 
+        try (var session = MyDb.use().openSession(true)) {
 
-        var vc_flowNos = APPROVAL_FLOW_DETAIL_MAPPER.selectFlowNoByApproverId(approverId);
+            val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
 
-        if (vc_flowNos.getLeft() == VC.Mapper.OK) {
+            var flowNos = approvalFlowDetailMapper.selectFlowNoByApproverId(approverId);
 
-            var flowNoList = vc_flowNos.getRight();
-            List<ApplItem> result = new ArrayList<>();
+            if (flowNos != null && (!flowNos.isEmpty())) {
 
-            for (String flowNo : flowNoList) {
-                var vc_applItem = getApplItem(flowNo);
-                if (vc_applItem.getLeft() != VC.Service.OK) {
-                    return new ImmutablePair<>(VC.Service.ERROR, null);
+                List<ApplItem> result = new ArrayList<>();
+
+                for (String flowNo : flowNos) {
+                    var vc_applItem = getApplItem(flowNo);
+                    if (vc_applItem.getLeft() != VC.Service.OK) {
+                        return new ImmutablePair<>(VC.Service.ERROR, null);
+                    }
+                    result.add(vc_applItem.getRight());
                 }
-                result.add(vc_applItem.getRight());
+                return new ImmutablePair<>(VC.Service.OK, result);
             }
-
-            return new ImmutablePair<>(VC.Service.OK, result);
-
         }
         return new ImmutablePair<>(VC.Service.ERROR, null);
     }
@@ -96,8 +93,8 @@ public class ApprovalService {
 
         try (SqlSession session = MyDb.use().openSession(true)) {
 
-            var userMapper = session.getMapper(UserMapper.class);
-            var approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
+            val userMapper = session.getMapper(UserMapper.class);
+            val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
 
             var approFlow = approvalFlowMapper.select(flowNo);
 
@@ -105,13 +102,11 @@ public class ApprovalService {
                 return new ImmutablePair<>(VC.Service.NO_SUCH_ENTITY, null);
             }
 
-            var vc_afd = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo);
+            var currentApprovalNode = getCurrentApprovalFlowNode(flowNo);
 
-            if (vc_afd.getLeft() == VC.Mapper.OK) {
-
-                var applFlowDetail = vc_afd.getRight();
+            if (currentApprovalNode != null) {
                 var addUser = userMapper.selectById(approFlow.getAddUserId());
-                var approver = userMapper.selectById(applFlowDetail.getAuditUserId());
+                var approver = userMapper.selectById(currentApprovalNode.getAuditUserId());
 
                 if (addUser != null && approver != null) {
                     var applItem = ApplItem.builder()
@@ -120,14 +115,12 @@ public class ApprovalService {
                             .applicantName(addUser.getUsername())
                             .addTime(approFlow.getAddTime())
                             .approverName(approver.getUsername())
-                            .approvalStatus(applFlowDetail.getAuditStatus())
+                            .approvalStatus(currentApprovalNode.getAuditStatus())
                             .build();
 
                     return new ImmutablePair<>(VC.Service.OK, applItem);
                 }
-
             }
-
         }
         return new ImmutablePair<>(VC.Service.ERROR, null);
     }
@@ -138,12 +131,13 @@ public class ApprovalService {
      * @param flowNo 指定的流水号
      * @return 服务响应码, 课程申请明细(可能有多个?)
      */
-    // TODO: 未校验此处的逻辑性, 可能有多个
-    public Pair<VC.Service, CourseAppItemDetail> getDetail(@NonNull String flowNo) {
+    public Pair<VC.Service, CourseAppItemDetail> getDetail(@NonNull String flowNo, @NonNull Integer approverId) {
 
         try (SqlSession session = MyDb.use().openSession(true)) {
             var approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
             var userMapper = session.getMapper(UserMapper.class);
+            val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
+
             var approvalFlow = approvalFlowMapper.select(flowNo);
 
             if (approvalFlow != null) {
@@ -152,15 +146,13 @@ public class ApprovalService {
 
                 if (addUser != null) {
 
-                    var vc_afd = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo);
+                    var approFlowDetail = approvalFlowDetailMapper.select(flowNo, approverId);
 
-                    if (vc_afd.getLeft() == VC.Mapper.OK) {
-                        var approFlowDetail = vc_afd.getRight();
+                    if (approFlowDetail != null) {
 
-                        var vc_ac = getAppliedCourses(flowNo);
+                        var appliedCourses = getAppliedCourses(flowNo);
 
-                        if (vc_ac.getLeft() == VC.Service.OK) {
-                            var appliedCourses = vc_ac.getRight();
+                        if (appliedCourses != null) {
 
                             var result = CourseAppItemDetail.builder()
                                     .flowNo(flowNo)
@@ -175,6 +167,7 @@ public class ApprovalService {
                             return new ImmutablePair<>(VC.Service.OK, result);
                         }
                     }
+
                 }
             }
             return new ImmutablePair<>(VC.Service.ERROR, null);
@@ -188,7 +181,7 @@ public class ApprovalService {
      * @return 服务响应码, 查询到的所有课程
      * @implNote 该方法从MySQL数据库中抽取crs_appro? 数据, 按照其主键查询
      */
-    private Pair<VC.Service, List<Course>> getAppliedCourses(@NonNull String flowNo) {
+    private List<Course> getAppliedCourses(@NonNull String flowNo) {
         var vc_ca = COURSE_APPLICATION_MAPPER.selectByFlowNo(flowNo);
         if (vc_ca.getLeft() == VC.Mapper.OK) {
             var appl = vc_ca.getRight();
@@ -197,15 +190,10 @@ public class ApprovalService {
             try (SqlSession session = MyDb.use().openSession(true)) {
 
                 var courseMapper = session.getMapper(CourseMapper.class);
-
-                var courses = courseMapper.selectCourses(courseIds);
-
-                if (courses != null) {
-                    return new ImmutablePair<>(VC.Service.OK, courses);
-                }
+                return courseMapper.selectCourses(courseIds);
             }
         }
-        return new ImmutablePair<>(VC.Service.ERROR, null);
+        return null;
     }
 
     /**
@@ -244,8 +232,8 @@ public class ApprovalService {
             }
             var maxIdOfCourseApproFlow = node.getId();
 
-            APPROVAL_FLOW_DETAIL_MAPPER.updateApproStatus(flowNo, maxIdOfCourseApproFlow, status);
-            APPROVAL_FLOW_DETAIL_MAPPER.updateApproRemark(flowNo, maxIdOfCourseApproFlow, remark);
+            approvalFlowDetailMapper.updateApproStatus(flowNo, maxIdOfCourseApproFlow, status);
+            approvalFlowDetailMapper.updateApproRemark(flowNo, maxIdOfCourseApproFlow, remark);
 
             return VC.Service.OK;
 
@@ -269,17 +257,21 @@ public class ApprovalService {
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
             var approvalFlowDetails = approvalFlowDetailMapper.selectByFlowNo(flowNo);
 
-            val lastDetail = approvalFlowDetails.get(approvalFlowDetails.size() - 1);
-            if (lastDetail.getAuditStatus() == ApprovalStatus.APPROVED) {
-                return lastDetail;
-            }
+            if (!approvalFlowDetails.isEmpty()) {
 
-            return approvalFlowDetails.stream()
-                    .filter(detail -> detail.getAuditStatus() == ApprovalStatus.REJECTED ||
-                            (detail.getAuditStatus() != ApprovalStatus.APPROVED && detail.getAuditStatus() != ApprovalStatus.REJECTED))
-                    .findFirst()
-                    .orElse(null);
+                val lastDetail = approvalFlowDetails.get(approvalFlowDetails.size() - 1);
+                if (lastDetail.getAuditStatus() == ApprovalStatus.APPROVED) {
+                    return lastDetail;
+                }
+
+                return approvalFlowDetails.stream()
+                        .filter(detail -> detail.getAuditStatus() == ApprovalStatus.REJECTED ||
+                                (detail.getAuditStatus() != ApprovalStatus.APPROVED && detail.getAuditStatus() != ApprovalStatus.REJECTED))
+                        .findFirst()
+                        .orElse(null);
+            }
         }
+        return null;
     }
 
 }
