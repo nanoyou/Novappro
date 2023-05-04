@@ -2,6 +2,7 @@ package com.github.akagawatsurunaki.novappro.servlet.appro;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VC;
+import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 
 import javax.servlet.ServletException;
@@ -19,15 +20,15 @@ public class ApplItemDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        var flowNo = request.getParameter(SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name);
 
-        var vc_aid = APPROVAL_SERVICE.getDetail(flowNo);
+        var flowNo = request.getParameter(SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name);
+        var approver = (User)request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name);
+        var vc_aid = APPROVAL_SERVICE.getDetail(flowNo, approver.getId());
 
         if (vc_aid.getLeft() == VC.Service.OK) {
             var aid = vc_aid.getRight();
             request.setAttribute(SC.ReqAttr.SELECTED_APPL_ITEM_DETAIL.name, aid);
             request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
-            // request.removeAttribute(ServletConstant.RequestAttr.SELECTED_APPL_ITEM_DETAIL.name);
         }
     }
 

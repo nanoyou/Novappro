@@ -103,7 +103,5 @@ public class ApplyCoursesServlet extends HttpServlet {
             // 跳转页面
             request.getRequestDispatcher(SC.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);
         }
-
-
     }
 }
