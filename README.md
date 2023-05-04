@@ -4,4 +4,9 @@
 
 MySql server version: 8.0.29 MySQL Community Server - GPL
 
-如果您已经安装过Mysql, 请执行com/github/akagawatsurunaki/novappro/mysql/web_dev.sql文件以创建数据库.
+JDK version: 17
+
+如果您已经安装过MySQL并成功地启用了它, 
+那么请执行
+src/main/resources/mysql/init/web_dev.sql
+文件以创建数据库web_dev.
