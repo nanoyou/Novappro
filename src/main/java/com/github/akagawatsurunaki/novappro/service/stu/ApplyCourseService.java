@@ -7,13 +7,13 @@ import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import com.github.akagawatsurunaki.novappro.mapper.*;
-import com.github.akagawatsurunaki.novappro.mapper.impl.ApprovalFlowDetailMapperImpl;
 import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
 import com.github.akagawatsurunaki.novappro.model.database.file.UploadFile;
+import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
 import com.github.akagawatsurunaki.novappro.util.ImgUtil;
@@ -36,20 +36,6 @@ public class ApplyCourseService {
 
     private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
 
-
-    private static final ApprovalFlowDetailMapper APPROVAL_FLOW_DETAIL_MAPPER =
-            ApprovalFlowDetailMapperImpl.getInstance();
-
-//    private static final User approver;
-
-//    static {
-//        // TODO: 默认只允许于老师参与审批课程任务
-//        try (SqlSession session = MyDb.use().openSession(true)) {
-//            var userMapper = session.getMapper(UserMapper.class);
-//            approver = userMapper.selectById(20210004);
-//        }
-//    }
-
     public VC.Service apply(@NonNull Integer userId,
                             @NonNull List<String> courseIds,
                             @NonNull InputStream is,
@@ -65,6 +51,7 @@ public class ApplyCourseService {
             val userMapper = session.getMapper(UserMapper.class);
             val uploadFileMapper = session.getMapper(UploadFileMapper.class);
             val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
+            val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
             val user = userMapper.selectById(userId);
 
             // 校验用户是否存在
@@ -119,23 +106,19 @@ public class ApplyCourseService {
                             .remark(remark)
                             .build();
 
-                    // TODO: 每个ApprovalFlowDetail应该被创建多个, 形成一个链条
-
                     for (var courseId : courseIds) {
 
-                        
                         val approverList = getApproverList(courseId);
 
                         // 应调用下面的方法
                         // 创建ApprovalFlowDetail
+                        // TODO: DEBUGING
 
                         for (var approver : approverList) {
                             var approvalFlowDetail
                                     = ApprovalFlowDetail.builder()
                                     .flowNo(flowNo)
                                     .auditUserId(approver.getId())
-                                    // TODO: check if has any error
-//                                    .auditStatus(ApprovalStatus.LECTURE_TEACHER_EXAMING)
                                     .auditStatus(
                                             switch (approver.getType()) {
                                                 case LECTURE_TEACHER -> ApprovalStatus.LECTURE_TEACHER_EXAMING;
@@ -149,23 +132,9 @@ public class ApplyCourseService {
                                     .build();
 
                             // 插入数据库
-                            APPROVAL_FLOW_DETAIL_MAPPER.insert(approvalFlowDetail);
+                            approvalFlowDetailMapper.insert(approvalFlowDetail);
                         }
-
-
-                        //   approvalFlowDetail = APPROVAL_FLOW_DETAIL_MAPPER.select(flowNo).getRight();
-
                     }
-
-
-                    // TODO: crs_appro_flow may be deprecated later. To check safety.
-
-                    // 创建CourseApproFlow
-//                    var courseApproFlow = CourseApproFlow.builder()
-//                            .approFlowNos(flowNo)
-//                            .approFlowDetailIds(Arrays.toString(new String[]{approvalFlowDetail.getId().toString()}))
-//                            .currentNodeNo(approvalFlowDetail.getId())
-//                            .build();
 
                     // 向数据库插入
                     COURSE_APPLICATION_MAPPER.insert((CourseApplication) approval);
@@ -175,8 +144,6 @@ public class ApplyCourseService {
                     if (rows != 1) {
                         return VC.Service.ERROR;
                     }
-
-                    //  COURSE_APPRO_FLOW_MAPPER.insert(courseApproFlow);
 
                     return VC.Service.OK;
                 }
@@ -205,11 +172,12 @@ public class ApplyCourseService {
 
             // 顺序不能变, 已经按照权重值排序
             val userIds = approvalAuthorityMapper.selectUserIdsByCourseCodeDesc(courseCode);
-            // 使其顺序不能更改
+
             if (userIds == null || userIds.isEmpty()) {
                 return null;
             }
 
+            // 使其顺序不能更改
             return Collections.unmodifiableList(userMapper.selectByIds(userIds));
         }
     }
@@ -225,6 +193,7 @@ public class ApplyCourseService {
         try (SqlSession session = MyDb.use().openSession()) {
 
             var userMapper = session.getMapper(UserMapper.class);
+
             var user = userMapper.selectById(userId);
 
             if (user != null) {
@@ -234,10 +203,8 @@ public class ApplyCourseService {
                 List<ApprovalStatus> approvalStatusList = new ArrayList<>();
 
                 for (var ca : courseApplicationList) {
-                    // TODO: 2023年5月4日 BUG
-                    var s = APPROVAL_FLOW_DETAIL_MAPPER.select(ca.getFlowNo()).getRight();
-                    var st = s.getAuditStatus();
-                    approvalStatusList.add(st);
+                    var currentNode = ApprovalService.getInstance().getCurrentApprovalFlowNode(ca.getFlowNo());
+                    approvalStatusList.add(currentNode.getAuditStatus());
                 }
 
                 if (vc_l.getLeft() == VC.Mapper.OK) {
