@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 04/05/2023 12:32:44
+ Date: 05/05/2023 00:19:46
 */
 
 SET NAMES utf8mb4;
@@ -54,12 +54,7 @@ CREATE TABLE `approval_flow`  (
 -- ----------------------------
 -- Records of approval_flow
 -- ----------------------------
-INSERT INTO `approval_flow` VALUES ('APFL2021000216830151603016335', '来自 王五(20210002)的1门课程申请', 'LINEAR', 20210002, '2023-05-02 08:12:40', 'SUBMITTED', '123');
-INSERT INTO `approval_flow` VALUES ('APFL2021000216830171480721386', '来自 王五(20210002)的1门课程申请', 'LINEAR', 20210002, '2023-05-02 08:45:48', 'SUBMITTED', 'éè¯¯ç');
-INSERT INTO `approval_flow` VALUES ('APFL2021000216830173234033932', '来自 王五(20210002)的1门课程申请', 'LINEAR', 20210002, '2023-05-02 08:48:43', 'SUBMITTED', '错误的');
-INSERT INTO `approval_flow` VALUES ('APFL2021000216831249309663289', '来自 王五(20210002)的1门课程申请', 'LINEAR', 20210002, '2023-05-03 14:42:11', 'SUBMITTED', '123123');
-INSERT INTO `approval_flow` VALUES ('APFL2021000216831258278544498', '来自 王五(20210002)的1门课程申请', 'LINEAR', 20210002, '2023-05-03 14:57:08', 'SUBMITTED', 'q2312321');
-INSERT INTO `approval_flow` VALUES ('APFL2021000216831273338661116', '来自 王五(20210002)的1门课程申请', 'LINEAR', 20210002, '2023-05-03 15:22:14', 'SUBMITTED', '332423');
+INSERT INTO `approval_flow` VALUES ('APFL2021000216832110381291717', '来自 王五(20210002)的1门课程申请', 'LINEAR', 20210002, '2023-05-04 14:37:18', 'SUBMITTED', '123134');
 
 -- ----------------------------
 -- Table structure for audit_flow_detail
@@ -73,17 +68,13 @@ CREATE TABLE `audit_flow_detail`  (
   `audit_time` datetime NOT NULL,
   `audit_status` enum('APPROVED','REJECTED','SUBMITTED','LECTURE_TEACHER_EXAMING','SUPERVISOR_TEACHER_EXAMING') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 254 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 259 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of audit_flow_detail
 -- ----------------------------
-INSERT INTO `audit_flow_detail` VALUES (252, 'APFL2021000216830151603016335', 20210004, '', '2023-05-02 08:12:40', 'LECTURE_TEACHER_EXAMING');
-INSERT INTO `audit_flow_detail` VALUES (253, 'APFL2021000216830171480721386', 20210004, '', '2023-05-02 08:45:48', 'LECTURE_TEACHER_EXAMING');
-INSERT INTO `audit_flow_detail` VALUES (254, 'APFL2021000216830173234033932', 20210004, '', '2023-05-02 08:48:43', 'LECTURE_TEACHER_EXAMING');
-INSERT INTO `audit_flow_detail` VALUES (255, 'APFL2021000216831249309663289', 20210004, '', '2023-05-03 14:42:11', 'LECTURE_TEACHER_EXAMING');
-INSERT INTO `audit_flow_detail` VALUES (256, 'APFL2021000216831258278544498', 20210004, '', '2023-05-03 14:57:08', 'LECTURE_TEACHER_EXAMING');
-INSERT INTO `audit_flow_detail` VALUES (257, 'APFL2021000216831273338661116', 20210004, '', '2023-05-03 15:22:14', 'LECTURE_TEACHER_EXAMING');
+INSERT INTO `audit_flow_detail` VALUES (274, 'APFL2021000216832110381291717', 20210004, '', '2023-05-04 14:37:18', 'LECTURE_TEACHER_EXAMING');
+INSERT INTO `audit_flow_detail` VALUES (275, 'APFL2021000216832110381291717', 20210005, '', '2023-05-04 14:37:18', 'SUPERVISOR_TEACHER_EXAMING');
 
 -- ----------------------------
 -- Table structure for course
@@ -110,10 +101,10 @@ INSERT INTO `course` VALUES ('A0801051040', 'Web开发技术', 2.75, 'A057483', 
 INSERT INTO `course` VALUES ('A0801053120', 'Android开发技术', 2.00, 'A057510', 'QQ:784042380', '');
 
 -- ----------------------------
--- Table structure for courses_approval
+-- Table structure for courses_application
 -- ----------------------------
-DROP TABLE IF EXISTS `courses_approval`;
-CREATE TABLE `courses_approval`  (
+DROP TABLE IF EXISTS `courses_application`;
+CREATE TABLE `courses_application`  (
   `flow_no` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `add_user_id` int NOT NULL,
   `add_time` datetime NOT NULL,
@@ -122,35 +113,9 @@ CREATE TABLE `courses_approval`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of courses_approval
+-- Records of courses_application
 -- ----------------------------
-INSERT INTO `courses_approval` VALUES ('APFL2021000216830151603016335', 20210002, '2023-05-02 08:12:40', '[\"A0801050210\"]');
-INSERT INTO `courses_approval` VALUES ('APFL2021000216830171480721386', 20210002, '2023-05-02 08:45:48', '[\"A0801040070\"]');
-INSERT INTO `courses_approval` VALUES ('APFL2021000216830173234033932', 20210002, '2023-05-02 08:48:43', '[\"A0801050210\"]');
-INSERT INTO `courses_approval` VALUES ('APFL2021000216831249309663289', 20210002, '2023-05-03 14:42:11', '[\"A0801050210\"]');
-INSERT INTO `courses_approval` VALUES ('APFL2021000216831258278544498', 20210002, '2023-05-03 14:57:08', '[\"A0801040060\"]');
-INSERT INTO `courses_approval` VALUES ('APFL2021000216831273338661116', 20210002, '2023-05-03 15:22:14', '[\"A0801040070\"]');
-
--- ----------------------------
--- Table structure for crs_appro_flow
--- ----------------------------
-DROP TABLE IF EXISTS `crs_appro_flow`;
-CREATE TABLE `crs_appro_flow`  (
-  `appro_flow_nos` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `appro_flow_detail_nos` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `cur_node_no` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  PRIMARY KEY (`appro_flow_nos`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of crs_appro_flow
--- ----------------------------
-INSERT INTO `crs_appro_flow` VALUES ('APFL2021000216830151603016335', '[252]', '252');
-INSERT INTO `crs_appro_flow` VALUES ('APFL2021000216830171480721386', '[253]', '253');
-INSERT INTO `crs_appro_flow` VALUES ('APFL2021000216830173234033932', '[254]', '254');
-INSERT INTO `crs_appro_flow` VALUES ('APFL2021000216831249309663289', '[255]', '255');
-INSERT INTO `crs_appro_flow` VALUES ('APFL2021000216831258278544498', '[256]', '256');
-INSERT INTO `crs_appro_flow` VALUES ('APFL2021000216831273338661116', '[257]', '257');
+INSERT INTO `courses_application` VALUES ('APFL2021000216832110381291717', 20210002, '2023-05-04 14:37:18', '[\"A0801051040\"]');
 
 -- ----------------------------
 -- Table structure for teaches
@@ -190,14 +155,7 @@ CREATE TABLE `upload_file`  (
 -- ----------------------------
 -- Records of upload_file
 -- ----------------------------
-INSERT INTO `upload_file` VALUES ('APFL2021000216830134581949705', 20210002, 'IMG-2021000216830134582274925.png');
-INSERT INTO `upload_file` VALUES ('APFL2021000216830150341648335', 20210002, 'IMG-2021000216830150341953062.png');
-INSERT INTO `upload_file` VALUES ('APFL2021000216830151603016335', 20210002, 'IMG-2021000216830151603347687.png');
-INSERT INTO `upload_file` VALUES ('APFL2021000216830171480721386', 20210002, 'IMG-2021000216830171481036304.png');
-INSERT INTO `upload_file` VALUES ('APFL2021000216830173234033932', 20210002, 'IMG-2021000216830173234372754.png');
-INSERT INTO `upload_file` VALUES ('APFL2021000216831249309663289', 20210002, 'IMG-2021000216831249310119306.png');
-INSERT INTO `upload_file` VALUES ('APFL2021000216831258278544498', 20210002, 'IMG-2021000216831258278982199.png');
-INSERT INTO `upload_file` VALUES ('APFL2021000216831273338661116', 20210002, 'IMG-2021000216831273339589076.png');
+INSERT INTO `upload_file` VALUES ('APFL2021000216832110381291717', 20210002, 'IMG-2021000216832110381297935.png');
 
 -- ----------------------------
 -- Table structure for user
@@ -209,7 +167,7 @@ CREATE TABLE `user`  (
   `raw_password` char(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `type` enum('ADMIN','STUDENT','LECTURE_TEACHER','SUPERVISOR_TEACHER') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20210020 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20210037 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
