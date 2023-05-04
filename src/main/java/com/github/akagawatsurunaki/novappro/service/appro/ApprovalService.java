@@ -3,7 +3,6 @@ package com.github.akagawatsurunaki.novappro.service.appro;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.*;
-import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
@@ -26,8 +25,6 @@ public class ApprovalService {
 
     @Getter
     private static final ApprovalService instance = new ApprovalService();
-
-    private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
 
     static List<User> approvers = new ArrayList<>();
 
@@ -182,18 +179,19 @@ public class ApprovalService {
      * @implNote 该方法从MySQL数据库中抽取crs_appro? 数据, 按照其主键查询
      */
     private List<Course> getAppliedCourses(@NonNull String flowNo) {
-        var vc_ca = COURSE_APPLICATION_MAPPER.selectByFlowNo(flowNo);
-        if (vc_ca.getLeft() == VC.Mapper.OK) {
-            var appl = vc_ca.getRight();
-            var courseIds = CourseUtil.getCourseCodes(appl.getApproCourseIds());
 
-            try (SqlSession session = MyDb.use().openSession(true)) {
+        try (var session = MyDb.use().openSession(true)) {
+            val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
+            val courseMapper = session.getMapper(CourseMapper.class);
 
-                var courseMapper = session.getMapper(CourseMapper.class);
+            var appl = courseApplicationMapper.selectByFlowNo(flowNo);
+
+            if (appl != null) {
+                var courseIds = CourseUtil.getCourseCodes(appl.getApproCourseIds());
                 return courseMapper.selectCourses(courseIds);
             }
+            return null;
         }
-        return null;
     }
 
     /**

@@ -7,7 +7,6 @@ import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import com.github.akagawatsurunaki.novappro.mapper.*;
-import com.github.akagawatsurunaki.novappro.mapper.impl.CourseApplicationMapperImpl;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
@@ -34,8 +33,6 @@ public class ApplyCourseService {
     @Getter
     private static final ApplyCourseService instance = new ApplyCourseService();
 
-    private static final CourseApplicationMapper COURSE_APPLICATION_MAPPER = CourseApplicationMapperImpl.getInstance();
-
     public VC.Service apply(@NonNull Integer userId,
                             @NonNull List<String> courseIds,
                             @NonNull InputStream is,
@@ -52,6 +49,8 @@ public class ApplyCourseService {
             val uploadFileMapper = session.getMapper(UploadFileMapper.class);
             val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
+            val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
+
             val user = userMapper.selectById(userId);
 
             // 校验用户是否存在
@@ -61,7 +60,6 @@ public class ApplyCourseService {
                 val date = new Date();
 
                 // 上传文件
-
                 var fileType = FileTypeUtil.getType(is);
                 // 如果不调用此方法, 文件写入将无法被识别为图片文件, 图片文件将会无法打开.
                 is.reset();
@@ -110,9 +108,10 @@ public class ApplyCourseService {
 
                         val approverList = getApproverList(courseId);
 
-                        // 应调用下面的方法
                         // 创建ApprovalFlowDetail
-                        // TODO: DEBUGING
+                        if (approverList == null || approverList.isEmpty()){
+                            return VC.Service.ERROR;
+                        }
 
                         for (var approver : approverList) {
                             var approvalFlowDetail
@@ -137,7 +136,7 @@ public class ApplyCourseService {
                     }
 
                     // 向数据库插入
-                    COURSE_APPLICATION_MAPPER.insert((CourseApplication) approval);
+                    courseApplicationMapper.insert((CourseApplication) approval);
 
                     rows = approvalFlowMapper.insert(approvalFlow);
 
@@ -192,13 +191,14 @@ public class ApplyCourseService {
 
         try (SqlSession session = MyDb.use().openSession()) {
 
-            var userMapper = session.getMapper(UserMapper.class);
+            val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
+            val userMapper = session.getMapper(UserMapper.class);
 
             var user = userMapper.selectById(userId);
 
             if (user != null) {
-                var vc_l = COURSE_APPLICATION_MAPPER.select(user.getId());
-                var courseApplicationList = vc_l.getRight();
+
+                var courseApplicationList = courseApplicationMapper.select(user.getId());
 
                 List<ApprovalStatus> approvalStatusList = new ArrayList<>();
 
@@ -207,10 +207,7 @@ public class ApplyCourseService {
                     approvalStatusList.add(currentNode.getAuditStatus());
                 }
 
-                if (vc_l.getLeft() == VC.Mapper.OK) {
-                    return new ImmutableTriple<>(VC.Service.OK, courseApplicationList, approvalStatusList);
-                }
-                return new ImmutableTriple<>(VC.Service.ERROR, null, null);
+                return new ImmutableTriple<>(VC.Service.OK, courseApplicationList, approvalStatusList);
             }
             return new ImmutableTriple<>(VC.Service.NO_SUCH_USER, null, null);
         }
