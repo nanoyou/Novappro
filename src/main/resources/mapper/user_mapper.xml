@@ -13,11 +13,22 @@
     </insert>
 
     <select id="selectById" resultType="com.github.akagawatsurunaki.novappro.model.database.User">
-        select * from user where user.id = #{id}
+        select *
+        from user
+        where user.id = #{id}
     </select>
 
     <select id="selectAllUsers" resultType="com.github.akagawatsurunaki.novappro.model.database.User">
-        select * from user
+        select *
+        from user
+    </select>
+    <select id="selectByIds" resultType="com.github.akagawatsurunaki.novappro.model.database.User">
+        SELECT *
+        FROM `user`
+        WHERE `user`.`id` IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
     </select>
 
 </mapper>
