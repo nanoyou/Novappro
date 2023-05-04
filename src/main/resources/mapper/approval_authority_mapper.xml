@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.akagawatsurunaki.novappro.mapper.ApprovalAuthorityMapper">
+
+    <insert id="insert">
+            INSERT INTO web_dev.approval_authority (user_id, appro_weight, course_code)
+            VALUES (#{userId}, #{approWeight}, #{courseCode});
+    </insert>
+
+    <select id="selectByUserId"
+            resultType="com.github.akagawatsurunaki.novappro.model.database.ApprovalAuthority">
+            SELECT *
+            FROM web_dev.approval_authority
+            WHERE approval_authority.user_id = #{userId};
+    </select>
+
+</mapper>

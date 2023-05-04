@@ -18,11 +18,11 @@
         </environment>
     </environments>
     <mappers>
-<!--        <mapper resource="org/mybatis/example/BlogMapper.xml"/>-->
         <mapper resource="mapper/user_mapper.xml"/>
         <mapper resource="mapper/course_mapper.xml"/>
         <mapper resource="mapper/upload_file_mapper.xml"/>
         <mapper resource="mapper/approval_flow_mapper.xml"/>
+        <mapper resource="mapper/approval_authority_mapper.xml"/>
     </mappers>
 
 </configuration>
