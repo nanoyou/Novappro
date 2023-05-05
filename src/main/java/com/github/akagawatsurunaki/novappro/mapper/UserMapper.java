@@ -15,4 +15,6 @@ public interface UserMapper {
 
     int insert(User user);
 
+    int delete(@NonNull List<Integer> ids);
+
 }
