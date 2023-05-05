@@ -26,5 +26,9 @@
         WHERE course_code = #{courseCode}
         ORDER BY appro_weight DESC;
     </select>
+    <select id="selectAll" resultType="com.github.akagawatsurunaki.novappro.model.database.ApprovalAuthority">
+        SELECT *
+        FROM web_dev.approval_authority;
+    </select>
 
 </mapper>

@@ -14,4 +14,6 @@ public interface ApprovalAuthorityMapper {
     List<Integer> selectUserIdsByCourseCode(@NonNull String courseCode);
 
     List<Integer> selectUserIdsByCourseCodeDesc(@NonNull String courseCode);
+
+    List<ApprovalAuthority> selectAll();
 }
