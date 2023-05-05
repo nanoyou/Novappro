@@ -8,6 +8,12 @@
         INSERT INTO web_dev.approval_authority (user_id, appro_weight, course_code)
         VALUES (#{userId}, #{approWeight}, #{courseCode});
     </insert>
+    <delete id="delete">
+        DELETE
+        FROM web_dev.approval_authority
+        WHERE user_id = #{userId}
+          AND course_code = #{courseCode};
+    </delete>
 
     <select id="selectByUserId"
             resultType="com.github.akagawatsurunaki.novappro.model.database.ApprovalAuthority">
@@ -29,6 +35,13 @@
     <select id="selectAll" resultType="com.github.akagawatsurunaki.novappro.model.database.ApprovalAuthority">
         SELECT *
         FROM web_dev.approval_authority;
+    </select>
+    <select id="selectByUserIdAndCourseCode"
+            resultType="com.github.akagawatsurunaki.novappro.model.database.ApprovalAuthority">
+        SELECT *
+        FROM web_dev.approval_authority
+        WHERE approval_authority.user_id = #{userId}
+          AND approval_authority.course_code = #{courseCode};
     </select>
 
 </mapper>
