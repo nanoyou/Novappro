@@ -60,7 +60,8 @@ public class SC {
 
         SELECTED_APPL_ITEM_FLOW_NO("selected_appl_item_flow_no"),
         APPL_REMARK("appl_remark"),
-        APPL_ITEM_CONFIRM("appl_item_confirm")
+        APPL_ITEM_CONFIRM("appl_item_confirm"),
+        UPDATED_USERS("updated_users")
         ;
 
 

@@ -52,7 +52,7 @@
                 for (User user : allUsers.getRight()) {
         %>
         <tr id="user-<%=user.getId()%>">
-            <input id="input-user-<%=user.getId()%>" style="display: none" name="user[]" value="<%=user.getId()%>">
+            <input id="input-user-<%=user.getId()%>" style="display: none" name="<%=SC.ReqParam.UPDATED_USERS.name%>" value="<%=user.getId()%>">
             <td><%=user.getId()%>
             </td>
             <td><%=user.getUsername()%>

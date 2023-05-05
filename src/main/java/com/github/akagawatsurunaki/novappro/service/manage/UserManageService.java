@@ -12,7 +12,9 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserManageService {
 
@@ -45,6 +47,21 @@ public class UserManageService {
         }
     }
 
+    public Pair<ServiceMessage, List<User>> updateAllUsers(@NonNull String[] userIds) {
+        try {
+            var ids = Arrays.stream(userIds)
+                    .mapToInt(Integer::parseInt) // 将每个元素转为 int 类型
+                    .boxed() // 转换为 Integer 对象
+                    .collect(Collectors.toList()); // 收集为 List<Integer>
+            return updateAllUsers(ids);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return new ImmutablePair<>(new ServiceMessage(ServiceMessage.Level.ERROR,
+                    "您发送的更改请求中存在非法的参数，含有不能解析为学号的参数，请使用正确的学号/工号"),
+                    new ArrayList<>());
+        }
+    }
+
     /**
      * 根据UserIds查找当前系统中存在的用户，并删除。
      * 如果存在任何一个非法的用户ID，服务失败。
@@ -74,7 +91,7 @@ public class UserManageService {
                 }
             }
             return new ImmutablePair<>(
-                    new ServiceMessage(ServiceMessage.Level.ERROR, "您发送的更改请求中存在非法的参数，请使用正确的学号/工号"),
+                    new ServiceMessage(ServiceMessage.Level.ERROR, "您所要更改的用户不存在"),
                     new ArrayList<>()
             );
         }

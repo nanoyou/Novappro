@@ -22,13 +22,14 @@ public class UserManageServlet extends HttpServlet {
         val pair = UserManageService.getInstance().getAllUsers();
         request.setAttribute(SC.ReqAttr.ALL_USERS.name, pair);
         request.getRequestDispatcher("user_manage.jsp").forward(request, response);
+        request.removeAttribute(SC.ReqAttr.ALL_USERS.name);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.printf(UPDATE_USERS);
-        // TODO: 2023年5月5日 10点47分 此处进行更新操作
 
-
+        val userIds = request.getParameterValues(SC.ReqParam.UPDATED_USERS.name);
+        val pair = UserManageService.getInstance().updateAllUsers(userIds);
+        doGet(request, response);
     }
 }
