@@ -72,7 +72,7 @@ public class LoginServlet extends HttpServlet {
                         switch (user.getType()) {
                             case STUDENT -> response.sendRedirect(SC.JSPResource.WELCOME_SESSION.name);
                             case LECTURE_TEACHER, SUPERVISOR_TEACHER ->
-                                response.sendRedirect(SC.JSPResource.GET_APPROS.name);
+                                    request.getRequestDispatcher(SC.WebServletValue.GET_APPROS).forward(request, response);
                             case ADMIN -> System.out.println("尚未实现");
                         }
                         return;

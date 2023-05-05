@@ -14,13 +14,8 @@
         location.href =
             '${pageContext.request.contextPath}<%=SC.WebServletValue.GET_APPL_ITEM_DETAIL%>' + '?<%=SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name%>=' + flowNo;
     }
-
-    function init(){
-        location.href ="${pageContext.request.contextPath}/get_appros";
-    }
-
 </script>
-<body onload="init()">
+<body>
 <%
     List<ApplItem> applItemList =
             (List<ApplItem>) request.getAttribute(SC.ReqAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name);
