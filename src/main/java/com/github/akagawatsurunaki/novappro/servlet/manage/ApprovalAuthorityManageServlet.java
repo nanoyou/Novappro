@@ -9,22 +9,32 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-import static com.github.akagawatsurunaki.novappro.constant.SC.ReqAttr.ALL_APPROVAL_AUTHORITY_ITEMS;
 
-@WebServlet(name = "ApprovalAuthorityManageServlet", value = "/ApprovalAuthorityManageServlet")
+@WebServlet(name = "ApprovalAuthorityManageServlet", value = {"/ApprovalAuthorityManageServlet", SC.WebServletValue.UPDATE_APPRO_AUTHO_ITEMS})
 public class ApprovalAuthorityManageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        val approvalAuthorityItems = ApprovalAuthorityService.getInstance().getApprovalAuthorityItems();
-        request.setAttribute(ALL_APPROVAL_AUTHORITY_ITEMS.name, approvalAuthorityItems);
+        val approvalAuthorityItems =
+                ApprovalAuthorityService.getInstance().getApprovalAuthorityItems();
+        request.setAttribute(SC.ReqAttr.ALL_APPROVAL_AUTHORITY_ITEMS.name, approvalAuthorityItems);
         request.getRequestDispatcher(SC.JSPResource.APPROVAL_AUTHORITY_MANAGE.name).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        // TODO： 对更新后的权限列表进行刷新，只能每次增加一条，然后刷新本页面
+        val approverIdParam = request.getParameter("approverId");
+        val appproWeightParam = request.getParameter("appproWeight");
+        val courseCodeParam = request.getParameter("courseCode");
+        val updatedApproAuthosParam = request.getParameterValues(SC.ReqParam.UPDATED_APPRO_AUTHO.name);
+
+        val serviceMessage =
+                ApprovalAuthorityService.getInstance()
+                        .update(updatedApproAuthosParam, approverIdParam, appproWeightParam, courseCodeParam);
+
+        request.setAttribute(SC.ReqAttr.UPDATE_MESSAGE.name, serviceMessage);
+
         doGet(request, response);
 
     }
