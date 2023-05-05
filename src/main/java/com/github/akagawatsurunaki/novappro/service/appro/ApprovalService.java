@@ -174,6 +174,7 @@ public class ApprovalService {
             var appl = courseApplicationMapper.selectByFlowNo(flowNo);
 
             if (appl != null) {
+                assert appl.getApproCourseIds() != null;
                 var courseIds = CourseUtil.getCourseCodes(appl.getApproCourseIds());
                 return courseMapper.selectCourses(courseIds);
             }
