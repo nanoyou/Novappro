@@ -1,7 +1,6 @@
 package com.github.akagawatsurunaki.novappro.service.manage;
 
 import cn.hutool.core.collection.CollUtil;
-import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalAuthorityMapper;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
@@ -20,6 +19,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ApprovalAuthorityService {
     @Getter
@@ -53,6 +53,7 @@ public class ApprovalAuthorityService {
             approvalAuthorities.forEach(approvalAuthority -> {
 
                 val approver = userMapper.selectById(approvalAuthority.getUserId());
+
                 val course = courseMapper.selectCourseByCode(approvalAuthority.getCourseCode());
 
                 val approvalAuthorityItem = ApprovalAuthorityItem.builder()
@@ -79,9 +80,9 @@ public class ApprovalAuthorityService {
      * 更新审批权限列表，会先执行删除操作，再执行添加操作。
      *
      * @param approverIdAndCourseCodes 这个字符串数组中的每一项都是一个审批人 ID 和课程代码的组合，用“-”符号连接。例如，“20001111-A21292387489”。
-     * @param approverIdParam 新增的审批人ID。
-     * @param approWeightParam 新增的审批人拥有的权重值。
-     * @param courseCodeParam 新增的审批人可以申请的课程。
+     * @param approverIdParam          新增的审批人ID。
+     * @param approWeightParam         新增的审批人拥有的权重值。
+     * @param courseCodeParam          新增的审批人可以申请的课程。
      * @return 服务响应信息
      */
     public ServiceMessage update(String[] approverIdAndCourseCodes,
@@ -106,8 +107,10 @@ public class ApprovalAuthorityService {
                                     Triple<Integer, Integer, String> approverId_appproWeight_courseCode) {
         try (var session = MyDb.use().openSession(true)) {
             val approvalAuthorityMapper = session.getMapper(ApprovalAuthorityMapper.class);
+            val userMapper = session.getMapper(UserMapper.class);
+            val courseMapper = session.getMapper(CourseMapper.class);
 
-            boolean isDeleted = false;
+            boolean isDeleted;
             boolean isUpdated = false;
 
             val userId_courseCodes = parseUserIdAndCourseCodes(approverIdAndCourseCodes);
@@ -119,7 +122,8 @@ public class ApprovalAuthorityService {
             // 利用集合差集，求出需要删除的ApprovalAuthorities
             val allApprovalAuthorities = approvalAuthorityMapper.selectAll();
             val approvalAuthoritiesToBeRetained = getApprovalAuthoritiesByUserIdAndCourseCodes(userId_courseCodes);
-            val approvalAuthoritiesToDelete = CollUtil.disjunction(allApprovalAuthorities, approvalAuthoritiesToBeRetained);
+            val approvalAuthoritiesToDelete = CollUtil.disjunction(allApprovalAuthorities,
+                    approvalAuthoritiesToBeRetained);
             val pairs = approvalAuthoritiesToDelete.stream().map(aa ->
                     new ImmutablePair<>(aa.getUserId(), aa.getCourseCode())
             ).toList();
@@ -128,14 +132,21 @@ public class ApprovalAuthorityService {
             // 查看是否有添加的需求
             if (approverId_appproWeight_courseCode != null) {
 
-                val approvalAuthority = ApprovalAuthority.builder()
-                        .userId(approverId_appproWeight_courseCode.getLeft())
-                        .approWeight(approverId_appproWeight_courseCode.getMiddle())
-                        .courseCode(approverId_appproWeight_courseCode.getRight()).build();
-                // 如果新增成功
-                isUpdated = addApprovalAuthority(approvalAuthority);
+                val approverId = approverId_appproWeight_courseCode.getLeft();
+                val approWeight = approverId_appproWeight_courseCode.getMiddle();
+                val courseCode = approverId_appproWeight_courseCode.getRight();
+
+                if ((userMapper.selectById(approverId) != null) && (courseMapper.selectCourseByCode(courseCode) != null)) {
+
+                    val approvalAuthority = ApprovalAuthority.builder()
+                            .userId(approverId)
+                            .approWeight(approWeight)
+                            .courseCode(courseCode).build();
+                    // 如果新增成功
+                    isUpdated = addApprovalAuthority(approvalAuthority);
+                }
             }
-            if (!isDeleted){
+            if (!isDeleted) {
                 return new ServiceMessage(ServiceMessage.Level.WARN, "添加成功，但删除失败。");
             }
 
@@ -165,31 +176,18 @@ public class ApprovalAuthorityService {
 
     private List<Pair<Integer, String>> parseUserIdAndCourseCodes(@NonNull List<String> approverIdAndCourseCodes) {
         try {
-            List<Pair<Integer, String>> result = new ArrayList<>();
-            approverIdAndCourseCodes.forEach(s -> {
-                val split = s.split("-", 2);
-                val pair = new ImmutablePair<Integer, String>(
-                        Integer.valueOf(split[0]),
-                        split[1]
-                );
-                result.add(pair);
-            });
-            return result;
+            return approverIdAndCourseCodes.stream()
+                    .map(s -> s.split("-", 2))
+                    .filter(arr -> arr.length == 2)
+                    .map(arr -> new ImmutablePair<>(Integer.valueOf(arr[0]), arr[1]))
+                    .collect(Collectors.toList());
         } catch (NumberFormatException e) {
             return null;
         }
     }
 
     private boolean deleteApprovalAuthorities(List<ImmutablePair<Integer, String>> userId_courseCodes) {
-        if (userId_courseCodes.isEmpty()) {
-            return false;
-        }
-        for (var userId_courseCode : userId_courseCodes) {
-            if (!deleteApprovalAuthority(userId_courseCode)) {
-                return false;
-            }
-        }
-        return true;
+        return userId_courseCodes.stream().allMatch(this::deleteApprovalAuthority);
     }
 
     private boolean deleteApprovalAuthority(Pair<Integer, String> userId_courseCode) {
@@ -209,14 +207,8 @@ public class ApprovalAuthorityService {
     private boolean addApprovalAuthority(@NonNull ApprovalAuthority approvalAuthority) {
         try (var session = MyDb.use().openSession(true)) {
             val approvalAuthorityMapper = session.getMapper(ApprovalAuthorityMapper.class);
-
-            val rows = approvalAuthorityMapper.insert(approvalAuthority);
-
-            if (rows == 1) {
-                return true;
-            }
+            return approvalAuthorityMapper.insert(approvalAuthority) == 1;
         }
-        return false;
     }
 
 
