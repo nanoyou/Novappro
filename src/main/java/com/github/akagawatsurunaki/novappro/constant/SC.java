@@ -20,7 +20,10 @@ public class SC {
         COURSE_APPL_DETAIL("course_appl_detail.jsp"),
         GET_APPLIED_COURSES("get_applied_courses.jsp"),
         GET_APPROS("get_appros.jsp"),
-        GET_CRS_APPL_ITEM("get_crs_appl_item.jsp");
+        GET_CRS_APPL_ITEM("get_crs_appl_item.jsp")
+        ,
+        APPROVAL_AUTHORITY_MANAGE("approval_authority_manage.jsp")
+        ;
 
         public final String name;
     }
@@ -40,7 +43,8 @@ public class SC {
         SELECTED_APPL_ITEM_DETAIL("selected_appl_item_detail"),
         APPRO_STATUS_LIST("appro_status_list"),
         ERROR_MESSAGE("error_message"),
-        ALL_USERS("all_users")
+        ALL_USERS("all_users"),
+        ALL_APPROVAL_AUTHORITY_ITEMS("all_approval_authority_items")
         ;
 
         public final String name;
@@ -61,7 +65,8 @@ public class SC {
         SELECTED_APPL_ITEM_FLOW_NO("selected_appl_item_flow_no"),
         APPL_REMARK("appl_remark"),
         APPL_ITEM_CONFIRM("appl_item_confirm"),
-        UPDATED_USERS("updated_users")
+        UPDATED_USERS("updated_users"),
+        UPDATED_APPRO_AUTHO("updated_appro_autho[]")
         ;
 
 
