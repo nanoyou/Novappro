@@ -39,7 +39,8 @@ public class SC {
         SELECTED_APPL_ITEM("selected_appl_item"),
         SELECTED_APPL_ITEM_DETAIL("selected_appl_item_detail"),
         APPRO_STATUS_LIST("appro_status_list"),
-        ERROR_MESSAGE("error_message")
+        ERROR_MESSAGE("error_message"),
+        ALL_USERS("all_users")
         ;
 
         public final String name;
