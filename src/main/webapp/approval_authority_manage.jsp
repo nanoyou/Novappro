@@ -1,17 +1,9 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ApprovalAuthorityItem" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.model.database.User" %>
 <%@ page import="org.apache.commons.lang3.tuple.Pair" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
-<%@ page import="static com.github.akagawatsurunaki.novappro.constant.SC.ReqParam.UPDATED_APPRO_AUTHO" %><%--
-  Created by IntelliJ IDEA.
-  User: 96514
-  Date: 2023/5/5
-  Time: 16:36
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -24,20 +16,13 @@
     function removeItem(id) {
         let elem = document.getElementById("aai-" + id);
         elem.parentNode.removeChild(elem);
+        elem = document.getElementById("input-aai-" + id);
+        elem.parentNode.removeChild(elem);
     }
-    function addItem(flowNo) {
-        const crsTable = document.getElementById("courses_table");
-        crsTable.insertRow();
-        const input = document.createElement('input');
-
-        crsTable.appendChild(input);
-        refresh(flowNo)
-    }
-
 </script>
 <body>
 <h1>审批权限管理系统</h1>
-<form action="" method="post" >
+<form action="${pageContext.request.contextPath}<%=SC.WebServletValue.UPDATE_APPRO_AUTHO_ITEMS%>" method="post">
     <%=allApprovalAuthorityItems.getLeft().getMessage()%>
     <table border="1">
         <tr>
@@ -62,7 +47,8 @@
         %>
         <tr id="aai-<%=item.getApproverId()%>-<%=item.getCourseCode()%>">
             <input id="input-aai-<%=item.getApproverId()%>-<%=item.getCourseCode()%>" style="display: none"
-                   name="<%=UPDATED_APPRO_AUTHO%>" value="<%=item.getApproverId()%>-<%=item.getCourseCode()%>">
+                   name="<%=SC.ReqParam.UPDATED_APPRO_AUTHO.name%>"
+                   value="<%=item.getApproverId()%>-<%=item.getCourseCode()%>">
             <td><%=item.getApproverId()%>
             </td>
             <td><%=item.getApproverName()%>
@@ -81,21 +67,24 @@
                 </button>
             </td>
         </tr>
-
         <%
                 }
             }
         %>
     </table>
-    <label>
-        <input name="approverId" type="number" placeholder="输入教师工号">
-    </label>
-    <label>
-        <input name="appproWeight" type="number" placeholder="输入审批权重">
-    </label>
-    <label>
-        <input name="courseCode" type="text" placeholder="输入课程代码">
-    </label>
+    <tr>
+        增加一个新的审批权限关系
+        <label>
+            <input name="approverId" type="number" placeholder="输入教师工号">
+        </label>
+        <label>
+            <input name="appproWeight" type="number" placeholder="输入审批权重">
+        </label>
+        <label>
+            <input name="courseCode" type="text" placeholder="输入课程代码">
+        </label>
+    </tr>
+    <input type="submit" value="确认">
 </form>
 
 </body>

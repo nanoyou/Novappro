@@ -32,7 +32,6 @@ public class SC {
     public enum ReqAttr {
         USER_ID("user_id"),
         LOGIN_USER_ID("login_user_id"),
-
         LOGIN_USER("login_user"),
         COURSE_APPLICATIONS("course_applications"),
         USER_USERNAME("user_username"),
@@ -44,7 +43,8 @@ public class SC {
         APPRO_STATUS_LIST("appro_status_list"),
         ERROR_MESSAGE("error_message"),
         ALL_USERS("all_users"),
-        ALL_APPROVAL_AUTHORITY_ITEMS("all_approval_authority_items")
+        ALL_APPROVAL_AUTHORITY_ITEMS("all_approval_authority_items"),
+        UPDATE_MESSAGE("update_message")
         ;
 
         public final String name;
@@ -84,6 +84,7 @@ public class SC {
         public final static String APPLY_COURSES = "/apply_courses";
         public final static String SUBMIT_APPRO_RET = "/submit_appro_ret";
         public final static String APPL_ITEM = "/ApplItemServlet";
+        public final static String UPDATE_APPRO_AUTHO_ITEMS = "/update_appro_autho_items";
 
     }
 }
