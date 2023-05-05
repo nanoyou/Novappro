@@ -25,6 +25,13 @@ public class ApprovalAuthorityService {
     @Getter
     private static final ApprovalAuthorityService instance = new ApprovalAuthorityService();
 
+    /**
+     * 查询数据库，获取所有审批权限项 ApprovalAuthority，
+     * 并将它们封装成 ApprovalAuthorityItem 对象的列表。
+     *
+     * @return 如果查询成功，该方法返回查询结果和 ServiceMessage 对象以表示处理状态。
+     * <br/>如果审批权限(ApprovalAuthority)列表为空，则返回一个空列表和相应的消息。
+     */
     public Pair<ServiceMessage, List<ApprovalAuthorityItem>> getApprovalAuthorityItems() {
 
         try (var session = MyDb.use().openSession(true)) {
@@ -68,6 +75,15 @@ public class ApprovalAuthorityService {
         }
     }
 
+    /**
+     * 更新审批权限列表，会先执行删除操作，再执行添加操作。
+     *
+     * @param approverIdAndCourseCodes 这个字符串数组中的每一项都是一个审批人 ID 和课程代码的组合，用“-”符号连接。例如，“20001111-A21292387489”。
+     * @param approverIdParam 新增的审批人ID。
+     * @param approWeightParam 新增的审批人拥有的权重值。
+     * @param courseCodeParam 新增的审批人可以申请的课程。
+     * @return 服务响应信息
+     */
     public ServiceMessage update(String[] approverIdAndCourseCodes,
                                  String approverIdParam,
                                  String approWeightParam,
