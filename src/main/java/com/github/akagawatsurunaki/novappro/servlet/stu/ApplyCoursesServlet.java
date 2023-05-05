@@ -2,6 +2,7 @@ package com.github.akagawatsurunaki.novappro.servlet.stu;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VC;
+import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.stu.ApplyCourseService;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -29,7 +30,23 @@ public class ApplyCoursesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        doPost(request, response);
+
+        var id = ((User) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name)).getId();
+
+        // 获取这些课程
+        var vc_cal_asl = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
+
+        if (vc_cal_asl.getLeft() == VC.Service.OK) {
+            var courseApplications = vc_cal_asl.getMiddle();
+            var approStatusList = vc_cal_asl.getRight();
+
+            // 设置到 Request 中
+            request.setAttribute(SC.ReqAttr.COURSE_APPLICATIONS.name, courseApplications);
+            request.setAttribute(SC.ReqAttr.APPRO_STATUS_LIST.name, approStatusList);
+
+            // 跳转页面
+            request.getRequestDispatcher(SC.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);
+        }
     }
 
     @Override
@@ -89,19 +106,23 @@ public class ApplyCoursesServlet extends HttpServlet {
 
         }
 
-        // 获取这些课程
-        var vc_cal_asl = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
+        doGet(request, response);
 
-        if (vc_cal_asl.getLeft() == VC.Service.OK) {
-            var courseApplications = vc_cal_asl.getMiddle();
-            var approStatusList = vc_cal_asl.getRight();
+        // TODO: 2023年5月5日15:43:19 DEBUGGING
 
-            // 设置到 Request 中
-            request.setAttribute(SC.ReqAttr.COURSE_APPLICATIONS.name, courseApplications);
-            request.setAttribute(SC.ReqAttr.APPRO_STATUS_LIST.name, approStatusList);
-
-            // 跳转页面
-            request.getRequestDispatcher(SC.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);
-        }
+//        // 获取这些课程
+//        var vc_cal_asl = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
+//
+//        if (vc_cal_asl.getLeft() == VC.Service.OK) {
+//            var courseApplications = vc_cal_asl.getMiddle();
+//            var approStatusList = vc_cal_asl.getRight();
+//
+//            // 设置到 Request 中
+//            request.setAttribute(SC.ReqAttr.COURSE_APPLICATIONS.name, courseApplications);
+//            request.setAttribute(SC.ReqAttr.APPRO_STATUS_LIST.name, approStatusList);
+//
+//            // 跳转页面
+//            request.getRequestDispatcher(SC.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);
+//        }
     }
 }
