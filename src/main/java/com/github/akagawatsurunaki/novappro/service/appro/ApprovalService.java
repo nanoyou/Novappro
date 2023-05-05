@@ -26,19 +26,6 @@ public class ApprovalService {
     @Getter
     private static final ApprovalService instance = new ApprovalService();
 
-    static List<User> approvers = new ArrayList<>();
-
-    static {
-        try (var session = MyDb.use().openSession(true)) {
-            val userMapper = session.getMapper(UserMapper.class);
-            // TODO: 查询一个固定的管理员
-            val approver1 = userMapper.selectById(20210000);
-            val approver2 = userMapper.selectById(20210000);
-            approvers.add(approver1);
-            approvers.add(approver2);
-        }
-    }
-
     /**
      * 根据审批人的ID获取对应的可审批对象
      *
