@@ -82,7 +82,6 @@ public class SC {
         public final static String GET_APPROS = "/get_appros";
         public final static String GET_APPL_ITEM_DETAIL = "/get_appl_item_detail";
         public final static String APPLY_COURSES = "/apply_courses";
-        public final static String SUBMIT_APPRO_RET = "/submit_appro_ret";
         public final static String APPL_ITEM = "/ApplItemServlet";
         public final static String UPDATE_APPRO_AUTHO_ITEMS = "/update_appro_autho_items";
 
