@@ -85,7 +85,7 @@ public class ApplyCourseService {
                     // 创建Approval对象
                     var approval
                             = CourseApplication.builder()
-                            .approCourseIds(CourseUtil.toCourseCodesStr(courseIds))
+                            .approCourses(CourseUtil.toCourseCodesStr(courseIds))
                             .flowNo(flowNo)
                             .addUserId(user.getId())
                             .addTime(date)
@@ -109,7 +109,7 @@ public class ApplyCourseService {
                         val approverList = getApproverList(courseId);
 
                         // 创建ApprovalFlowDetail
-                        if (approverList == null || approverList.isEmpty()){
+                        if (approverList == null || approverList.isEmpty()) {
                             return VC.Service.ERROR;
                         }
 
@@ -160,11 +160,12 @@ public class ApplyCourseService {
 
     /**
      * 按照指定的课程代码找到审批流程中的所有审批人, 并按照每个审批人的权重值来排序.
+     *
      * @param courseCode 指定的课程代码, 即审批人可以进行审批的课程的课程代码
      * @return 有顺序的
      */
     private List<User> getApproverList(@NonNull String courseCode) {
-        try (var session = MyDb.use().openSession(true)){
+        try (var session = MyDb.use().openSession(true)) {
 
             val approvalAuthorityMapper = session.getMapper(ApprovalAuthorityMapper.class);
             val userMapper = session.getMapper(UserMapper.class);
@@ -190,21 +191,23 @@ public class ApplyCourseService {
     public Triple<VC.Service, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@NonNull Integer userId) {
 
         try (SqlSession session = MyDb.use().openSession()) {
-            // TODO: BUG可能在此代码中 2023年5月6日10:04:17
             val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
             val userMapper = session.getMapper(UserMapper.class);
 
+            // 用户是否存在
             var user = userMapper.selectById(userId);
-
             if (user != null) {
 
+                // 根据用户ID查询课程申请(CourseApplication)列表
                 var courseApplicationList = courseApplicationMapper.select(user.getId());
-
                 List<ApprovalStatus> approvalStatusList = new ArrayList<>();
 
-                for (var ca : courseApplicationList) {
-                    var currentNode = ApprovalService.getInstance().getCurrentApprovalFlowNode(ca.getFlowNo());
-                    approvalStatusList.add(currentNode.getAuditStatus());
+                if (courseApplicationList != null) {
+                    for (var ca : courseApplicationList) {
+                        assert ca.getApproCourses() != null && !ca.getApproCourses().isEmpty();
+                        var currentNode = ApprovalService.getInstance().getCurrentApprovalFlowNode(ca.getFlowNo());
+                        approvalStatusList.add(currentNode.getAuditStatus());
+                    }
                 }
 
                 return new ImmutableTriple<>(VC.Service.OK, courseApplicationList, approvalStatusList);
