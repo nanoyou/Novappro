@@ -109,6 +109,5 @@ public class ApplyCoursesServlet extends HttpServlet {
         doGet(request, response);
 
         // TODO: 2023年5月6日00:38:53 当申请的课程没有被指定审批人时会出现错误 FIX BUG
-        // TODO: 2023年5月6日00:39:54 选课的列表是null, 但是数据库中插入成功 FIX BUG
     }
 }

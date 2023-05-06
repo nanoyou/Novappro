@@ -52,7 +52,7 @@ public class RegisterService {
 
         user.setRawPassword(rawPassword);
 
-        // TODO: 默认注册的用户均为学生, 未来可能支持多种身份的注册.
+        // WARN: 默认注册的用户均为学生, 未来可能支持多种身份的注册.
         user.setType(UserType.STUDENT);
 
         // 调用Mapper对数据库执行INSERT语句
