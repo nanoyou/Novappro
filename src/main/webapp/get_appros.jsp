@@ -3,6 +3,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.User" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
+<%@ page import="org.apache.commons.lang3.tuple.Pair" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -17,8 +19,8 @@
 </script>
 <body>
 <%
-    List<ApplItem> applItemList =
-            (List<ApplItem>) request.getAttribute(SC.ReqAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name);
+    Pair<ServiceMessage, List<ApplItem>> applItemList =
+            (Pair<ServiceMessage, List<ApplItem>>) request.getAttribute(SC.ReqAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name);
 
     User loginUser = (User) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name);
 %>
@@ -64,7 +66,13 @@
 
     <%
         if (applItemList != null) {
-            for (ApplItem applItem : applItemList) {
+
+    %>
+    <p><%=applItemList.getLeft().getMessage()%>
+    </p>
+    <%
+        if (applItemList.getLeft().getMessageLevel().equals(ServiceMessage.Level.SUCCESS)) {
+            for (ApplItem applItem : applItemList.getRight()) {
     %>
     <tr>
         <td>
@@ -90,6 +98,7 @@
         </td>
     </tr>
     <%
+                }
             }
         }
     %>
