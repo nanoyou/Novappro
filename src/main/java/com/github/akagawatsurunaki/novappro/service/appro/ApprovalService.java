@@ -7,6 +7,7 @@ import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
 import com.github.akagawatsurunaki.novappro.model.frontend.CourseAppItemDetail;
+import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import org.apache.ibatis.session.SqlSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ApprovalService {
 
@@ -32,19 +34,7 @@ public class ApprovalService {
      * @return 服务响应码,
      * @apiNote ApplItem是前端使用的实体类
      */
-    public Pair<VC.Service, List<ApplItem>> getApplItems(@NonNull Integer approverId) {
-
-        // 判断用户的类型
-        // 获取审批人的权重
-        // 构建审批人链条, 按照权重排序
-        // 如果链条为空直接返回空
-
-        // 如果当前的ApplItem是第一个节点, 直接返回
-
-        // 如果当前的ApplItem还有前继节点, 检查它的status是否为(已通过or已拒绝)
-        //  如果(已拒绝) 则不显示
-        //  如果(已通过) 则可以开始审批
-        //  如果(审批|审批|审批...) 则不显示
+    public Pair<ServiceMessage, List<ApplItem>> getApplItems(@NonNull Integer approverId) {
 
         try (var session = MyDb.use().openSession(true)) {
 
@@ -52,21 +42,67 @@ public class ApprovalService {
 
             var flowNos = approvalFlowDetailMapper.selectFlowNoByApproverId(approverId);
 
-            if (flowNos != null && (!flowNos.isEmpty())) {
-
-                List<ApplItem> result = new ArrayList<>();
-
-                for (String flowNo : flowNos) {
-                    var vc_applItem = getApplItem(flowNo);
-                    if (vc_applItem.getLeft() != VC.Service.OK) {
-                        return new ImmutablePair<>(VC.Service.ERROR, null);
-                    }
-                    result.add(vc_applItem.getRight());
-                }
-                return new ImmutablePair<>(VC.Service.OK, result);
+            if (flowNos == null || flowNos.isEmpty()) {
+                return new ImmutablePair<>(
+                        new ServiceMessage(ServiceMessage.Level.INFO, "您没有需要审批的项目。"),
+                        new ArrayList<>());
             }
+
+            List<ApplItem> result = new ArrayList<>();
+
+            for (String flowNo : flowNos) {
+                var vc_applItem = getApplItem(flowNo, approverId);
+                if (vc_applItem.getRight() == null) {
+                    continue;
+                }
+                // 如果审批流已经结束那么跳过
+                if(isSpecifiedApprovalFlowEnded(flowNo)){
+                    continue;
+                }
+
+                result.add(vc_applItem.getRight());
+            }
+
+            if (result.isEmpty()) {
+                return new ImmutablePair<>(
+                        new ServiceMessage(ServiceMessage.Level.INFO, "您没有需要审批的项目。"),
+                        new ArrayList<>());
+            }
+
+            return new ImmutablePair<>(
+                    new ServiceMessage(ServiceMessage.Level.SUCCESS, "您有" + result.size() + "个项目将要申请。"),
+                    result);
         }
-        return new ImmutablePair<>(VC.Service.ERROR, null);
+    }
+
+    public Pair<VC.Service, ApplItem> getApplItem(@NonNull String flowNo, @NonNull Integer approverId) {
+
+        try (SqlSession session = MyDb.use().openSession(true)) {
+
+            val userMapper = session.getMapper(UserMapper.class);
+            val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
+
+            val approver = userMapper.selectById(approverId);
+            val currentApprovalFlowNode = getCurrentApprovalFlowNode(flowNo);
+            val auditUserId = currentApprovalFlowNode.getAuditUserId();
+            val approFlow = approvalFlowMapper.select(flowNo);
+            val addUser = userMapper.selectById(approFlow.getAddUserId());
+            val currentApprovalNode = getCurrentApprovalFlowNode(flowNo);
+
+            if (Objects.equals(auditUserId, approverId)) {
+                var applItem = ApplItem.builder()
+                        .flowNo(approFlow.getFlowNo())
+                        .title(approFlow.getTitle())
+                        .applicantName(addUser.getUsername())
+                        .addTime(approFlow.getAddTime())
+                        .approverName(approver.getUsername())
+                        .approvalStatus(currentApprovalNode.getAuditStatus())
+                        .build();
+                return new ImmutablePair<>(VC.Service.OK, applItem);
+            }
+
+        }
+        return new ImmutablePair<>(VC.Service.OK, null);
     }
 
     /**
@@ -257,6 +293,32 @@ public class ApprovalService {
             }
         }
         return null;
+    }
+
+    /**
+     * 判断当前的审批流是否已经结束
+     * 当一个审批流中存在被拒绝的节点，或者一个审批流中所有的节点都审批通过，那么这个审批流将被断定为结束的。
+     *
+     * @param flowNo 指定的审批流流水号，一个审批流可能有多个审批明细。
+     * @return true 当审批流结束； false 当审批流未结束。
+     */
+    public boolean isSpecifiedApprovalFlowEnded(@NonNull String flowNo) {
+        try (var session = MyDb.use().openSession(true)){
+            val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
+
+            val approvalFlowDetails = approvalFlowDetailMapper.selectByFlowNo(flowNo);
+            assert approvalFlowDetails != null && !approvalFlowDetails.isEmpty();
+
+            // 如果有人拒绝了，那么整个审批流将被关闭（也算是完成）
+            val isRejected = approvalFlowDetails.stream()
+                    .anyMatch(detail -> detail.getAuditStatus() == ApprovalStatus.REJECTED);
+            // 如果所有人都同意了，那么整个审批流将被完成
+            val isAllApproved =  approvalFlowDetails.stream()
+                    .allMatch(detail -> detail.getAuditStatus() == ApprovalStatus.APPROVED);
+
+            return isRejected || isAllApproved;
+        }
+
     }
 
 }
