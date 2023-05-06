@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * 提交审批(Appro)结果, 持久化保存
  */
-@WebServlet(name = "SubmitApproResultServlet", value = SC.WebServletValue.SUBMIT_APPRO_RET)
+@WebServlet(name = "SubmitApproResultServlet", value = "/submit_appro_ret")
 public class SubmitApproResultServlet extends HttpServlet {
 
 
@@ -26,15 +26,15 @@ public class SubmitApproResultServlet extends HttpServlet {
         String applItemConfirm = request.getParameter(SC.ReqParam.APPL_ITEM_CONFIRM.name);
         String flowNo = request.getParameter(SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name);
 
-        if (applItemConfirm == null){
+        if (applItemConfirm == null) {
             return;
         }
 
-        if (applItemConfirm.isBlank()){
+        if (applItemConfirm.isBlank()) {
             return;
         }
 
-        if (applRemark == null){
+        if (applRemark == null) {
             applRemark = "";
         }
 
@@ -44,5 +44,6 @@ public class SubmitApproResultServlet extends HttpServlet {
             ApprovalService.getInstance().saveApproResult(flowNo, applRemark, false);
         }
 
+        response.sendRedirect("get_appros");
     }
 }
