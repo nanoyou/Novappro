@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="utf-8" %>
 <html>
 <head>
-    <title>注册用户</title>
+    <title>学生申请课程系统 - 注册用户</title>
 </head>
 <body>
 <form action="./signup" method="post">

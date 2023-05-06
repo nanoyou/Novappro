@@ -11,7 +11,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>课程表</title>
+    <title>学生申请课程系统 - 课程表</title>
 </head>
 <script>
     function courseAppl(){

@@ -7,7 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>我的审批</title>
+    <title>教师审批系统 - 我的审批</title>
 </head>
 <script>
     function detail(flowNo) {

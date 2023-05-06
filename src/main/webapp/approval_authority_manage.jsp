@@ -7,7 +7,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>审批权限管理系统</title>
+    <title>管理员系统 - 审批权限管理系统</title>
 </head>
 <%
     Pair<ServiceMessage, List<ApprovalAuthorityItem>> allApprovalAuthorityItems = (Pair<ServiceMessage, List<ApprovalAuthorityItem>>) request.getAttribute(SC.ReqAttr.ALL_APPROVAL_AUTHORITY_ITEMS.name);

@@ -14,7 +14,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>详细</title>
+    <title>教师审批系统 - 详细</title>
 </head>
 <body>
 <%
