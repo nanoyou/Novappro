@@ -26,19 +26,6 @@ public class SignUpServlet extends HttpServlet {
 
         var verifyCodeUserPair = RegisterService.getInstance().trySignUp(username, rawPassword, confirmedRawPassword);
 
-        // TODO: 注册后的提示界面
-        // RegisterService.INFO verifyCode = verifyCodeUserPair.getLeft();
-
-//        if (verifyCode != RegisterService.INFO.OK) {
-//            Pair<String, String> pair = EnumUtil.parseVerifyCode(verifyCode);
-//            String value = pair.getLeft();
-//            String description = pair.getRight();
-//
-//            request.setAttribute("verifyCode_value", value);
-//            request.setAttribute("verifyCode_description", description);
-//
-//        }
-
         User user = verifyCodeUserPair.getRight();
         request.setAttribute("user", user);
     }
