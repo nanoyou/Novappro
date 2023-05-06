@@ -190,7 +190,7 @@ public class ApplyCourseService {
     public Triple<VC.Service, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@NonNull Integer userId) {
 
         try (SqlSession session = MyDb.use().openSession()) {
-
+            // TODO: BUG可能在此代码中 2023年5月6日10:04:17
             val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
             val userMapper = session.getMapper(UserMapper.class);
 

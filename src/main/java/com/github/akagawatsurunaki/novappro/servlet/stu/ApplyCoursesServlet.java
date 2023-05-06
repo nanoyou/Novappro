@@ -108,21 +108,7 @@ public class ApplyCoursesServlet extends HttpServlet {
 
         doGet(request, response);
 
-        // TODO: 2023年5月5日15:43:19 DEBUGGING
-
-//        // 获取这些课程
-//        var vc_cal_asl = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
-//
-//        if (vc_cal_asl.getLeft() == VC.Service.OK) {
-//            var courseApplications = vc_cal_asl.getMiddle();
-//            var approStatusList = vc_cal_asl.getRight();
-//
-//            // 设置到 Request 中
-//            request.setAttribute(SC.ReqAttr.COURSE_APPLICATIONS.name, courseApplications);
-//            request.setAttribute(SC.ReqAttr.APPRO_STATUS_LIST.name, approStatusList);
-//
-//            // 跳转页面
-//            request.getRequestDispatcher(SC.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);
-//        }
+        // TODO: 2023年5月6日00:38:53 当申请的课程没有被指定审批人时会出现错误 FIX BUG
+        // TODO: 2023年5月6日00:39:54 选课的列表是null, 但是数据库中插入成功 FIX BUG
     }
 }
