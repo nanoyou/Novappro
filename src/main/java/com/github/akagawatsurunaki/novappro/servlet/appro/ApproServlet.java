@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "ApproServlet", value = SC.WebServletValue.GET_APPROS)
+@WebServlet(name = "ApproServlet", value = "/get_appros")
 public class ApproServlet extends HttpServlet {
 
     private static final ApprovalService APPROVAL_SERVICE = ApprovalService.getInstance();
@@ -30,16 +30,12 @@ public class ApproServlet extends HttpServlet {
 
             // 获取该用户名下的所有ApplItem s.
 
-            var vc_applItems = APPROVAL_SERVICE.getApplItems(loginUserId);
+            var applItemList = APPROVAL_SERVICE.getApplItems(loginUserId);
 
-            if (vc_applItems.getLeft() == VC.Service.OK) {
+            request.setAttribute(SC.ReqAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name, applItemList);
+            request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
+            return;
 
-                var applItems = vc_applItems.getRight();
-                request.setAttribute(SC.ReqAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name, applItems);
-                request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
-                return;
-
-            }
         }
         request.getRequestDispatcher(SC.JSPResource.ERROR.name).forward(request, response);
     }
