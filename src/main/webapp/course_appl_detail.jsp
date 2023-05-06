@@ -1,20 +1,12 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.course.Course" %>
-<%@ page
-        import="static com.github.akagawatsurunaki.novappro.constant.SC.ReqAttr.SELECTED_COURSE_APPL_FLOW_NO" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: 96514
-  Date: 2023/4/16
-  Time: 22:59
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>学生申请课程系统 - 查看课程申请详细内容</title>
 
 </head>
 <script>
@@ -25,7 +17,7 @@
 
     function refresh(flowNo) {
         location.href =
-            "${pageContext.request.contextPath}/course_appl_detail?<%=SELECTED_COURSE_APPL_FLOW_NO.name%>=" + flowNo
+            "${pageContext.request.contextPath}/course_appl_detail?<%=SC.ReqAttr.SELECTED_COURSE_APPL_FLOW_NO.name%>=" + flowNo
     }
 
     function addCourse(flowNo) {

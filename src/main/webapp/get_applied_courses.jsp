@@ -1,8 +1,6 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication" %>
-<%@ page
-        import="static com.github.akagawatsurunaki.novappro.constant.SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus" %>
 Created by IntelliJ IDEA.
 User: 96514
@@ -13,13 +11,13 @@ To change this template use File | Settings | File Templates.
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>获取已申请课程</title>
+    <title>学生申请课程系统 - 获取已申请课程</title>
 </head>
 <script>
     function detail(
         self, flowNo
     ) {
-        location.href = "${pageContext.request.contextPath}/course_appl_detail?<%=SELECTED_COURSE_APPL_FLOW_NO.name%>=" + flowNo;
+        location.href = "${pageContext.request.contextPath}/course_appl_detail?<%=SC.ReqAttr.SELECTED_COURSE_APPL_FLOW_NO.name%>=" + flowNo;
     }
 </script>
 <body>
@@ -52,7 +50,7 @@ To change this template use File | Settings | File Templates.
             </td>
             <td><%=crsApp.getAddUserId()%>
             </td>
-            <td><%=crsApp.getApproCourseIds()%>
+            <td><%=crsApp.getApproCourses()%>
             </td>
             <td>
                 <%=approvalStatusList.get(i).chinese%>
@@ -60,7 +58,7 @@ To change this template use File | Settings | File Templates.
             <td>
                 <label>
                     <input id="<%= "btn" + crsApp.getFlowNo() %>>" type="button"
-                           name="<%=SELECTED_COURSE_APPL_FLOW_NO.name%>"
+                           name="<%=SC.ReqAttr.SELECTED_COURSE_APPL_FLOW_NO.name%>"
                            value="查看详情" onclick="detail(this, '<%= crsApp.getFlowNo() %>')"/>
                 </label>
             </td>
