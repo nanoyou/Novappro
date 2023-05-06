@@ -42,6 +42,6 @@ public class CourseApplication {
      * @implNote 本字段必须实现由String List转化为String的方法
      */
     @Field(field = "appro_courses")
-    String approCourseIds;
+    String approCourses;
 
 }

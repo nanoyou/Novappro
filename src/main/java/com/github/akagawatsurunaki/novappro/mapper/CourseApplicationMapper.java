@@ -11,7 +11,7 @@ import java.util.List;
 public interface CourseApplicationMapper {
 
     int insert(@NonNull CourseApplication courseApplication);
-    List<CourseApplication> select(@NonNull Integer addUserId);
+    List<CourseApplication> select(@Param("addUserId") @NonNull Integer addUserId);
 
     CourseApplication selectByFlowNo(@Param("flowNo") @NonNull String flowNo);
 

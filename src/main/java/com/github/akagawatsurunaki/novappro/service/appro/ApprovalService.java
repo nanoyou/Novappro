@@ -3,7 +3,6 @@ package com.github.akagawatsurunaki.novappro.service.appro;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.*;
-import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
@@ -174,8 +173,8 @@ public class ApprovalService {
             var appl = courseApplicationMapper.selectByFlowNo(flowNo);
 
             if (appl != null) {
-                assert appl.getApproCourseIds() != null;
-                var courseIds = CourseUtil.getCourseCodes(appl.getApproCourseIds());
+                assert appl.getApproCourses() != null;
+                var courseIds = CourseUtil.getCourseCodes(appl.getApproCourses());
                 return courseMapper.selectCourses(courseIds);
             }
             return null;

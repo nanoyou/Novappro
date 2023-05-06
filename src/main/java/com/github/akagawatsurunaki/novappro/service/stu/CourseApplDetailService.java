@@ -30,7 +30,7 @@ public class CourseApplDetailService {
             var courseAppl = courseApplicationMapper.selectByFlowNo(flowNo);
 
             if (courseAppl != null) {
-                var courseCodeList = courseAppl.getApproCourseIds();
+                var courseCodeList = courseAppl.getApproCourses();
 
                 if (courseCodeList == null || courseCodeList.isEmpty()) {
                     return null;
@@ -65,7 +65,7 @@ public class CourseApplDetailService {
                 if (courses != null) {
 
                     // 修改对应的course申请
-                    courseApplication.setApproCourseIds(CourseUtil.toCourseCodesStr(courseCodesToUpdate));
+                    courseApplication.setApproCourses(CourseUtil.toCourseCodesStr(courseCodesToUpdate));
 
                     // 校验更改是否成功
                     if (courseApplicationMapper.update(courseApplication) != null) {
