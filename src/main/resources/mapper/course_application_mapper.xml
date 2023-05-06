@@ -6,7 +6,7 @@
 
     <insert id="insert">
         INSERT INTO courses_application(flow_no, add_user_id, add_time, appro_courses)
-        VALUES (#{flowNo}, #{addUserId}, #{addTime}, #{approCourseIds})
+        VALUES (#{flowNo}, #{addUserId}, #{addTime}, #{approCourses})
     </insert>
     <update id="update">
         UPDATE courses_application
