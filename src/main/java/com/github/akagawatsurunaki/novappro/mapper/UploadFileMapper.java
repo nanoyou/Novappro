@@ -4,10 +4,11 @@ import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.model.database.file.UploadFile;
 import lombok.NonNull;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.ibatis.annotations.Param;
 
 public interface UploadFileMapper {
 
-    UploadFile selectByFlowNo(@NonNull String flowNo);
+    UploadFile selectByFlowNo(@Param("flowNo") @NonNull String flowNo);
 
     int insert(@NonNull UploadFile uploadFile);
 }

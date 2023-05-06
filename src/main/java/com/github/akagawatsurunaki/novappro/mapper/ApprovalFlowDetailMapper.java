@@ -17,13 +17,14 @@ public interface ApprovalFlowDetailMapper {
     ApprovalFlowDetail select(@Param("flowNo") @NonNull String flowNo,
                               @Param("auditUserId") @NonNull Integer auditUserId);
 
-    List<String> selectFlowNoByApproverId(@NonNull Integer approverId);
+    List<String> selectFlowNoByApproverId(@Param("approverId") @NonNull Integer approverId);
 
 
     int updateApproStatus(@Param("flowNo") @NonNull String flowNo,
                           @Param("id") @NonNull Integer id,
                           @Param("status") @NonNull ApprovalStatus status);
 
-    int updateApproRemark(@Param("flowNo") @NonNull String flowNo, @NonNull Integer id,
-                          @NonNull String remark) throws SQLException;
+    int updateApproRemark(@Param("flowNo") @NonNull String flowNo,
+                          @Param("id") @NonNull Integer id,
+                          @Param("remark") @NonNull String remark) throws SQLException;
 }
