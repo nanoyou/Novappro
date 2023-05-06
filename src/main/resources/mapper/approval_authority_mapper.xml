@@ -43,5 +43,9 @@
         WHERE approval_authority.user_id = #{userId}
           AND approval_authority.course_code = #{courseCode};
     </select>
+    <select id="selectCourseIdsCanBeApplied" resultType="java.lang.String">
+        SELECT DISTINCT approval_authority.course_code
+        FROM approval_authority;
+    </select>
 
 </mapper>

@@ -1,7 +1,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.course.Course" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.constant.LiteralConstant" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %><%--
+<%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
+<%@ page import="org.apache.commons.lang3.tuple.Pair" %><%--
   Created by IntelliJ IDEA.
   User: 96514
   Date: 2023/4/11
@@ -14,12 +16,19 @@
     <title>学生申请课程系统 - 课程表</title>
 </head>
 <script>
-    function courseAppl(){
+    function courseAppl() {
         location.href = "${pageContext.request.contextPath}/apply_courses"
     }
 </script>
 <body>
 <h1>当前课程表</h1>
+
+<%
+    Pair<ServiceMessage, List<Course>> courses = (Pair<ServiceMessage, List<Course>>) request.getAttribute(SC.ReqAttr.COURSES_CAN_BE_APPLIED.name);
+%>
+<p>
+    <%=courses.getLeft().getMessage()%>
+</p>
 <form action="${pageContext.request.contextPath}/apply_courses" method="post" enctype="multipart/form-data">
     <table border="1">查询到的课程
         <%-- 表头 --%>
@@ -45,10 +54,11 @@
         </tr>
 
         <%
-            List<Course> courses = (List<Course>) request.getAttribute(LiteralConstant.COURSES);
             int index = 1;
-            for (Course c :
-                    courses) {
+
+            if (courses.getLeft().getMessageLevel().equals(ServiceMessage.Level.SUCCESS)) {
+                for (Course c :
+                        courses.getRight()) {
         %>
 
         <tr>
@@ -76,6 +86,7 @@
         </tr>
 
         <%
+                }
             }
         %>
     </table>

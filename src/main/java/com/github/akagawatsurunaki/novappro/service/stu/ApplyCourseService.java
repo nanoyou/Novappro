@@ -52,9 +52,6 @@ public class ApplyCourseService {
             val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
             val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
-
-
-
             val user = userMapper.selectById(userId);
 
             // 校验用户是否存在

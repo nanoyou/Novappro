@@ -44,7 +44,8 @@ public class SC {
         ERROR_MESSAGE("error_message"),
         ALL_USERS("all_users"),
         ALL_APPROVAL_AUTHORITY_ITEMS("all_approval_authority_items"),
-        UPDATE_MESSAGE("update_message")
+        UPDATE_MESSAGE("update_message"),
+        COURSES_CAN_BE_APPLIED("courses_can_be_applied")
         ;
 
         public final String name;

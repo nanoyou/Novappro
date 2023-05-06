@@ -18,6 +18,8 @@ public interface ApprovalAuthorityMapper {
 
     List<ApprovalAuthority> selectAll();
 
+    List<String> selectCourseIdsCanBeApplied();
+
     int delete(@Param("userId") @NonNull Integer userId,
                @Param("courseCode") @NonNull String courseCode);
 
