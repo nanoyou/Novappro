@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.ibatis.session.SqlSession;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,13 +44,16 @@ public class ApplyCourseService {
             return VC.Service.NO_SUCH_USER;
         }
 
-        try (SqlSession session = MyDb.use().openSession(true)) {
+        try (SqlSession session = MyDb.use().openSession(true);
+             val inputStream = new BufferedInputStream(is);) {
 
             val userMapper = session.getMapper(UserMapper.class);
             val uploadFileMapper = session.getMapper(UploadFileMapper.class);
             val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
             val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
+
+
 
             val user = userMapper.selectById(userId);
 
@@ -60,9 +64,7 @@ public class ApplyCourseService {
                 val date = new Date();
 
                 // 上传文件
-                var fileType = FileTypeUtil.getType(is);
-                // 如果不调用此方法, 文件写入将无法被识别为图片文件, 图片文件将会无法打开.
-                is.reset();
+                var fileType = FileTypeUtil.getType(inputStream);
 
                 var path = ResourceConfig.UPLOADED_IMG_PATH;
                 var name = ImgUtil.genImgName(userId);
@@ -80,7 +82,7 @@ public class ApplyCourseService {
 
                 if (rows == 1) {
                     // 将文件存储至硬盘
-                    FileUtil.writeFromStream(is, file, true);
+                    FileUtil.writeFromStream(inputStream, file, true);
 
                     // 创建Approval对象
                     var approval
