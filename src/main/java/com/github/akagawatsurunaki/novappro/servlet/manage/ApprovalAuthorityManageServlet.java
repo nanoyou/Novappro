@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.manage;
 
+import com.github.akagawatsurunaki.novappro.annotation.Field;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.service.manage.ApprovalAuthorityService;
 import lombok.val;
@@ -10,8 +11,14 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 
 
-@WebServlet(name = "ApprovalAuthorityManageServlet", value = {"/ApprovalAuthorityManageServlet", SC.WebServletValue.UPDATE_APPRO_AUTHO_ITEMS})
+@WebServlet(name = "ApprovalAuthorityManageServlet",
+        value = {
+        "/" + ApprovalAuthorityManageServlet.GET,
+        SC.WebServletValue.UPDATE_APPRO_AUTHO_ITEMS})
 public class ApprovalAuthorityManageServlet extends HttpServlet {
+
+    public static final String GET = "ApprovalAuthorityManageServlet";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 

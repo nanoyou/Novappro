@@ -2,6 +2,8 @@ package com.github.akagawatsurunaki.novappro.filter;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.enumeration.UserType;
+import com.github.akagawatsurunaki.novappro.model.database.User;
+import lombok.val;
 
 import javax.servlet.*;
 import javax.servlet.annotation.*;
@@ -20,13 +22,19 @@ public class AuthoFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException,
             ServletException {
-        // 权限
+        // 获取登录用户
+        val loginUser = (User) req.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name);
+        switch (loginUser.getType()) {
+            case ADMIN -> {
 
-        var uType = req.getSession().getAttribute(SC.ReqParam.USER_TYPE.name);
+                chain.doFilter(req, res);
+            }
+            case LECTURE_TEACHER, SUPERVISOR_TEACHER ->
+            {
 
-        if (uType!=null) {
-            if (((String)uType).equals(UserType.STUDENT.name())) {
-                res.sendRedirect("no_permission.html");
+            }
+            case STUDENT -> {
+
             }
         }
 
