@@ -4,6 +4,8 @@ import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
+import lombok.AllArgsConstructor;
+import lombok.val;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,16 +22,15 @@ public class ApplItemDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-
-        var flowNo = request.getParameter(SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name);
-        var approver = (User)request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name);
-        var vc_aid = APPROVAL_SERVICE.getDetail(flowNo, approver.getId());
-
-        if (vc_aid.getLeft() == VC.Service.OK) {
-            var aid = vc_aid.getRight();
-            request.setAttribute(SC.ReqAttr.SELECTED_APPL_ITEM_DETAIL.name, aid);
-            request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
-        }
+        // 获取参数
+        val flowNo = request.getParameter(SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name);
+        val approver = (User) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name);
+        // 获取课程申请明细项目
+        val getCourseAppItemDetailServiceResult = APPROVAL_SERVICE.getCourseAppItemDetail(flowNo, approver.getId());
+        // 为Request赋予参数
+        request.setAttribute(ReqAttr.GET_COURSE_APP_ITEM_DETAIL_SERVICE_RESULT.value, getCourseAppItemDetailServiceResult);
+        // 转发页面
+        request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
     }
 
     @Override
@@ -37,4 +38,12 @@ public class ApplItemDetailServlet extends HttpServlet {
             IOException {
         doGet(request, response);
     }
+
+    @AllArgsConstructor
+    public enum ReqAttr {
+        GET_COURSE_APP_ITEM_DETAIL_SERVICE_RESULT("get_course_app_item_detail_service_result");
+
+        public final String value;
+    }
+
 }

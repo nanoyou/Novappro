@@ -4,6 +4,10 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
 <%@ page import="static com.github.akagawatsurunaki.novappro.constant.Constant.MAX_LEN_COURSE_COMMENT" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.servlet.appro.ApplItemDetailServlet" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
+<%@ page import="java.util.Optional" %>
+<%@ page import="org.apache.commons.lang3.tuple.Pair" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -12,24 +16,32 @@
 </head>
 <body>
 <%
-    CourseAppItemDetail caid = (CourseAppItemDetail)
-            request.getAttribute(SC.ReqAttr.SELECTED_APPL_ITEM_DETAIL.name);
+    Pair<ServiceMessage, Optional<CourseAppItemDetail>> getApplItemServiceResult =
+            (Pair<ServiceMessage, Optional<CourseAppItemDetail>>) request.getAttribute(ApplItemDetailServlet.ReqAttr.GET_COURSE_APP_ITEM_DETAIL_SERVICE_RESULT.value);
 %>
 <%-- 审批人点击一个详细的ApplicationItem就可以跳转到这个界面 --%>
 这是一份详细的申请。
+<div>
+    <%=getApplItemServiceResult.getLeft().getMessage()%>
+</div>
 <form method="post" action="submit_appro_ret">
-
-
-
+    <%
+        if (getApplItemServiceResult.getRight().isEmpty()) {
+            return;
+        }
+            CourseAppItemDetail caid = getApplItemServiceResult.getRight().get();
+    %>
     <table border="1">
         <caption style="font-size: large">
-            <h2><%=caid.getTitle()%></h2>
+            <h2><%=caid.getTitle()%>
+            </h2>
             <p style="font-style: italic">
                 <%=ZhFieldUtil.getZhValue(CourseAppItemDetail.class, CourseAppItemDetail.Fields.flowNo)%>
                 :
                 <%=caid.getFlowNo()%>
             </p>
-            <input style="display: none" name="<%=SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name%>" value="<%=caid.getFlowNo()%>">
+            <input style="display: none" name="<%=SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name%>"
+                   value="<%=caid.getFlowNo()%>">
         </caption>
         <tbody>
         <tr>
@@ -128,7 +140,8 @@
         <%--    申请状态--%>
         <tr>
             <td><%=ZhFieldUtil.getZhValue(CourseAppItemDetail.class, CourseAppItemDetail.Fields.approStatus)%>></td>
-            <td><%=caid.getApproStatus().chinese%></td>
+            <td><%=caid.getApproStatus().chinese%>
+            </td>
         </tr>
         <%--    对用户Application的审批Remark回复--%>
         <tr>
@@ -147,7 +160,7 @@
             </td>
 
         </tr>
-        <tr style="display: none" >
+        <tr style="display: none">
             <td>
                 审批同意或失败
             </td>

@@ -3,6 +3,8 @@ package com.github.akagawatsurunaki.novappro.servlet.appro;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
+import lombok.AllArgsConstructor;
+import lombok.val;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,22 +21,14 @@ public class ApplItemServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-
-        String flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
-
-        if (flowNo == null || flowNo.isBlank()) {
-            // 空号
-            return;
-        }
-
-        var vc_applItem = APPROVAL_SERVICE.getApplItem(flowNo);
-        if (vc_applItem.getLeft() == VC.Service.OK) {
-            var selectedApplItem = vc_applItem.getRight();
-            request.setAttribute(SC.ReqAttr.SELECTED_APPL_ITEM.name, selectedApplItem);
-            request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
-            return;
-        }
-        response.sendRedirect(SC.JSPResource.ERROR.name);
+        // 获取单号
+        val flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+        // 获取服务结果
+        val getApplItemServiceResult = APPROVAL_SERVICE.getApplItem(flowNo);
+        // 增加属性
+        request.setAttribute(ReqAttr.GET_APPL_ITEM_SERVICE_RESULT.value, getApplItemServiceResult);
+        // 加载界面
+        request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
     }
 
     @Override
@@ -42,4 +36,13 @@ public class ApplItemServlet extends HttpServlet {
             IOException {
         doGet(request, response);
     }
+
+    @AllArgsConstructor
+    public enum ReqAttr {
+        GET_APPL_ITEM_SERVICE_RESULT("get_appl_item_service_result");
+
+        public final String value;
+    }
+
+
 }

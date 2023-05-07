@@ -124,7 +124,7 @@ public class CourseApplDetailService {
             // 如果课程申请不存在
             if (courseApplication == null) {
                 return new ImmutableTriple<>(
-                        ServiceMessage.of(ServiceMessage.Level.ERROR, "流水号为" + flowNo + "的课程申请（Course Application）不存在。"),
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "流水号为" + flowNo + "的课程申请对象(Course Application)不存在。"),
                         courses,
                         null
                 );

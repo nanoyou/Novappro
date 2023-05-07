@@ -17,10 +17,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ibatis.session.SqlSession;
 
+import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class ApprovalService {
 
@@ -56,7 +58,7 @@ public class ApprovalService {
                     continue;
                 }
                 // 如果审批流已经结束那么跳过
-                if(isSpecifiedApprovalFlowEnded(flowNo)){
+                if (isSpecifiedApprovalFlowEnded(flowNo)) {
                     continue;
                 }
 
@@ -108,7 +110,18 @@ public class ApprovalService {
     /**
      * 获取一个ApplItem对象
      */
-    public Pair<VC.Service, ApplItem> getApplItem(@NonNull String flowNo) {
+    public Pair<ServiceMessage, Optional<ApplItem>> getApplItem(@Nullable String flowNo) {
+        if (flowNo == null || flowNo.isBlank()) {
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "流水号不能为空"),
+                    Optional.empty()
+            );
+        }
+
+        return _getApplItem(flowNo);
+    }
+
+    private Pair<ServiceMessage, Optional<ApplItem>> _getApplItem(@NonNull String flowNo) {
 
         try (SqlSession session = MyDb.use().openSession(true)) {
 
@@ -118,30 +131,41 @@ public class ApprovalService {
             var approFlow = approvalFlowMapper.select(flowNo);
 
             if (approFlow == null) {
-                return new ImmutablePair<>(VC.Service.NO_SUCH_ENTITY, null);
+                return new ImmutablePair<>(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "流水号为" + flowNo + "的申请流不存在"),
+                        Optional.empty()
+                );
             }
 
             var currentApprovalNode = getCurrentApprovalFlowNode(flowNo);
 
-            if (currentApprovalNode != null) {
-                var addUser = userMapper.selectById(approFlow.getAddUserId());
-                var approver = userMapper.selectById(currentApprovalNode.getAuditUserId());
-
-                if (addUser != null && approver != null) {
-                    var applItem = ApplItem.builder()
-                            .flowNo(approFlow.getFlowNo())
-                            .title(approFlow.getTitle())
-                            .applicantName(addUser.getUsername())
-                            .addTime(approFlow.getAddTime())
-                            .approverName(approver.getUsername())
-                            .approvalStatus(currentApprovalNode.getAuditStatus())
-                            .build();
-
-                    return new ImmutablePair<>(VC.Service.OK, applItem);
-                }
+            if (currentApprovalNode == null) {
+                return new ImmutablePair<>(
+                        ServiceMessage.of(ServiceMessage.Level.FATAL, "当前的申请节点不存在，可能是申请流没有指定的审批人。"),
+                        Optional.empty()
+                );
             }
+
+            var addUser = userMapper.selectById(approFlow.getAddUserId());
+            assert addUser != null;
+
+            var approver = userMapper.selectById(currentApprovalNode.getAuditUserId());
+            assert approver != null;
+
+            var applItem = ApplItem.builder()
+                    .flowNo(approFlow.getFlowNo())
+                    .title(approFlow.getTitle())
+                    .applicantName(addUser.getUsername())
+                    .addTime(approFlow.getAddTime())
+                    .approverName(approver.getUsername())
+                    .approvalStatus(currentApprovalNode.getAuditStatus())
+                    .build();
+
+            return new ImmutablePair<>(
+                    ServiceMessage.of(ServiceMessage.Level.SUCCESS, "服务成功"),
+                    Optional.of(applItem)
+            );
         }
-        return new ImmutablePair<>(VC.Service.ERROR, null);
     }
 
     /**
@@ -150,46 +174,66 @@ public class ApprovalService {
      * @param flowNo 指定的流水号
      * @return 服务响应码, 课程申请明细(可能有多个?)
      */
-    public Pair<VC.Service, CourseAppItemDetail> getDetail(@NonNull String flowNo, @NonNull Integer approverId) {
+    public Pair<ServiceMessage, Optional<CourseAppItemDetail>> getCourseAppItemDetail(
+            @Nullable String flowNo,
+            @Nullable Integer approverId) {
+        if (flowNo == null || flowNo.isBlank()) {
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "流水号不能为空"),
+                    Optional.empty()
+            );
+        }
+        if (approverId == null) {
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "审批人的用户ID不能为空"),
+                    Optional.empty()
+            );
+        }
+
+        return _getDetail(flowNo, approverId);
+    }
+
+    private Pair<ServiceMessage, Optional<CourseAppItemDetail>> _getDetail(
+            @NonNull String flowNo,
+            @NonNull Integer approverId) {
 
         try (SqlSession session = MyDb.use().openSession(true)) {
-            var approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
-            var userMapper = session.getMapper(UserMapper.class);
+            val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
+            val userMapper = session.getMapper(UserMapper.class);
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
 
-            var approvalFlow = approvalFlowMapper.select(flowNo);
+            val approvalFlow = approvalFlowMapper.select(flowNo);
 
-            if (approvalFlow != null) {
-
-                var addUser = userMapper.selectById(approvalFlow.getAddUserId());
-
-                if (addUser != null) {
-
-                    var approFlowDetail = approvalFlowDetailMapper.select(flowNo, approverId);
-
-                    if (approFlowDetail != null) {
-
-                        var appliedCourses = getAppliedCourses(flowNo);
-
-                        if (appliedCourses != null) {
-
-                            var result = CourseAppItemDetail.builder()
-                                    .flowNo(flowNo)
-                                    .title(approvalFlow.getTitle())
-                                    .applicantId(addUser.getId())
-                                    .applicantName(addUser.getUsername())
-                                    .addTime(approvalFlow.getAddTime())
-                                    .approStatus(approFlowDetail.getAuditStatus())
-                                    .applCourses(appliedCourses)
-                                    .build();
-
-                            return new ImmutablePair<>(VC.Service.OK, result);
-                        }
-                    }
-
-                }
+            if (approvalFlow == null) {
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "流水号为" + flowNo + "的审批流对象(ApprovalFlow)不存在"),
+                        Optional.empty()
+                );
             }
-            return new ImmutablePair<>(VC.Service.ERROR, null);
+
+            val addUser = userMapper.selectById(approvalFlow.getAddUserId());
+            assert addUser != null;
+
+            var approFlowDetail = approvalFlowDetailMapper.select(flowNo, approverId);
+            assert approFlowDetail != null;
+
+            var appliedCourses = getAppliedCourses(flowNo);
+            assert appliedCourses != null && !appliedCourses.isEmpty();
+
+            var result = CourseAppItemDetail.builder()
+                    .flowNo(flowNo)
+                    .title(approvalFlow.getTitle())
+                    .applicantId(addUser.getId())
+                    .applicantName(addUser.getUsername())
+                    .addTime(approvalFlow.getAddTime())
+                    .approStatus(approFlowDetail.getAuditStatus())
+                    .applCourses(appliedCourses)
+                    .build();
+
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.SUCCESS, "服务成功"),
+                    Optional.of(result)
+            );
         }
     }
 
@@ -303,7 +347,7 @@ public class ApprovalService {
      * @return true 当审批流结束； false 当审批流未结束。
      */
     public boolean isSpecifiedApprovalFlowEnded(@NonNull String flowNo) {
-        try (var session = MyDb.use().openSession(true)){
+        try (var session = MyDb.use().openSession(true)) {
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
 
             val approvalFlowDetails = approvalFlowDetailMapper.selectByFlowNo(flowNo);
@@ -313,7 +357,7 @@ public class ApprovalService {
             val isRejected = approvalFlowDetails.stream()
                     .anyMatch(detail -> detail.getAuditStatus() == ApprovalStatus.REJECTED);
             // 如果所有人都同意了，那么整个审批流将被完成
-            val isAllApproved =  approvalFlowDetails.stream()
+            val isAllApproved = approvalFlowDetails.stream()
                     .allMatch(detail -> detail.getAuditStatus() == ApprovalStatus.APPROVED);
 
             return isRejected || isAllApproved;
