@@ -3,13 +3,8 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
-<%@ page import="org.apache.commons.lang3.tuple.Pair" %><%--
-  Created by IntelliJ IDEA.
-  User: 96514
-  Date: 2023/4/11
-  Time: 11:29
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="org.apache.commons.lang3.tuple.Pair" %>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -20,6 +15,72 @@
         location.href = "${pageContext.request.contextPath}/apply_courses"
     }
 </script>
+<style>
+    body {
+        font-size: 14px;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 20px;
+
+    }
+
+    p {
+        margin-bottom: 10px;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #ddd;
+    }
+
+    input[type=radio] {
+        margin-right: 5px;
+    }
+
+    label, input[type=file] {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    input[type=text], input[type=file], input[type=button], input[type=submit] {
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    input[type=button], input[type=submit] {
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color .3s ease;
+    }
+
+    input[type=button]:hover, input[type=submit]:hover {
+        background-color: #0056b3;
+    }
+
+</style>
 <body>
 <h1>当前课程表</h1>
 
