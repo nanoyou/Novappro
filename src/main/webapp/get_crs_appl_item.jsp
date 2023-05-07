@@ -4,13 +4,7 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
 <%@ page import="static com.github.akagawatsurunaki.novappro.constant.Constant.MAX_LEN_COURSE_COMMENT" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: 96514
-  Date: 2023/4/20
-  Time: 12:48
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
