@@ -2,12 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus" %>
-Created by IntelliJ IDEA.
-User: 96514
-Date: 2023/4/16
-Time: 16:42
-To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
