@@ -14,26 +14,26 @@ import lombok.experimental.FieldNameConstants;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldNameConstants
-@Table(table = "crs_appro_flow")
+@Table("crs_appro_flow")
 
 public class CourseApproFlow  {
 
     /**
      * 审批流的唯一标志号码
      */
-    @Field(field = "appro_flow_nos")
+    @Field("appro_flow_nos")
     String approFlowNos;
 
     /**
      * 审批流明细的唯一标志号码, 这里有多个, 可组成一列
      */
-    @Field(field = "appro_flow_detail_nos")
+    @Field("appro_flow_detail_nos")
     String approFlowDetailIds;
 
     /**
      * 当前的审批流结点的唯一标志号码
      */
-    @Field(field = "cur_node_no")
+    @Field("cur_node_no")
     Integer currentNodeNo;
 
 }

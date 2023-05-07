@@ -1,6 +1,5 @@
 package com.github.akagawatsurunaki.novappro.model.database;
 
-import com.alibaba.fastjson2.annotation.JSONType;
 import com.github.akagawatsurunaki.novappro.annotation.Field;
 import com.github.akagawatsurunaki.novappro.annotation.Table;
 import com.github.akagawatsurunaki.novappro.annotation.ZhField;
@@ -13,23 +12,23 @@ import lombok.experimental.FieldNameConstants;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
-@Table(table = "user")
+@Table(value = "user")
 public class User {
 
     @ZhField(value = "学号/工号")
-    @Field(field = "id")
+    @Field(value = "id")
     Integer id;
 
     @ZhField(value = "姓名")
-    @Field(field = "username")
+    @Field(value = "username")
     String username;
 
     @ZhField(value = "明文密码")
-    @Field(field = "raw_password")
+    @Field(value = "raw_password")
     String rawPassword;
 
     @ZhField(value = "用户类型")
-    @Field(field = "type")
+    @Field(value = "type")
     UserType type;
 
 }

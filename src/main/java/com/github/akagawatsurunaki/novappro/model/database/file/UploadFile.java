@@ -9,16 +9,16 @@ import lombok.experimental.FieldNameConstants;
 @Data
 @Builder
 @FieldNameConstants
-@Table(table = "upload_file")
+@Table(value = "upload_file")
 public class UploadFile {
 
-    @Field(field = "flow_no")
+    @Field(value = "flow_no")
     String flowNo;
 
-    @Field(field = "user_id")
+    @Field(value = "user_id")
     Integer userId;
 
-    @Field(field = "file_name")
+    @Field(value = "file_name")
     String fileName;
 
 }
