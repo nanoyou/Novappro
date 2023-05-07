@@ -7,17 +7,6 @@ import lombok.AllArgsConstructor;
  */
 public final class VC {
 
-    public enum Mapper{
-        NO_SUCH_ENTITY,
-        EMPTY_ENTITY_LIST,
-        MORE_THAN_ONE_ENTITY,
-        UPDATE_FAILED,
-        SQL_EXCEPTION,
-        OTHER_EXCEPTION,
-        FAILED_TO_PARSE_ENTITY,
-        OK;
-    }
-
     @AllArgsConstructor
     public enum Service{
         ERROR("未知错误"),
