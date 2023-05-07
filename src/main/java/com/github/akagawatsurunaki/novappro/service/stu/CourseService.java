@@ -24,6 +24,7 @@ public class CourseService {
     @Getter
     private static final CourseService instance = new CourseService();
 
+    @Deprecated(since = "Novappro ver-2.1")
     public Pair<VC.Service, List<Course>> getAllCourses() {
 
         try (SqlSession session = MyDb.use().openSession(true)) {
