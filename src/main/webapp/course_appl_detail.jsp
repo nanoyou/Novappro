@@ -5,6 +5,8 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
 <%@ page import="org.apache.commons.lang3.tuple.Triple" %>
+<%@ page import="org.apache.commons.lang3.tuple.Pair" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.servlet.stu.CourseApplDetailServlet" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -102,8 +104,8 @@
 </script>
 <body>
 <%
-    List<Course> courses =
-            (List<Course>) request.getAttribute(SC.ReqAttr.APPLIED_COURSES.name);
+    Pair<ServiceMessage, List<Course>> getAppliedCoursesServiceResult = (Pair<ServiceMessage, List<Course>>) request.getAttribute(CourseApplDetailServlet.ReqAttr.GET_APPLIED_COURSES_SERVICE_RESULT.value);
+    List<Course> courses = getAppliedCoursesServiceResult.getRight();
     Triple<ServiceMessage, List<Course>, CourseApplication> updateAppliedCoursesServiceResult  = (Triple<ServiceMessage, List<Course>, CourseApplication>)request.getAttribute(SC.ReqAttr.UPDATE_APPLIED_COURSES_SERVICE_RESULT.name);
     if (updateAppliedCoursesServiceResult != null){
         courses = updateAppliedCoursesServiceResult.getMiddle();
@@ -112,7 +114,9 @@
 %>
 
 <h1>查看课程申请详细内容</h1>
-
+<div>
+    <%=getAppliedCoursesServiceResult.getLeft().getMessage()%>
+</div>
 <%
     String flowNo = (String) request.getAttribute(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
 %>
