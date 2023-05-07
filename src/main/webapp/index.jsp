@@ -1,5 +1,9 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.Constant" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.servlet.base.LoginServlet" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.database.User" %>
+<%@ page import="org.apache.commons.lang3.tuple.Pair" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -97,21 +101,17 @@
         }
     }
 
-</style>
-<script type="text/javascript">
-    function checkForm() {
-        const password = document.getElementById("password_input").value;
-        const username = document.getElementById("user_id").value;
-
-        if (username === "" || password === "") {
-            alert("学号或密码不能为空！");
-            return false;
-        }
-
-        // 如果都不为空，执行提交操作
-        return true;
+    /*去除在火狐浏览器中数字型输入框的上下小箭头*/
+    input[type=number] {
+        -moz-appearance: textfield;
     }
 
+    /*去除在Chrome中type=number的input输入框中的上下小箭头*/
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+</style>
+<script type="text/javascript">
     function redirect(flag) {
         if (flag) {
             location.href = "${pageContext.request.contextPath}/get_appros";
@@ -121,13 +121,16 @@
 <body>
 <div class="container">
     <form action="${pageContext.request.contextPath}/login"
-          method="get" onsubmit="redirect(checkForm())"
+          method="get"
           class="login-form">
         <h2> NOVAPPRO </h2>
 
         <label>
-            <input id="user_id" name="userId" type="tel"
+            <input id="user_id" name="userId" type="number"
                    placeholder="工号/学号"
+                   oninput="if(value.length><%= Constant.MAX_LEN_USER_ID %>) {
+                           value=value.slice(0,<%= Constant.MAX_LEN_USER_ID %>)
+                           }"
                    minlength="<%= Constant.MIN_LEN_USER_ID %>"
                    maxlength="<%= Constant.MAX_LEN_USER_ID %>">
         </label>
@@ -140,19 +143,21 @@
         </label>
 
         <label>
-            <% if (request.getAttribute(SC.ReqAttr.ERROR_MESSAGE.name) != null) { %>
-            <p class="err-msg"><%=
-            request.getAttribute(SC.ReqAttr.ERROR_MESSAGE.name) %>
-            </p>
-            <% } else {
-            %>
-            <p class="err-msg">&nbsp</p>
             <%
-                }%>
+                Pair<ServiceMessage, User> loginServiceResult =
+                        (Pair<ServiceMessage, User>) request.getAttribute(LoginServlet.ReqAttr.LOGIN_SERVICE_RESULT.value);
+                if (loginServiceResult != null) {
+                    if (loginServiceResult.getLeft().getMessageLevel() != ServiceMessage.Level.SUCCESS) {
+            %>
+            <p class="err-msg">
+                <%=loginServiceResult.getLeft().getMessage()%>
+            </p>
+            <% }
+            }%>
         </label>
 
         <label>
-            <a href="${pageContext.request.contextPath}/signup.jsp">注册</a>
+            <a href="${pageContext.request.contextPath}/<%=SC.JSPResource.SIGN_UP.name%>">注册</a>
         </label>
 
         <label>

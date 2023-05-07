@@ -14,6 +14,7 @@ public class SC {
     public enum JSPResource {
         WELCOME("welcome.jsp"),
         INDEX("index.jsp"),
+        SIGN_UP("signup.jsp"),
         WELCOME_SESSION("welcome_session.jsp"),
         WELCOME_COOKIE("welcome_cookie.jsp"),
         ERROR("error.jsp"),
