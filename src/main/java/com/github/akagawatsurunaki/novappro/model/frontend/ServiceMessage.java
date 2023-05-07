@@ -20,4 +20,9 @@ public class ServiceMessage {
         ;
     }
 
+    public static ServiceMessage of(Level level, String message) {
+        return new ServiceMessage(level, message);
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.base;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.base.LoginService;
@@ -10,8 +11,9 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebServlet(name = "LoginServlet", value = "/login")
+@WebServlet(name = "LoginServlet", value = {"/login"})
 public class LoginServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {

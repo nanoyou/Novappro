@@ -36,6 +36,7 @@ public class SC {
         COURSE_APPLICATIONS("course_applications"),
         USER_USERNAME("user_username"),
         APPLIED_COURSES("applied_courses"),
+        UPDATE_APPLIED_COURSES_SERVICE_RESULT("updateAppliedCoursesServiceResult"),
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
         APPL_ITEMS_WITH_GIVEN_APPROVER("APPL_ITEMS_WITH_GIVEN_APPROVER"),
         SELECTED_APPL_ITEM("selected_appl_item"),

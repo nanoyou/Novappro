@@ -15,6 +15,6 @@ public interface CourseApplicationMapper {
 
     CourseApplication selectByFlowNo(@Param("flowNo") @NonNull String flowNo);
 
-    CourseApplication update(@NonNull CourseApplication courseApplications);
+    int update(@NonNull CourseApplication courseApplications);
 
 }

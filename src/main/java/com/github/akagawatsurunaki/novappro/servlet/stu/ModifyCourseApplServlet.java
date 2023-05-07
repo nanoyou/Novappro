@@ -3,6 +3,7 @@ package com.github.akagawatsurunaki.novappro.servlet.stu;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.stu.CourseApplDetailService;
+import lombok.val;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,37 +23,12 @@ public class ModifyCourseApplServlet extends HttpServlet {
             IOException {
         request.setCharacterEncoding("UTF-8");
         var flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
-
-        if (flowNo == null) {
-            request.getRequestDispatcher(SC.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
-
-        }
-
-        var s = request.getParameterValues(SC.ReqParam.UPDATED_COURSES.name);
-
-        // 校验是否为空
-        var updatedCourseCodes = new java.util.ArrayList<>(Arrays.stream(s).toList());
-
-        if (updatedCourseCodes.isEmpty()) {
-            request.getRequestDispatcher(SC.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
-
-        }
-
-        // 清空空白字符
-        updatedCourseCodes.removeIf(String::isBlank);
-
-        var vc_courses = COURSE_APPL_DETAIL_SERVICE.updateAppliedCourses(flowNo, updatedCourseCodes);
-
-        if (vc_courses.getLeft()!= VC.Service.OK) {
-            request.getRequestDispatcher(SC.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
-
-        }
-
-        // 删除要更新的课程参数
-        request.removeAttribute(SC.ReqParam.UPDATED_COURSES.name);
+        var updatedCourseCodes = request.getParameterValues(SC.ReqParam.UPDATED_COURSES.name);
+        var updateAppliedCoursesServiceResult = COURSE_APPL_DETAIL_SERVICE.updateAppliedCourses(flowNo, updatedCourseCodes);
+//        // 删除要更新的课程参数
+//        request.removeAttribute(SC.ReqParam.UPDATED_COURSES.name);
         request.setAttribute(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name, flowNo);
-        request.setAttribute(SC.ReqAttr.APPLIED_COURSES.name, vc_courses.getRight());
-
+        request.setAttribute(SC.ReqAttr.UPDATE_APPLIED_COURSES_SERVICE_RESULT.name, updateAppliedCoursesServiceResult);
         // 刷新页面
         request.getRequestDispatcher(SC.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
     }

@@ -10,7 +10,7 @@
     </insert>
     <update id="update">
         UPDATE courses_application
-        SET add_user_id = #{addUserId}, add_time = #{addTime}, appro_courses = #{approCourseIds}
+        SET add_user_id = #{addUserId}, add_time = #{addTime}, appro_courses = #{approCourses}
         WHERE flow_no = #{flowNo}
     </update>
     <select id="selectByFlowNo"

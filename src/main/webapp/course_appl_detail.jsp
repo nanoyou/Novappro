@@ -2,6 +2,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.course.Course" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
+<%@ page import="org.apache.commons.lang3.tuple.Triple" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -34,6 +37,16 @@
     }
 </script>
 <body>
+<%
+    List<Course> courses =
+            (List<Course>) request.getAttribute(SC.ReqAttr.APPLIED_COURSES.name);
+    Triple<ServiceMessage, List<Course>, CourseApplication> updateAppliedCoursesServiceResult  = (Triple<ServiceMessage, List<Course>, CourseApplication>)request.getAttribute(SC.ReqAttr.UPDATE_APPLIED_COURSES_SERVICE_RESULT.name);
+    if (updateAppliedCoursesServiceResult != null){
+        courses = updateAppliedCoursesServiceResult.getMiddle();
+    }
+
+%>
+
 <h1>查看课程申请详细内容</h1>
 
 <%
@@ -67,11 +80,8 @@
         </tr>
 
         <%
-            List<Course> courses =
-                    (List<Course>) request.getAttribute(SC.ReqAttr.APPLIED_COURSES.name);
             int index = 1;
-            for (Course c :
-                    courses) {
+            for (Course c : courses) {
         %>
 
         <tr id="crs_row_<%=c.getCode()%>">

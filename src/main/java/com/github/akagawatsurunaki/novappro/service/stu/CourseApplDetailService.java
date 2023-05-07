@@ -4,15 +4,22 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.mapper.CourseApplicationMapper;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
+import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
+import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CourseApplDetailService {
@@ -44,38 +51,89 @@ public class CourseApplDetailService {
         return null;
     }
 
-    public Pair<VC.Service, List<Course>> updateAppliedCourses(@NonNull String flowNo,
-                                                               @NonNull List<String> courseCodesToUpdate) {
+    public Triple<ServiceMessage, List<Course>, CourseApplication> updateAppliedCourses(@Nullable String flowNo,
+                                                                                        @Nullable String[] courseCodesToUpdate) {
+        if (flowNo == null || flowNo.isBlank()) {
+            return new ImmutableTriple<>(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "流水号不可为空"),
+                    null,
+                    null
+            );
+        }
+
+        if (courseCodesToUpdate == null || courseCodesToUpdate.length == 0) {
+            return new ImmutableTriple<>(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "更新的课程代码列表为空"),
+                    null,
+                    null
+            );
+        }
+
+        return _updateAppliedCourses(flowNo, Arrays.stream(courseCodesToUpdate).toList());
+    }
+
+
+    private Triple<ServiceMessage, List<Course>, CourseApplication> _updateAppliedCourses(@NonNull String flowNo,
+                                                                                          @NonNull List<String> courseCodesToUpdate) {
 
         try (var session = MyDb.use().openSession(true)) {
 
             val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
-            var courseMapper = session.getMapper(CourseMapper.class);
-            var courses = courseMapper.selectCourses(courseCodesToUpdate);
+            val courseMapper = session.getMapper(CourseMapper.class);
 
-            var courseApplication = courseApplicationMapper.selectByFlowNo(flowNo);
+            // 如果课程代码中含有空字符串则删除
+            courseCodesToUpdate = courseCodesToUpdate.stream().dropWhile(String::isBlank).toList();
 
-            // 检查课程申请是否存在
-            if (courseApplication != null) {
+            // 如果有课程代码是重复的, 则去重
+            courseCodesToUpdate = CollectionUtil.distinct(courseCodesToUpdate);
 
-                // 如果有课程重复, 则去重
-                courseCodesToUpdate = CollectionUtil.distinct(courseCodesToUpdate);
+            // 获取将要被更新的课程
+            val courses = courseMapper.selectCourses(courseCodesToUpdate);
 
-                // 校验这些课程是否存在
-                if (courses != null) {
-
-                    // 修改对应的course申请
-                    courseApplication.setApproCourses(CourseUtil.toCourseCodesStr(courseCodesToUpdate));
-
-                    // 校验更改是否成功
-                    if (courseApplicationMapper.update(courseApplication) != null) {
-                        return new ImmutablePair<>(VC.Service.OK, courses);
-                    }
-                }
-                return new ImmutablePair<>(VC.Service.NO_SUCH_COURSE, null);
-            } else {
-                return new ImmutablePair<>(VC.Service.NO_SUCH_COURSE_APPL, null);
+            if (courses == null || courses.size() != courseCodesToUpdate.size()) {
+                return new ImmutableTriple<>(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "更新的课程列表中含有非法字符"),
+                        new ArrayList<>(),
+                        null
+                );
             }
+
+            // 获取指定流水号的课程申请
+            val courseApplication = courseApplicationMapper.selectByFlowNo(flowNo);
+
+            // 如果课程申请不存在
+            if (courseApplication == null) {
+                return new ImmutableTriple<>(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "流水号为" + flowNo + "的课程申请（Course Application）不存在。"),
+                        courses,
+                        null
+                );
+            }
+
+            // 修改对应的课程申请中的课程代码s
+            courseApplication.setApproCourses(CourseUtil.toCourseCodesStr(courseCodesToUpdate));
+
+            // 校验更改是否成功
+            val rows = courseApplicationMapper.update(courseApplication);
+
+            // 如果更新失败，将返回带有未更新前的课程申请对象
+            if (rows != 1) {
+                return new ImmutableTriple<>(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "数据库更新流水号为" + flowNo + "的课程申请遇到失败。"),
+                        courses,
+                        courseApplication
+                );
+            }
+
+            val updatedCourseApplication = courseApplicationMapper.selectByFlowNo(flowNo);
+
+            assert updatedCourseApplication != null;
+
+            return new ImmutableTriple<>(
+                    ServiceMessage.of(ServiceMessage.Level.SUCCESS, "更新课程申请成功！"),
+                    courses,
+                    updatedCourseApplication
+            );
         }
     }
 }
