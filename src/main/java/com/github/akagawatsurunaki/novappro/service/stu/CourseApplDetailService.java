@@ -1,7 +1,6 @@
 package com.github.akagawatsurunaki.novappro.service.stu;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.mapper.CourseApplicationMapper;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
@@ -27,7 +26,19 @@ public class CourseApplDetailService {
     @Getter
     private static final CourseApplDetailService instance = new CourseApplDetailService();
 
-    public List<Course> getAppliedCourses(@NonNull String flowNo) {
+    public Pair<ServiceMessage, List<Course>> getAppliedCourses(@Nullable String flowNo){
+        if (flowNo == null || flowNo.isBlank()) {
+            return new ImmutablePair<>(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "流水号不能为空"),
+                    new ArrayList<>()
+            );
+        }
+
+        return _getAppliedCourses(flowNo);
+
+    }
+
+    public Pair<ServiceMessage, List<Course>> _getAppliedCourses(@NonNull String flowNo) {
 
         try (var session = MyDb.use().openSession(true)) {
 
@@ -36,19 +47,28 @@ public class CourseApplDetailService {
 
             var courseAppl = courseApplicationMapper.selectByFlowNo(flowNo);
 
-            if (courseAppl != null) {
-                var courseCodeList = courseAppl.getApproCourses();
-
-                if (courseCodeList == null || courseCodeList.isEmpty()) {
-                    return null;
-                }
-
-                List<String> courseCodes = CourseUtil.getCourseCodes(courseCodeList);
-
-                return courseMapper.selectCourses(courseCodes);
+            if (courseAppl == null) {
+                return new ImmutablePair<>(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "流水号为"+flowNo+"的课程申请对象(Course Application)不存在"),
+                        new ArrayList<>()
+                );
             }
+
+            var courseCodeList = courseAppl.getApproCourses();
+            assert courseCodeList != null && !courseCodeList.isBlank();
+
+            List<String> courseCodes = CourseUtil.getCourseCodes(courseCodeList);
+            assert courseCodes!=null && !courseCodes.isEmpty();
+
+            val result = courseMapper.selectCourses(courseCodes);
+            assert result!=null && !result.isEmpty();
+
+            return new ImmutablePair<>(
+                    ServiceMessage.of(ServiceMessage.Level.SUCCESS, "查询到"+result.size()+"门已经申请的课程"),
+                    result
+            );
+
         }
-        return null;
     }
 
     public Triple<ServiceMessage, List<Course>, CourseApplication> updateAppliedCourses(@Nullable String flowNo,
