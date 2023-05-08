@@ -5,6 +5,7 @@ import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import com.github.akagawatsurunaki.novappro.servlet.base.LoginServlet;
 import lombok.AllArgsConstructor;
+import lombok.val;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,22 +20,18 @@ public class ApproServlet extends HttpServlet {
     private static final ApprovalService APPROVAL_SERVICE = ApprovalService.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws
             IOException {
-
         try {
             request.setCharacterEncoding("UTF-8");
-
-            var loginUser = (User) request.getSession().getAttribute(LoginServlet.ReqAttr.LOGIN_USER.value);
-
+            // 获取登录用户
+            val loginUser = (User) request.getSession().getAttribute(LoginServlet.ReqAttr.LOGIN_USER.value);
             // 过滤器已经过滤掉未登录用户的请求, 这里的用户不应该为null
             assert loginUser != null;
-
             // 获取该用户名下的所有ApplItem
-            var getApplItemsServiceMessage = APPROVAL_SERVICE.getApplItems(loginUser.getId());
-
+            val getApplItemsServiceMessage = APPROVAL_SERVICE.getApplItems(loginUser.getId());
             request.setAttribute(ReqAttr.GET_APPL_ITEMS_SERVICE_MESSAGE.value, getApplItemsServiceMessage);
-
+            // 转发到页面
             request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
