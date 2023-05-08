@@ -24,7 +24,7 @@ public class CourseService {
     /**
      * 获取可以被审批的课程
      *
-     * @return
+     * @return 服务响应信息，可以被申请（或者说审批）的课程
      */
     public Pair<ServiceMessage, List<Course>> getCoursesCanBeApplied() {
         try (SqlSession session = MyDb.use().openSession(true)) {
