@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 public class SC {
     public static final String GET_COURSE_SERVLET = "/get_courses";
 
-    public static final String INFO = "info";
-
     @AllArgsConstructor
     public enum JSPResource {
         WELCOME("welcome.jsp"),
@@ -39,7 +37,6 @@ public class SC {
         APPLIED_COURSES("applied_courses"),
         UPDATE_APPLIED_COURSES_SERVICE_RESULT("updateAppliedCoursesServiceResult"),
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
-        APPL_ITEMS_WITH_GIVEN_APPROVER("APPL_ITEMS_WITH_GIVEN_APPROVER"),
         SELECTED_APPL_ITEM("selected_appl_item"),
         APPRO_STATUS_LIST("appro_status_list"),
         ERROR_MESSAGE("error_message"),
@@ -59,7 +56,6 @@ public class SC {
         RAW_PASSWORD("rawPassword"),
         USER_TYPE("user_type"),
         UPDATED_COURSES("updated_courses"),
-        // FLOW_NO("flow_no"),
         ADD_APPRO_COURSE("add_appro_course"),
 
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
@@ -78,10 +74,8 @@ public class SC {
 
     public static class WebServletValue {
         public final static String SIGNUP = "/signup";
-        public final static String LOGIN = "/login";
         public final static String MODIFY_COURSE_APPL = "/modify_course_appl";
         public final static String COURSE_APPL_DETAIL = "/course_appl_detail";
-        public final static String GET_APPROS = "/get_appros";
         public final static String GET_APPL_ITEM_DETAIL = "/get_appl_item_detail";
         public final static String APPLY_COURSES = "/apply_courses";
         public final static String APPL_ITEM = "/ApplItemServlet";
