@@ -12,107 +12,10 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<style>
-    body {
-        font-size: 14px;
-        margin: 0;
-        padding: 0;
-    }
-
-    h1 {
-        font-size: 32px;
-        font-weight: 700;
-        line-height: 1.2;
-        margin-bottom: 20px;
-
-    }
-
-    p {
-        margin-bottom: 10px;
-    }
-
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    th, td {
-        border: 1px solid #ccc;
-        padding: 8px;
-        text-align: center;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-
-    tr:hover {
-        background-color: #ddd;
-    }
-
-    input[type=radio] {
-        margin-right: 5px;
-    }
-
-    label, input[type=file] {
-        display: block;
-        margin-bottom: 10px;
-    }
-
-    .reject {
-    !important;
-        background-color: #ff3030;
-    }
-
-    input[type=text], input[type=file], input[type=button], input[type=submit] {
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        padding: 10px;
-    }
-
-    input[type=button], input[type=submit] {
-        background-color: #007bff;
-        color: #fff;
-        cursor: pointer;
-        transition: background-color .3s ease;
-    }
-
-    input[type=button]:hover, input[type=submit]:hover {
-        background-color: #0056b3;
-    }
-
-    .err-msg {
-        position: relative;
-        font-size: 10px;
-        float: top;
-        color: rgb(255, 0, 0);
-        /* 错误提示闪烁 */
-        animation: blink 1.5s linear 3;
-        -webkit-animation: blink 1.5s linear 3;
-        -moz-animation: blink 1.5s linear 3;
-        -ms-animation: blink 1.5s linear 3;
-        -o-animation: blink 1.5s linear 3;
-    }
-
-
-    @keyframes blink {
-        0% {
-            color: red;
-        }
-
-        50% {
-            color: transparent;
-        }
-
-        100% {
-            color: red;
-        }
-    }
-
-</style>
 <head>
     <title>教师审批系统 - 详细</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/err_msg.css">
 </head>
 <body>
 <%

@@ -1,10 +1,4 @@
-<%@ page import="com.github.akagawatsurunaki.novappro.constant.Constant" %><%--
-  Created by IntelliJ IDEA.
-  User: 96514
-  Date: 2023/4/9
-  Time: 15:21
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="com.github.akagawatsurunaki.novappro.constant.Constant" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="utf-8" %>
 <html>
 <head>
