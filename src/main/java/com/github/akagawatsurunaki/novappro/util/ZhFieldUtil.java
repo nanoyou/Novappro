@@ -6,7 +6,7 @@ import lombok.NonNull;
 
 import java.lang.reflect.Field;
 
-public class ZhFieldUtil {
+public final class ZhFieldUtil {
     public static <T> String getZhValue(Class<T> cls, @NonNull String fieldName) {
         // 获取所有字段
         Field[] fields = cls.getDeclaredFields();
