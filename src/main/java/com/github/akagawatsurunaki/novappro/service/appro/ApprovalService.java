@@ -72,7 +72,7 @@ public class ApprovalService {
             }
 
             return new ImmutablePair<>(
-                    new ServiceMessage(ServiceMessage.Level.SUCCESS, "您有" + result.size() + "个项目将要申请。"),
+                    new ServiceMessage(ServiceMessage.Level.SUCCESS, "您有" + result.size() + "个项目将要审批。"),
                     result);
         }
     }
@@ -267,46 +267,108 @@ public class ApprovalService {
      * @param flowNo   审批流编号
      * @param remark   同意原因或驳回原因
      * @param approSuc 是否同意
-     * @return
+     * @return 注意CourseAppItemDetail始终为空
      */
-    public VC.Service saveApproResult(@NonNull String flowNo,
-                                      @NonNull String remark,
-                                      boolean approSuc) {
+    public Pair<ServiceMessage, Optional<CourseAppItemDetail>> saveApproResult(
+            @Nullable String flowNo,
+            @Nullable String remark,
+            @Nullable String approSuc
+    ) {
+        if (flowNo == null) {
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "流水号不能为空"),
+                    Optional.empty()
+            );
+        }
+
+        boolean flag;
+
+        if (approSuc == null || approSuc.isBlank()) {
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "无操作"),
+                    Optional.empty()
+            );
+        } else if (approSuc.equals("驳回审批")) {
+            flag = false;
+        } else if (approSuc.equals("同意审批")) {
+            flag = true;
+        } else {
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "非法操作"),
+                    Optional.empty()
+            );
+        }
+
+        if (remark == null) {
+            remark = "";
+        }
+
+        if (remark.length() > 500) {
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "备注最大字数为500个字符"),
+                    Optional.empty()
+            );
+        }
+
+        return _saveApproResult(flowNo, remark, flag);
+
+    }
+
+
+    public Pair<ServiceMessage, Optional<CourseAppItemDetail>> _saveApproResult(
+            @NonNull String flowNo,
+            @NonNull String remark,
+            boolean approSuc) {
         try (SqlSession session = MyDb.use().openSession(true)) {
-            var approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
+            val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
 
             // 如果不同意审批
+            // 审批流程下不能为空
             if (!approSuc && remark.isBlank()) {
-                return VC.Service.REMARK_IS_BLANK;
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "若驳回审批，必须填写备注"),
+                        Optional.empty()
+                );
             }
 
-            // 更新 申请流程 表
-            var status = approSuc ? ApprovalStatus.APPROVED : ApprovalStatus.REJECTED;
-            var rows = approvalFlowMapper.updateApproStatus(flowNo, status);
-
-            if (rows != 1) {
-                return VC.Service.FAILED_UPDATE;
+            // 更新 申请流程 表: 状态修改
+            val status = approSuc ? ApprovalStatus.APPROVED : ApprovalStatus.REJECTED;
+            if (approvalFlowMapper.updateApproStatus(flowNo, status) != 1) {
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.FATAL, "更新审批流失败"),
+                        Optional.empty()
+                );
             }
 
             // 更新 申请流程细节 表
-
-            var node = getCurrentApprovalFlowNode(flowNo);
+            val node = getCurrentApprovalFlowNode(flowNo);
             if (node == null) {
-                return VC.Service.ERROR;
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.FATAL, "申请流程明细表不存在"),
+                        Optional.empty()
+                );
             }
-            var maxIdOfCourseApproFlow = node.getId();
+            assert node.getId() != null;
 
-            approvalFlowDetailMapper.updateApproStatus(flowNo, maxIdOfCourseApproFlow, status);
-            approvalFlowDetailMapper.updateApproRemark(flowNo, maxIdOfCourseApproFlow, remark);
+            if (approvalFlowDetailMapper.updateApproStatus(flowNo, node.getId(), status) != 1) {
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.FATAL, "申请流程明细表更新审批状态失败"),
+                        Optional.empty()
+                );
+            }
 
-            return VC.Service.OK;
+            if (approvalFlowDetailMapper.updateApproRemark(flowNo, node.getId(), remark)!= 1) {
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.FATAL, "申请流程明细表更新备注失败"),
+                        Optional.empty()
+                );
+            }
 
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-            return VC.Service.ERROR;
-
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.SUCCESS, "服务成功"),
+                    Optional.empty()
+            );
         }
     }
 

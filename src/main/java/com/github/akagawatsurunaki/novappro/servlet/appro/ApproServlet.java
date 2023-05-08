@@ -1,8 +1,10 @@
 package com.github.akagawatsurunaki.novappro.servlet.appro;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VC;
+import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
+import com.github.akagawatsurunaki.novappro.servlet.base.LoginServlet;
+import lombok.AllArgsConstructor;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,28 +24,32 @@ public class ApproServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        var loginUserId = (Integer) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER_ID.name);
+        var loginUser = (User) request.getSession().getAttribute(LoginServlet.ReqAttr.LOGIN_USER.value);
 
         // TODO: DEBUG NEED
+        // 过滤器已经过滤掉未登录用户的请求, 这里的用户不应该为null
+        assert loginUser != null;
 
-        // 如果用户已经登录
-        if (loginUserId != null) {
+        // 获取该用户名下的所有ApplItem
+        var getApplItemsServiceMessage = APPROVAL_SERVICE.getApplItems(loginUser.getId());
 
-            // 获取该用户名下的所有ApplItem s.
+        request.setAttribute(ReqAttr.GET_APPL_ITEMS_SERVICE_MESSAGE.value, getApplItemsServiceMessage);
 
-            var applItemList = APPROVAL_SERVICE.getApplItems(loginUserId);
+        request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
 
-            request.setAttribute(SC.ReqAttr.APPL_ITEMS_WITH_GIVEN_APPROVER.name, applItemList);
-            request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
-            return;
-
-        }
-        request.getRequestDispatcher(SC.JSPResource.ERROR.name).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
+        doGet(request, response);
+    }
 
+    @AllArgsConstructor
+    public enum ReqAttr {
+
+        GET_APPL_ITEMS_SERVICE_MESSAGE("get_appl_items_service_message");
+
+        public final String value;
     }
 }

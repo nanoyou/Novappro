@@ -26,5 +26,5 @@ public interface ApprovalFlowDetailMapper {
 
     int updateApproRemark(@Param("flowNo") @NonNull String flowNo,
                           @Param("id") @NonNull Integer id,
-                          @Param("remark") @NonNull String remark) throws SQLException;
+                          @Param("remark") @NonNull String remark);
 }
