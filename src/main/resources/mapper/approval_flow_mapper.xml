@@ -20,4 +20,9 @@
             resultType="com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow">
         SELECT * FROM `approval_flow` WHERE `approval_flow`.`flow_no` = #{flowNo};
     </select>
+    <select id="selectAll"
+            resultType="com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow">
+        SELECT *
+        FROM `approval_flow`;
+    </select>
 </mapper>
