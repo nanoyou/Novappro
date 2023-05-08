@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.service.stu;
 
+import cn.hutool.crypto.asymmetric.SM2;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalAuthorityMapper;
 import com.github.akagawatsurunaki.novappro.mapper.CourseMapper;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
@@ -20,6 +21,30 @@ public class CourseService {
 
     @Getter
     private static final CourseService instance = new CourseService();
+
+    /**
+     * 获取数据库中所有的课程对象
+     * @return 服务响应信息，所有的课程对象
+     */
+    public Pair<ServiceMessage, List<Course>> getAllCourses() {
+        try (var session = MyDb.use().openSession(true)) {
+            val courseMapper = session.getMapper(CourseMapper.class);
+
+            val allCourses = courseMapper.selectAllCourses();
+
+            if (allCourses == null || allCourses.isEmpty()) {
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.INFO, "没有课程可以被选择"),
+                        new ArrayList<>()
+                );
+            }
+
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.SUCCESS, "查询到" + allCourses.size() + "门课程"),
+                    allCourses
+            );
+        }
+    }
 
     /**
      * 获取可以被审批的课程

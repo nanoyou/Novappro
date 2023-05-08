@@ -1,0 +1,12 @@
+.err-msg {
+    position: relative;
+    font-size: 10px;
+    float: top;
+    color: rgb(255, 0, 0);
+    /* 错误提示闪烁 */
+    animation: blink 1.5s linear 3;
+    -webkit-animation: blink 1.5s linear 3;
+    -moz-animation: blink 1.5s linear 3;
+    -ms-animation: blink 1.5s linear 3;
+    -o-animation: blink 1.5s linear 3;
+}
