@@ -1,6 +1,5 @@
 package com.github.akagawatsurunaki.novappro.service.appro;
 
-import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.*;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
@@ -18,7 +17,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ibatis.session.SqlSession;
 
 import javax.annotation.Nullable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,16 +51,20 @@ public class ApprovalService {
             List<ApplItem> result = new ArrayList<>();
 
             for (String flowNo : flowNos) {
-                var vc_applItem = getApplItem(flowNo, approverId);
-                if (vc_applItem.getRight() == null) {
+
+                val applItem = getApplItem(flowNo, approverId);
+
+                // 如果ApplItem不存在则直接跳过
+                if (applItem == null) {
                     continue;
                 }
+
                 // 如果审批流已经结束那么跳过
                 if (isSpecifiedApprovalFlowEnded(flowNo)) {
                     continue;
                 }
 
-                result.add(vc_applItem.getRight());
+                result.add(applItem);
             }
 
             if (result.isEmpty()) {
@@ -77,7 +79,7 @@ public class ApprovalService {
         }
     }
 
-    public Pair<VC.Service, ApplItem> getApplItem(@NonNull String flowNo, @NonNull Integer approverId) {
+    private ApplItem getApplItem(@NonNull String flowNo, @NonNull Integer approverId) {
 
         try (SqlSession session = MyDb.use().openSession(true)) {
 
@@ -92,7 +94,7 @@ public class ApprovalService {
             val currentApprovalNode = getCurrentApprovalFlowNode(flowNo);
 
             if (Objects.equals(auditUserId, approverId)) {
-                var applItem = ApplItem.builder()
+                return ApplItem.builder()
                         .flowNo(approFlow.getFlowNo())
                         .title(approFlow.getTitle())
                         .applicantName(addUser.getUsername())
@@ -100,11 +102,10 @@ public class ApprovalService {
                         .approverName(approver.getUsername())
                         .approvalStatus(currentApprovalNode.getAuditStatus())
                         .build();
-                return new ImmutablePair<>(VC.Service.OK, applItem);
             }
 
         }
-        return new ImmutablePair<>(VC.Service.OK, null);
+        return null;
     }
 
     /**
@@ -358,7 +359,7 @@ public class ApprovalService {
                 );
             }
 
-            if (approvalFlowDetailMapper.updateApproRemark(flowNo, node.getId(), remark)!= 1) {
+            if (approvalFlowDetailMapper.updateApproRemark(flowNo, node.getId(), remark) != 1) {
                 return ImmutablePair.of(
                         ServiceMessage.of(ServiceMessage.Level.FATAL, "申请流程明细表更新备注失败"),
                         Optional.empty()
