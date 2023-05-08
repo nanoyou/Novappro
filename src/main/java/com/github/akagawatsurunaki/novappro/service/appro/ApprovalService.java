@@ -2,6 +2,7 @@ package com.github.akagawatsurunaki.novappro.service.appro;
 
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.mapper.*;
+import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.model.database.course.Course;
 import com.github.akagawatsurunaki.novappro.model.frontend.ApplItem;
@@ -428,4 +429,27 @@ public class ApprovalService {
 
     }
 
+    /**
+     * 从数据库中获取所有的申请流对象
+     *
+     * @return 所有的申请流对象
+     */
+    public Pair<ServiceMessage, List<ApprovalFlow>> getAllApprovalFlows() {
+        try (var session = MyDb.use().openSession(true)) {
+            val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
+            val approvalFlows = approvalFlowMapper.selectAll();
+
+            if (approvalFlows == null || approvalFlows.isEmpty()) {
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.INFO, "没有申请流可以被查询"),
+                        new ArrayList<>()
+                );
+            }
+
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.SUCCESS, "查询到" + approvalFlows.size() + "条申请流对象"),
+                    approvalFlows
+            );
+        }
+    }
 }
