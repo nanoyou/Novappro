@@ -19,24 +19,28 @@ public class ApproServlet extends HttpServlet {
     private static final ApprovalService APPROVAL_SERVICE = ApprovalService.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws 
             IOException {
 
-        request.setCharacterEncoding("UTF-8");
+        try {
+            request.setCharacterEncoding("UTF-8");
 
-        var loginUser = (User) request.getSession().getAttribute(LoginServlet.ReqAttr.LOGIN_USER.value);
+            var loginUser = (User) request.getSession().getAttribute(LoginServlet.ReqAttr.LOGIN_USER.value);
 
-        // TODO: DEBUG NEED
-        // 过滤器已经过滤掉未登录用户的请求, 这里的用户不应该为null
-        assert loginUser != null;
+            // 过滤器已经过滤掉未登录用户的请求, 这里的用户不应该为null
+            assert loginUser != null;
 
-        // 获取该用户名下的所有ApplItem
-        var getApplItemsServiceMessage = APPROVAL_SERVICE.getApplItems(loginUser.getId());
+            // 获取该用户名下的所有ApplItem
+            var getApplItemsServiceMessage = APPROVAL_SERVICE.getApplItems(loginUser.getId());
 
-        request.setAttribute(ReqAttr.GET_APPL_ITEMS_SERVICE_MESSAGE.value, getApplItemsServiceMessage);
+            request.setAttribute(ReqAttr.GET_APPL_ITEMS_SERVICE_MESSAGE.value, getApplItemsServiceMessage);
 
-        request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
-
+            request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            response.sendRedirect("error.jsp");
+        }
     }
 
     @Override
