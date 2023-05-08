@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @MultipartConfig
-@WebServlet(name = "ApplyCoursesServlet", value = SC.WebServletValue.APPLY_COURSES)
+@WebServlet(name = "ApplyCoursesServlet", value = "/apply_courses")
 public class ApplyCoursesServlet extends HttpServlet {
 
     private static final ApplyCourseService APPLY_COURSE_SERVICE = ApplyCourseService.getInstance();

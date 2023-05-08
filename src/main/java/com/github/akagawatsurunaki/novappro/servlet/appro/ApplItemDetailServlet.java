@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "ApplItemDetailServlet", value = SC.WebServletValue.GET_APPL_ITEM_DETAIL)
+@WebServlet(name = "ApplItemDetailServlet", value = "/get_appl_item_detail")
 public class ApplItemDetailServlet extends HttpServlet {
 
     private final static ApprovalService APPROVAL_SERVICE = ApprovalService.getInstance();

@@ -15,7 +15,7 @@
 <script>
     function detail(flowNo) {
         location.href =
-            '${pageContext.request.contextPath}<%=SC.WebServletValue.GET_APPL_ITEM_DETAIL%>' + '?<%=SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name%>=' + flowNo;
+            '${pageContext.request.contextPath}/get_appl_item_detail' + '?<%=SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name%>=' + flowNo;
     }
 </script>
 <style>

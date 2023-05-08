@@ -30,7 +30,6 @@ public class LoginServlet extends HttpServlet {
 
         // 获取用户的ID
         var userId = request.getParameter(SC.ReqParam.USER_ID.name);
-
         // 获取用户的明文密码
         var rawPassword = request.getParameter(SC.ReqParam.RAW_PASSWORD.name);
 
@@ -53,37 +52,6 @@ public class LoginServlet extends HttpServlet {
 
         // 登录失败, 返回主页
         request.getRequestDispatcher(SC.JSPResource.INDEX.name).forward(request, response);
-
-//            switch (vc_user.getLeft()) {
-//
-//                case TOO_LONG_PASSWORD ->
-//                        request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.TOO_LONG_PASSWORD.message);
-//                case PASSWORD_ERROR ->
-//                        request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.PASSWORD_ERROR.message);
-//                case NO_SUCH_USER ->
-//                        request.setAttribute(SC.ReqAttr.ERROR_MESSAGE.name, VC.Service.NO_SUCH_USER.message);
-//                case OK -> {
-//
-//                    // 安全地取出用户对象
-//                    var user = vc_user.getRight();
-//
-//                    request.getSession().setAttribute(SC.ReqAttr.LOGIN_USER_ID.name, user.getId());
-//                    request.getSession().setAttribute(SC.ReqAttr.USER_USERNAME.name, user.getUsername());
-//                    request.getSession().setAttribute(SC.ReqParam.USER_TYPE.name, user.getType().name());
-//                    request.getSession().setAttribute(SC.ReqAttr.LOGIN_USER.name, user);
-//                    request.setAttribute(SC.ReqAttr.LOGIN_USER.name, user);
-//
-//                    // 根据不同的身份发送到不同的页面
-//                    switch (user.getType()) {
-//                        case STUDENT -> response.sendRedirect(SC.JSPResource.WELCOME_SESSION.name);
-//                        case LECTURE_TEACHER, SUPERVISOR_TEACHER -> response.sendRedirect("get_appros");
-//                        case ADMIN -> System.out.println("尚未实现");
-//                    }
-//                    return;
-//                }
-//            }
-
-//        request.getRequestDispatcher(SC.JSPResource.INDEX.name).forward(request, response);
     }
 
     @Override

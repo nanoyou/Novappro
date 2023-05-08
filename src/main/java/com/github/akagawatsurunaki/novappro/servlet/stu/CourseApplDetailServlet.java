@@ -4,15 +4,17 @@ import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.service.stu.CourseApplDetailService;
 import lombok.AllArgsConstructor;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
  * 用来查看一个申请实体内的详细内容, 这里的申请是课程类型的申请.
  */
-@WebServlet(name = "CourseApplDetailServlet", value = SC.WebServletValue.COURSE_APPL_DETAIL)
+@WebServlet(name = "CourseApplDetailServlet", value = "/course_appl_detail")
 public class CourseApplDetailServlet extends HttpServlet {
 
     private final static CourseApplDetailService COURSE_APPL_DETAIL_SERVICE = new CourseApplDetailService();

@@ -2,6 +2,7 @@ package com.github.akagawatsurunaki.novappro.filter;
 
 import cn.hutool.core.util.StrUtil;
 import com.github.akagawatsurunaki.novappro.constant.SC;
+import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import lombok.val;
 
@@ -16,6 +17,7 @@ import java.io.IOException;
 @WebFilter(filterName = "AuthoFilter",
         urlPatterns = {
                 "/get_appros",
+                "/get_appl_item_detail"
         }
 )
 public class AuthoFilter extends HttpFilter {
@@ -25,15 +27,11 @@ public class AuthoFilter extends HttpFilter {
             ServletException {
         // 获取登录用户
         val loginUser = (User) req.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name);
-
         val servletValue = StrUtil.removePrefix(req.getRequestURI(), req.getContextPath());
 
         switch (servletValue) {
-            case "/get_appros" -> {
-                if (loginUser == null) {
-                    res.sendRedirect("index.jsp");
-                }
-                chain.doFilter(req, res);
+            case "/get_appros", "/get_appl_item_detail" -> {
+                redirect(res, loginUser, UserType.STUDENT);
             }
 
             default -> {
@@ -41,5 +39,13 @@ public class AuthoFilter extends HttpFilter {
             }
         }
 
+    }
+
+    private void redirect(HttpServletResponse res, User loginUser, UserType userType) throws IOException {
+        if (loginUser == null) {
+            res.sendRedirect("index.jsp");
+        } else if (loginUser.getType().equals(userType)) {
+            res.sendRedirect("index.jsp");
+        }
     }
 }
