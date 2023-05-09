@@ -7,6 +7,7 @@
 <%@ page import="org.apache.commons.lang3.tuple.Triple" %>
 <%@ page import="org.apache.commons.lang3.tuple.Pair" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.servlet.stu.CourseApplDetailServlet" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -42,8 +43,13 @@
 <%
     Pair<ServiceMessage, List<Course>> getAppliedCoursesServiceResult = (Pair<ServiceMessage, List<Course>>) request.getAttribute(CourseApplDetailServlet.ReqAttr.GET_APPLIED_COURSES_SERVICE_RESULT.value);
     List<Course> courses = getAppliedCoursesServiceResult.getRight();
-    Triple<ServiceMessage, List<Course>, CourseApplication> updateAppliedCoursesServiceResult  = (Triple<ServiceMessage, List<Course>, CourseApplication>)request.getAttribute(SC.ReqAttr.UPDATE_APPLIED_COURSES_SERVICE_RESULT.name);
-    if (updateAppliedCoursesServiceResult != null){
+    Triple<ServiceMessage, List<Course>, CourseApplication> updateAppliedCoursesServiceResult = (Triple<ServiceMessage, List<Course>, CourseApplication>) request.getAttribute(SC.ReqAttr.UPDATE_APPLIED_COURSES_SERVICE_RESULT.name);
+
+    Pair<ServiceMessage, List<ApprovalFlowDetail>> getApprovalFlowDetailsServiceResult = (Pair<ServiceMessage,
+            List<ApprovalFlowDetail>>)
+            request.getAttribute(CourseApplDetailServlet.ReqAttr.GET_APPROVAL_FLOW_DETAILS_SERVICE_RESULT.value);
+
+    if (updateAppliedCoursesServiceResult != null) {
         courses = updateAppliedCoursesServiceResult.getMiddle();
     }
 
@@ -105,13 +111,13 @@
             </td>
             <td><%=c.getComment()%>
             </td>
-<%--            <td>--%>
-<%--                <label>--%>
-<%--                    <input type="button" value="删除" onclick="removeCourse('<%=c.getCode()%>')"/>--%>
-<%--                </label>--%>
-<%--            </td>--%>
+            <%--            <td>--%>
+            <%--                <label>--%>
+            <%--                    <input type="button" value="删除" onclick="removeCourse('<%=c.getCode()%>')"/>--%>
+            <%--                </label>--%>
+            <%--            </td>--%>
             <input type="hidden" name="<%=SC.ReqParam.UPDATED_COURSES.name%>"
-                    value="<%=c.getCode()%>">
+                   value="<%=c.getCode()%>">
         </tr>
         <%
             }
@@ -122,11 +128,73 @@
         <input id="text_add_course" type="text" name="<%=SC.ReqParam.UPDATED_COURSES.name%>" value=""/>
     </label>
     <label>
-        <input type="submit" value="增加课程" onclick="refresh('<%=flowNo%>')" />
+        <input type="submit" value="增加课程" onclick="refresh('<%=flowNo%>')"/>
     </label>
     <label>
         <input type="submit" value="确认修改" onclick="refresh('<%=flowNo%>')"/>
     </label>
 </form>
+
+<%
+    if (getApprovalFlowDetailsServiceResult == null) {
+        return;
+    }
+
+
+%>
+<div>
+    <%=getApprovalFlowDetailsServiceResult.getLeft().getMessage()%>
+</div>
+
+<%
+    if (getApprovalFlowDetailsServiceResult.getLeft().getMessageLevel() == ServiceMessage.Level.SUCCESS) {
+
+        List<ApprovalFlowDetail> approvalFlowDetails = getApprovalFlowDetailsServiceResult.getRight();
+
+
+%>
+<table>
+    <tr>
+        <th>
+            <%=ZhFieldUtil.getZhValue(ApprovalFlowDetail.class, ApprovalFlowDetail.Fields.auditUserId)%>
+        </th>
+        <th>
+            <%=ZhFieldUtil.getZhValue(ApprovalFlowDetail.class, ApprovalFlowDetail.Fields.auditRemark)%>
+        </th>
+        <th>
+            <%=ZhFieldUtil.getZhValue(ApprovalFlowDetail.class, ApprovalFlowDetail.Fields.auditStatus)%>
+        </th>
+        <th>
+            <%=ZhFieldUtil.getZhValue(ApprovalFlowDetail.class, ApprovalFlowDetail.Fields.auditTime)%>
+        </th>
+    </tr>
+
+    <%
+        for (ApprovalFlowDetail approvalFlowDetail : approvalFlowDetails) {
+    %>
+
+    <tr>
+        <td>
+            <%=approvalFlowDetail.getAuditUserId()%>
+        </td>
+        <td>
+            <%=approvalFlowDetail.getAuditRemark()%>
+        </td>
+        <td>
+            <%=approvalFlowDetail.getAuditStatus().chinese%>
+        </td>
+        <td>
+            <%=approvalFlowDetail.getAuditTime()%>
+        </td>
+    </tr>
+    <%
+        }
+    %>
+
+</table>
+<%
+    }
+%>
+<button>确定</button>
 </body>
 </html>

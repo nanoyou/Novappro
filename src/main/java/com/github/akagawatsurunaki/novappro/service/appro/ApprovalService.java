@@ -429,6 +429,34 @@ public class ApprovalService {
 
     }
 
+    public Pair<ServiceMessage, List<ApprovalFlowDetail>> getApprovalFlowDetails(@Nullable String flowNo) {
+        try (var session = MyDb.use().openSession(true)) {
+            val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
+
+            if (flowNo == null || flowNo.isBlank()) {
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.WARN, "流水号不能为空"),
+                        new ArrayList<>()
+                );
+            }
+
+            val approvalFlowDetails = approvalFlowDetailMapper.selectByFlowNo(flowNo);
+
+            if (approvalFlowDetails.isEmpty()) {
+                return ImmutablePair.of(
+                        ServiceMessage.of(ServiceMessage.Level.INFO, "无审批明细"),
+                        approvalFlowDetails
+                );
+            }
+
+            return ImmutablePair.of(
+                    ServiceMessage.of(ServiceMessage.Level.SUCCESS, "共有" + approvalFlowDetails.size() + "个审批明细"),
+                    approvalFlowDetails
+            );
+
+        }
+    }
+
     /**
      * 从数据库中获取所有的申请流对象
      *
