@@ -12,6 +12,11 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/err_msg.css">
 </head>
+<script>
+    function winPrint() {
+        window.print();
+    }
+</script>
 <body>
 
 <%
@@ -25,7 +30,7 @@
 <h1>
     所有审批流一览表
 </h1>
-
+<button onclick="winPrint()">单击此处导出</button>
 <form>
 
     <%
