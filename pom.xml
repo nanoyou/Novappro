@@ -91,7 +91,14 @@
             <artifactId>mybatis</artifactId>
             <version>3.5.13</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.3.1</version>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
