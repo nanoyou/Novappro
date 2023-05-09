@@ -16,6 +16,10 @@
     function winPrint() {
         window.print();
     }
+
+    function download() {
+        window.open("${pageContext.request.contextPath}/download/approval_flow_sheet");
+    }
 </script>
 <body>
 
@@ -30,7 +34,8 @@
 <h1>
     所有审批流一览表
 </h1>
-<button onclick="winPrint()">单击此处导出</button>
+<button onclick="winPrint()">单击此处打印网页</button>
+<button onclick="download()">单击此处导出表格</button>
 <form>
 
     <%
@@ -84,7 +89,7 @@
                 <%=approvalFlow.getAddUserId()%>
             </td>
             <td>
-                <%=approvalFlow.getApproStatus()%>
+                <%=approvalFlow.getApproStatus().chinese%>
             </td>
             <td>
                 <%=approvalFlow.getRemark()%>
