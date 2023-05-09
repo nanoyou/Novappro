@@ -12,6 +12,7 @@ import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail;
 import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
 import com.github.akagawatsurunaki.novappro.model.database.file.UploadFile;
+import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
@@ -24,135 +25,218 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.ibatis.session.SqlSession;
 
+import javax.annotation.Nullable;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class ApplyCourseService {
     @Getter
     private static final ApplyCourseService instance = new ApplyCourseService();
 
-    public VC.Service apply(@NonNull Integer userId,
-                            @NonNull List<String> courseIds,
-                            @NonNull InputStream is,
-                            @NonNull String remark) {
+
+    public ServiceMessage apply(@Nullable Integer userId,
+                                @Nullable List<String> courseIds,
+                                @Nullable InputStream is,
+                                @Nullable String remark) {
+
+        if (userId == null) {
+            return ServiceMessage.of(
+                    ServiceMessage.Level.WARN,
+                    "用户ID不能为空"
+            );
+        }
+
+        if (courseIds == null) {
+            return ServiceMessage.of(
+                    ServiceMessage.Level.WARN,
+                    "课程代码不能为空"
+            );
+        }
+
+        if (is == null) {
+            return ServiceMessage.of(
+                    ServiceMessage.Level.FATAL,
+                    "InputStream异常"
+            );
+        }
 
         // 只允许申请一个课程
         if (courseIds.size() != 1) {
-            return VC.Service.NO_SUCH_USER;
+            return ServiceMessage.of(
+                    ServiceMessage.Level.ERROR,
+                    "只允许申请一门课程"
+            );
         }
 
-        try (SqlSession session = MyDb.use().openSession(true);
-             val inputStream = new BufferedInputStream(is);) {
+        if (remark == null) {
+            remark = "";
+        }
+
+        return _apply(userId, courseIds, is, remark);
+    }
+
+
+    private ServiceMessage _apply(@NonNull Integer userId,
+                                  @NonNull List<String> courseIds,
+                                  @NonNull InputStream is,
+                                  @NonNull String remark) {
+
+        try (
+                SqlSession session = MyDb.use().openSession(true);
+                val inputStream = new BufferedInputStream(is)
+        ) {
 
             val userMapper = session.getMapper(UserMapper.class);
             val uploadFileMapper = session.getMapper(UploadFileMapper.class);
             val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
             val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
+
             val user = userMapper.selectById(userId);
-
             // 校验用户是否存在
-            if (user != null) {
-
-                val flowNo = IdUtil.genFlowNo(user.getId());
-                val date = new Date();
-
-                // 上传文件
-                var fileType = FileTypeUtil.getType(inputStream);
-
-                var path = ResourceConfig.UPLOADED_IMG_PATH;
-                var name = ImgUtil.genImgName(userId);
-                var file = new File(path + "/" + name + "." + fileType);
-
-                var uploadFile = UploadFile.builder()
-                        .fileName(name + "." + fileType)
-                        .flowNo(flowNo)
-                        .userId(userId)
-                        .build();
-
-                // 将文件关系存储至数据库
-
-                var rows = uploadFileMapper.insert(uploadFile);
-
-                if (rows == 1) {
-                    // 将文件存储至硬盘
-                    FileUtil.writeFromStream(inputStream, file, true);
-
-                    // 创建Approval对象
-                    var approval
-                            = CourseApplication.builder()
-                            .approCourses(CourseUtil.toCourseCodesStr(courseIds))
-                            .flowNo(flowNo)
-                            .addUserId(user.getId())
-                            .addTime(date)
-                            .build();
-
-
-                    // 创建ApprovalFlow
-                    var approvalFlow
-                            = ApprovalFlow.builder()
-                            .flowNo(flowNo)
-                            .approStatus(ApprovalStatus.SUBMITTED)
-                            .title("来自 " + user.getUsername() + "(" + user.getId() + ")的" + courseIds.size() + "门课程申请")
-                            .busType(BusType.LINEAR)
-                            .addUserId(user.getId())
-                            .addTime(date)
-                            .remark(remark)
-                            .build();
-
-                    for (var courseId : courseIds) {
-
-                        val approverList = getApproverList(courseId);
-
-                        // 创建ApprovalFlowDetail
-                        if (approverList == null || approverList.isEmpty()) {
-                            return VC.Service.ERROR;
-                        }
-
-                        for (var approver : approverList) {
-                            var approvalFlowDetail
-                                    = ApprovalFlowDetail.builder()
-                                    .flowNo(flowNo)
-                                    .auditUserId(approver.getId())
-                                    .auditStatus(
-                                            switch (approver.getType()) {
-                                                case LECTURE_TEACHER -> ApprovalStatus.LECTURE_TEACHER_EXAMING;
-                                                case SUPERVISOR_TEACHER -> ApprovalStatus.SUPERVISOR_TEACHER_EXAMING;
-                                                default ->
-                                                        throw new IllegalStateException("Unexpected value: " + approver.getType());
-                                            }
-                                    )
-                                    .auditRemark("")
-                                    .auditTime(date)
-                                    .build();
-
-                            // 插入数据库
-                            approvalFlowDetailMapper.insert(approvalFlowDetail);
-                        }
-                    }
-
-                    // 向数据库插入
-                    courseApplicationMapper.insert((CourseApplication) approval);
-
-                    rows = approvalFlowMapper.insert(approvalFlow);
-
-                    if (rows != 1) {
-                        return VC.Service.ERROR;
-                    }
-
-                    return VC.Service.OK;
-                }
-                return VC.Service.ERROR;
+            if (user == null) {
+                return ServiceMessage.of(
+                        ServiceMessage.Level.ERROR,
+                        "该用户不存在"
+                );
             }
 
-            return VC.Service.NO_SUCH_USER;
+            val flowNo = IdUtil.genFlowNo(user.getId());
+            val date = new Date();
 
+            // 上传文件
+            if (!uploadFile(inputStream, userId, flowNo)) {
+                return ServiceMessage.of(
+                        ServiceMessage.Level.FATAL,
+                        "文件上传失败。"
+                );
+            }
+
+            // 创建Approval对象
+            var approval
+                    = CourseApplication.builder()
+                    .approCourses(CourseUtil.toCourseCodesStr(courseIds))
+                    .flowNo(flowNo)
+                    .addUserId(user.getId())
+                    .addTime(date)
+                    .build();
+
+
+            // 创建ApprovalFlow
+            var approvalFlow
+                    = ApprovalFlow.builder()
+                    .flowNo(flowNo)
+                    .approStatus(ApprovalStatus.SUBMITTED)
+                    .title("来自 " + user.getUsername() + "(" + user.getId() + ")的" + courseIds.size() + "门课程申请")
+                    .busType(BusType.LINEAR)
+                    .addUserId(user.getId())
+                    .addTime(date)
+                    .remark(remark)
+                    .build();
+
+            assert !courseIds.isEmpty();
+            for (var courseId : courseIds) {
+
+                val approverList = getApproverList(courseId);
+
+                // 创建ApprovalFlowDetail
+                if (approverList == null || approverList.isEmpty()) {
+                    return ServiceMessage.of(
+                            ServiceMessage.Level.FATAL,
+                            "审批人列表为空"
+                    );
+                }
+
+                for (var approver : approverList) {
+                    var approvalFlowDetail
+                            = ApprovalFlowDetail.builder()
+                            .flowNo(flowNo)
+                            .auditUserId(approver.getId())
+                            .auditStatus(
+                                    switch (approver.getType()) {
+                                        case LECTURE_TEACHER -> ApprovalStatus.LECTURE_TEACHER_EXAMING;
+                                        case SUPERVISOR_TEACHER -> ApprovalStatus.SUPERVISOR_TEACHER_EXAMING;
+                                        default ->
+                                                throw new IllegalStateException("Unexpected value: " + approver.getType());
+                                    }
+                            )
+                            .auditRemark("")
+                            .auditTime(date)
+                            .build();
+
+                    // 插入数据库
+                    if (approvalFlowDetailMapper.insert(approvalFlowDetail) != 1) {
+                        return ServiceMessage.of(
+                                ServiceMessage.Level.FATAL,
+                                "课程申请失败，无法插入审批流明细。"
+                        );
+                    }
+                }
+            }
+
+            // 向数据库插入
+            if (courseApplicationMapper.insert(approval) != 1) {
+                return ServiceMessage.of(
+                        ServiceMessage.Level.FATAL,
+                        "课程申请失败，无法插入课程申请。"
+                );
+            }
+
+            if (approvalFlowMapper.insert(approvalFlow) != 1) {
+                return ServiceMessage.of(
+                        ServiceMessage.Level.FATAL,
+                        "课程申请失败，无法插入申请流申请。"
+                );
+            }
+            return ServiceMessage.of(
+                    ServiceMessage.Level.SUCCESS,
+                    "课程申请成功！"
+            );
         } catch (IOException e) {
+            return ServiceMessage.of(
+                    ServiceMessage.Level.FATAL,
+                    "无法写入文件。"
+            );
+        }
+    }
+
+
+    private boolean uploadFile(
+            @NonNull InputStream inputStream,
+            @NonNull Integer userId,
+            @NonNull String flowNo
+    ) {
+        try (var session = MyDb.use().openSession(true)) {
+            val uploadFileMapper = session.getMapper(UploadFileMapper.class);
+
+            var fileType = FileTypeUtil.getType(inputStream);
+
+            var path = ResourceConfig.UPLOADED_IMG_PATH;
+            var name = ImgUtil.genImgName(userId);
+            var file = new File(path + "/" + name + "." + fileType);
+
+            var uploadFile = UploadFile.builder()
+                    .fileName(name + "." + fileType)
+                    .flowNo(flowNo)
+                    .userId(userId)
+                    .build();
+
+            // 将文件关系存储至数据库
+            if (uploadFileMapper.insert(uploadFile) == 0) {
+                return false;
+            }
+
+            // 将文件存储至硬盘
+            return FileUtil.writeFromStream(inputStream, file, true) != null;
+        } catch (Exception e) {
             e.printStackTrace();
-            return VC.Service.ERROR;
+            return false;
         }
     }
 

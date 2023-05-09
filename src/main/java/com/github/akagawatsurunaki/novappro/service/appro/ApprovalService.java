@@ -457,6 +457,27 @@ public class ApprovalService {
         }
     }
 
+    // TODO: 学生按下确定时调用此函数，还需要增加学生端的过滤掉相应的已完成的申请流
+    public ServiceMessage tryFinishApprovalFlow(@NonNull String flowNo) {
+
+        try (var session = MyDb.use().openSession(true)) {
+            val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
+            if (isSpecifiedApprovalFlowEnded(flowNo)) {
+                if (approvalFlowMapper.updateApproStatus(flowNo, ApprovalStatus.FINISHED) == 1) {
+                    return ServiceMessage.of(
+                            ServiceMessage.Level.SUCCESS,
+                            "审批成功"
+                    );
+                }
+            }
+            return ServiceMessage.of(
+                    ServiceMessage.Level.INFO, "审批还未结束！请耐心等待！"
+            );
+        }
+
+    }
+
+
     /**
      * 从数据库中获取所有的申请流对象
      *

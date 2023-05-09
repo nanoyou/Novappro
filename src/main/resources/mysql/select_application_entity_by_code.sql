@@ -1,1 +1,0 @@
-SELECT * FROM application_entity WHERE application_entity.`code` = ?;
