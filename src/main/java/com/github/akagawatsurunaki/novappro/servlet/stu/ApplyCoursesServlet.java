@@ -53,7 +53,7 @@ public class ApplyCoursesServlet extends HttpServlet {
             request.setCharacterEncoding("UTF-8");
 
             // 获取登录人ID
-            Integer id = (Integer) request.getSession().getAttribute("login_user_id");
+            val user = (User) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name);
             String remark = null;
 
             if (!ServletFileUpload.isMultipartContent(request)) {
@@ -80,7 +80,7 @@ public class ApplyCoursesServlet extends HttpServlet {
                 }
             }
             // 申请这些课程
-            val applyServiceResult = APPLY_COURSE_SERVICE.apply(id, selectedCourseCode, is, remark);
+            val applyServiceResult = APPLY_COURSE_SERVICE.apply(user.getId(), selectedCourseCode, is, remark);
             request.setAttribute(ReqAttr.APPLY_SERVICE_RESULT.value, applyServiceResult);
 
             doGet(request, response);

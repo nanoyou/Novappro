@@ -33,7 +33,7 @@
         SELECT *
         FROM `user`
         WHERE `user`.`id` IN
-        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
             #{item}
         </foreach>
     </select>

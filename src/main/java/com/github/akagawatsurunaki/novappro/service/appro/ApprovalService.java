@@ -317,7 +317,7 @@ public class ApprovalService {
     }
 
 
-    public Pair<ServiceMessage, Optional<CourseAppItemDetail>> _saveApproResult(
+    private Pair<ServiceMessage, Optional<CourseAppItemDetail>> _saveApproResult(
             @NonNull String flowNo,
             @NonNull String remark,
             boolean approSuc) {
@@ -458,7 +458,22 @@ public class ApprovalService {
     }
 
     // TODO: 学生按下确定时调用此函数，还需要增加学生端的过滤掉相应的已完成的申请流
-    public ServiceMessage tryFinishApprovalFlow(@NonNull String flowNo) {
+
+    public ServiceMessage tryFinishApprovalFlow(@Nullable String flowNo, @Nullable String confirm) {
+
+        if (confirm == null || confirm.isBlank() || !"确定".equals(confirm)) {
+            return ServiceMessage.of(ServiceMessage.Level.INFO, "无效操作") ;
+        }
+
+        if (flowNo == null || flowNo.isBlank()) {
+            return ServiceMessage.of(ServiceMessage.Level.WARN, "流水号不能为空") ;
+        }
+
+        return _tryFinishApprovalFlow(flowNo);
+
+    }
+
+    private ServiceMessage _tryFinishApprovalFlow(@NonNull String flowNo) {
 
         try (var session = MyDb.use().openSession(true)) {
             val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
@@ -466,7 +481,7 @@ public class ApprovalService {
                 if (approvalFlowMapper.updateApproStatus(flowNo, ApprovalStatus.FINISHED) == 1) {
                     return ServiceMessage.of(
                             ServiceMessage.Level.SUCCESS,
-                            "审批成功"
+                            "恭喜你整个审批流程结束!"
                     );
                 }
             }

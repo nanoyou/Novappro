@@ -2,11 +2,15 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.servlet.stu.ApplyCoursesServlet" %>
+<%@ page import="lombok.val" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
+<%@ page import="org.apache.commons.lang3.tuple.Triple" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>学生申请课程系统 - 获取已申请课程</title>
+    <title>学生申请课程系统 - 课程申请列表</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
 </head>
 <script>
@@ -18,10 +22,17 @@
 </script>
 <body>
 <%
-    List<CourseApplication> crsApps =
-            (List<CourseApplication>) request.getAttribute(SC.ReqAttr.COURSE_APPLICATIONS.name);
-    List<ApprovalStatus> approvalStatusList =
-            (List<ApprovalStatus>) request.getAttribute(SC.ReqAttr.APPRO_STATUS_LIST.name);
+
+    Triple<ServiceMessage, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserIdServiceResult =
+            (Triple<ServiceMessage, List<CourseApplication>, List<ApprovalStatus>>)
+                    request.getAttribute(ApplyCoursesServlet.ReqAttr.GET_COURSE_APPLS_BY_USER_ID_SERVICE_RESULT.value);
+
+    if (getCourseApplsByUserIdServiceResult.getLeft().getMessageLevel() != ServiceMessage.Level.SUCCESS) {
+        return;
+    }
+
+    List<CourseApplication> crsApps = getCourseApplsByUserIdServiceResult.getMiddle();
+    List<ApprovalStatus> approvalStatusList = getCourseApplsByUserIdServiceResult.getRight();
 %>
 
 <h1>您的课程申请</h1>

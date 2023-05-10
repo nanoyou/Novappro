@@ -8,6 +8,7 @@
 <%@ page import="org.apache.commons.lang3.tuple.Pair" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.servlet.stu.CourseApplDetailServlet" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlowDetail" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.servlet.stu.StudentConfirmApprovalFlowServlet" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -194,6 +195,8 @@
 <%
     }
 %>
-<button>确定</button>
+
+<input type="button" value="确定" name="<%=StudentConfirmApprovalFlowServlet.ReqParam.CONFIRM.value%>">
+
 </body>
 </html>

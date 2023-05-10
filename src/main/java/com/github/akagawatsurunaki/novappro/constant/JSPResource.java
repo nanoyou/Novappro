@@ -12,7 +12,8 @@ public enum JSPResource {
     GET_APPLIED_COURSES("get_applied_courses.jsp"),
     APPROVAL_AUTHORITY_MANAGE("approval_authority_manage.jsp"),
     GET_CRS_APPL_ITEM("get_crs_appl_item.jsp"),
-    USER_MANAGE("user_manage.jsp")
+    USER_MANAGE("user_manage.jsp"),
+    ERROR("error.jsp")
     ;
 
     public final String value;
