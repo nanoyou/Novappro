@@ -38,7 +38,7 @@ public class AuthoFilter extends HttpFilter {
                 res.sendRedirect("index.jsp");
             }
         }
-
+        chain.doFilter(req, res);
     }
 
     private void redirect(HttpServletResponse res, User loginUser, UserType userType) throws IOException {
