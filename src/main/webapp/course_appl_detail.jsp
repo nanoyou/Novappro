@@ -39,6 +39,7 @@
         crsTable.appendChild(input);
         refresh(flowNo)
     }
+
 </script>
 <body>
 <%
@@ -196,7 +197,12 @@
     }
 %>
 
-<input type="button" value="确定" name="<%=StudentConfirmApprovalFlowServlet.ReqParam.CONFIRM.value%>">
+<form action="${pageContext.request.contextPath}/stu_confirm_appro">
+    <input type="hidden" value="<%=flowNo%>" name="<%=StudentConfirmApprovalFlowServlet.ReqParam.FLOW_NO.value%>">
+    <input type="submit"
+           value="确定"
+           name="<%=StudentConfirmApprovalFlowServlet.ReqParam.CONFIRM.value%>">
+</form>
 
 </body>
 </html>
