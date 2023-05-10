@@ -3,7 +3,6 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.servlet.stu.ApplyCoursesServlet" %>
-<%@ page import="lombok.val" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
 <%@ page import="org.apache.commons.lang3.tuple.Triple" %>
 
