@@ -30,10 +30,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ApplyCourseService {
     @Getter
@@ -298,6 +295,7 @@ public class ApplyCourseService {
         try (SqlSession session = MyDb.use().openSession()) {
             val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
             val userMapper = session.getMapper(UserMapper.class);
+            val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
 
             // 用户是否存在
             val user = userMapper.selectById(userId);
@@ -319,9 +317,21 @@ public class ApplyCourseService {
                 );
             }
 
-            val approvalStatusList = courseApplicationList.stream()
-                    .map(ca -> ApprovalService.getInstance().getCurrentApprovalFlowNode(ca.getFlowNo()).getAuditStatus())
-                    .toList();
+            List<ApprovalStatus> approvalStatusList = new ArrayList<>();
+            Iterator<CourseApplication> iterator = courseApplicationList.iterator();
+            while (iterator.hasNext()) {
+                CourseApplication courseApplication = iterator.next();
+                val flowNo = courseApplication.getFlowNo();
+                val approvalFlow = approvalFlowMapper.select(flowNo);
+                assert approvalFlow != null && approvalFlow.getApproStatus() != null;
+                if (!approvalFlow.getApproStatus().equals(ApprovalStatus.FINISHED)) {
+                    approvalStatusList.add(approvalFlow.getApproStatus());
+                } else {
+                    if (courseApplication.getFlowNo().equals(approvalFlow.getFlowNo())) {
+                        iterator.remove();
+                    }
+                }
+            }
 
             if (courseApplicationList.size() != approvalStatusList.size()) {
                 return ImmutableTriple.of(
