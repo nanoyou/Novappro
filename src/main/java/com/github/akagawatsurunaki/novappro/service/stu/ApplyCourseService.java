@@ -41,6 +41,16 @@ public class ApplyCourseService {
 
 
     public ServiceMessage apply(@Nullable Integer userId,
+                                @Nullable String courseId,
+                                @Nullable InputStream is,
+                                @Nullable String remark) {
+
+        List<String> courseIds = new ArrayList<>();
+        courseIds.add(courseId);
+        return apply(userId, courseIds, is, remark);
+    }
+
+    public ServiceMessage apply(@Nullable Integer userId,
                                 @Nullable List<String> courseIds,
                                 @Nullable InputStream is,
                                 @Nullable String remark) {
@@ -271,31 +281,59 @@ public class ApplyCourseService {
      * @param userId
      * @return
      */
-    public Triple<VC.Service, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@NonNull Integer userId) {
+    public Triple<ServiceMessage, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@Nullable Integer userId) {
+        if (userId == null) {
+            return ImmutableTriple.of(
+                    ServiceMessage.of(ServiceMessage.Level.WARN, "用户ID不能为空"),
+                    new ArrayList<>(), new ArrayList<>()
+            );
+        }
+
+        return _getCourseApplsByUserId(userId);
+
+    }
+
+    public Triple<ServiceMessage, List<CourseApplication>, List<ApprovalStatus>> _getCourseApplsByUserId(@NonNull Integer userId) {
 
         try (SqlSession session = MyDb.use().openSession()) {
             val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
             val userMapper = session.getMapper(UserMapper.class);
 
             // 用户是否存在
-            var user = userMapper.selectById(userId);
-            if (user != null) {
+            val user = userMapper.selectById(userId);
 
-                // 根据用户ID查询课程申请(CourseApplication)列表
-                var courseApplicationList = courseApplicationMapper.select(user.getId());
-                List<ApprovalStatus> approvalStatusList = new ArrayList<>();
-
-                if (courseApplicationList != null) {
-                    for (var ca : courseApplicationList) {
-                        assert ca.getApproCourses() != null && !ca.getApproCourses().isEmpty();
-                        var currentNode = ApprovalService.getInstance().getCurrentApprovalFlowNode(ca.getFlowNo());
-                        approvalStatusList.add(currentNode.getAuditStatus());
-                    }
-                }
-
-                return new ImmutableTriple<>(VC.Service.OK, courseApplicationList, approvalStatusList);
+            if (user == null) {
+                return ImmutableTriple.of(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "用户不存在"),
+                        new ArrayList<>(), new ArrayList<>()
+                );
             }
-            return new ImmutableTriple<>(VC.Service.NO_SUCH_USER, null, null);
+
+            // 根据用户ID查询课程申请(CourseApplication)列表
+            val courseApplicationList = courseApplicationMapper.select(user.getId());
+
+            if (courseApplicationList == null) {
+                return ImmutableTriple.of(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "课程申请列表为空"),
+                        new ArrayList<>(), new ArrayList<>()
+                );
+            }
+
+            val approvalStatusList = courseApplicationList.stream()
+                    .map(ca -> ApprovalService.getInstance().getCurrentApprovalFlowNode(ca.getFlowNo()).getAuditStatus())
+                    .toList();
+
+            if (courseApplicationList.size() != approvalStatusList.size()) {
+                return ImmutableTriple.of(
+                        ServiceMessage.of(ServiceMessage.Level.ERROR, "信息不一致错误"),
+                        new ArrayList<>(), new ArrayList<>()
+                );
+            }
+
+            return ImmutableTriple.of(
+                    ServiceMessage.of(ServiceMessage.Level.SUCCESS, "服务成功"),
+                    courseApplicationList, approvalStatusList
+            );
         }
     }
 }

@@ -1,20 +1,23 @@
 package com.github.akagawatsurunaki.novappro.servlet.manage;
 
-import com.github.akagawatsurunaki.novappro.annotation.Field;
+import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.service.manage.ApprovalAuthorityService;
+import lombok.AllArgsConstructor;
 import lombok.val;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
 @WebServlet(name = "ApprovalAuthorityManageServlet",
         value = {
         "/" + ApprovalAuthorityManageServlet.GET,
-        SC.WebServletValue.UPDATE_APPRO_AUTHO_ITEMS})
+        "/update_appro_autho_items"})
 public class ApprovalAuthorityManageServlet extends HttpServlet {
 
     public static final String GET = "ApprovalAuthorityManageServlet";
@@ -25,7 +28,7 @@ public class ApprovalAuthorityManageServlet extends HttpServlet {
         val approvalAuthorityItems =
                 ApprovalAuthorityService.getInstance().getApprovalAuthorityItems();
         request.setAttribute(SC.ReqAttr.ALL_APPROVAL_AUTHORITY_ITEMS.name, approvalAuthorityItems);
-        request.getRequestDispatcher(SC.JSPResource.APPROVAL_AUTHORITY_MANAGE.name).forward(request, response);
+        request.getRequestDispatcher(JSPResource.APPROVAL_AUTHORITY_MANAGE.value).forward(request, response);
     }
 
     @Override
@@ -40,9 +43,18 @@ public class ApprovalAuthorityManageServlet extends HttpServlet {
                 ApprovalAuthorityService.getInstance()
                         .update(updatedApproAuthosParam, approverIdParam, appproWeightParam, courseCodeParam);
 
-        request.setAttribute(SC.ReqAttr.UPDATE_MESSAGE.name, serviceMessage);
+        request.setAttribute(ReqAttr.UPDATE_MESSAGE.value, serviceMessage);
 
         doGet(request, response);
 
     }
+
+    @AllArgsConstructor
+    public enum ReqAttr {
+        UPDATE_MESSAGE("update_message");
+
+        public final String value;
+    }
+
+
 }

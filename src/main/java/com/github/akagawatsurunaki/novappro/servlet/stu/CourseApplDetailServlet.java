@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
+import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import com.github.akagawatsurunaki.novappro.service.stu.CourseApplDetailService;
@@ -36,7 +37,7 @@ public class CourseApplDetailServlet extends HttpServlet {
         request.setAttribute(ReqAttr.GET_APPLIED_COURSES_SERVICE_RESULT.value, getAppliedCoursesServiceResult);
         request.setAttribute(ReqAttr.GET_APPROVAL_FLOW_DETAILS_SERVICE_RESULT.value, getApprovalFlowDetailsServiceResult);
 
-        request.getRequestDispatcher(SC.JSPResource.COURSE_APPL_DETAIL.name).forward(request, response);
+        request.getRequestDispatcher(JSPResource.COURSE_APPL_DETAIL.value).forward(request, response);
     }
 
     @AllArgsConstructor

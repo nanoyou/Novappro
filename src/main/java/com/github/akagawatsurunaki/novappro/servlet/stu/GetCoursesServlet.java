@@ -10,9 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.github.akagawatsurunaki.novappro.constant.SC.GET_COURSE_SERVLET;
-
-@WebServlet(name = "GetCoursesServlet", urlPatterns = GET_COURSE_SERVLET)
+@WebServlet(name = "GetCoursesServlet", urlPatterns = "/get_courses")
 public class GetCoursesServlet extends HttpServlet {
 
 

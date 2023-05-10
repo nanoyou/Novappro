@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.filter;
 
+import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.base.LoginService;
@@ -29,7 +30,7 @@ public class LoginFilter extends HttpFilter {
 
         // 是否登录
         if (uid == null) {
-            res.sendRedirect(SC.JSPResource.INDEX.name);
+            res.sendRedirect(JSPResource.INDEX.value);
         }
 
     }

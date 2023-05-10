@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.base;
 
+import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
 import com.github.akagawatsurunaki.novappro.service.base.LoginService;
@@ -43,7 +44,7 @@ public class LoginServlet extends HttpServlet {
             val user = loginServiceResult.getRight();
             request.getSession().setAttribute(ReqAttr.LOGIN_USER.value, user);
             switch (user.getType()) {
-                case STUDENT -> response.sendRedirect(SC.JSPResource.WELCOME_SESSION.name);
+                case STUDENT -> response.sendRedirect(JSPResource.WELCOME_SESSION.value);
                 case LECTURE_TEACHER, SUPERVISOR_TEACHER -> response.sendRedirect("get_appros");
                 case ADMIN -> throw new NotImplementedException("管理员界面实现中...");
             }
@@ -51,7 +52,7 @@ public class LoginServlet extends HttpServlet {
         }
 
         // 登录失败, 返回主页
-        request.getRequestDispatcher(SC.JSPResource.INDEX.name).forward(request, response);
+        request.getRequestDispatcher(JSPResource.INDEX.value).forward(request, response);
     }
 
     @Override

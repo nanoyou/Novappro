@@ -1,5 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.appro;
 
+import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
@@ -32,7 +33,7 @@ public class ApproServlet extends HttpServlet {
             val getApplItemsServiceMessage = APPROVAL_SERVICE.getApplItems(loginUser.getId());
             request.setAttribute(ReqAttr.GET_APPL_ITEMS_SERVICE_MESSAGE.value, getApplItemsServiceMessage);
             // 转发到页面
-            request.getRequestDispatcher(SC.JSPResource.GET_APPROS.name).forward(request, response);
+            request.getRequestDispatcher(JSPResource.GET_APPROS.value).forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

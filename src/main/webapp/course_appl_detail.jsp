@@ -62,8 +62,7 @@
 <%
     String flowNo = (String) request.getAttribute(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
 %>
-<form method="post" action="${pageContext.request.contextPath}
-<%=SC.WebServletValue.MODIFY_COURSE_APPL%>">
+<form method="post" action="${pageContext.request.contextPath}/modify_course_appl">
     单号 <%=flowNo%>
     <input type="hidden" name="<%=SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name%>" value="<%=flowNo%>">
     <table id="courses_table" border="1">

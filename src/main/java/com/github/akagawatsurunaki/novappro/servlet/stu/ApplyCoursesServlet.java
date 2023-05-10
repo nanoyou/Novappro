@@ -1,9 +1,12 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
+import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.stu.ApplyCourseService;
+import lombok.AllArgsConstructor;
+import lombok.val;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -15,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.spi.SyncResolver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -31,47 +35,37 @@ public class ApplyCoursesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
 
-        var id = ((User) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name)).getId();
+        val id = ((User) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name)).getId();
 
         // 获取这些课程
-        var vc_cal_asl = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
+        val getCourseApplsByUserIdServiceResult
+                = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
 
-        if (vc_cal_asl.getLeft() == VC.Service.OK) {
-            var courseApplications = vc_cal_asl.getMiddle();
-            var approStatusList = vc_cal_asl.getRight();
-
-            // 设置到 Request 中
-            request.setAttribute(SC.ReqAttr.COURSE_APPLICATIONS.name, courseApplications);
-            request.setAttribute(SC.ReqAttr.APPRO_STATUS_LIST.name, approStatusList);
-
-            // 跳转页面
-            request.getRequestDispatcher(SC.JSPResource.GET_APPLIED_COURSES.name).forward(request, response);
-        }
+        request.setAttribute(ReqAttr.GET_COURSE_APPLS_BY_USER_ID_SERVICE_RESULT.value, getCourseApplsByUserIdServiceResult);
+        request.getRequestDispatcher(JSPResource.GET_APPLIED_COURSES.value).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-
-        // 防止中文乱码
-        request.setCharacterEncoding("UTF-8");
-
-        // 获取登录人ID
-        Integer id = (Integer) request.getSession().getAttribute("login_user_id");
-        String remark = null;
-
-        if (!ServletFileUpload.isMultipartContent(request)) {
-            return;
-        }
-        var factory = new DiskFileItemFactory();
-        var upload = new ServletFileUpload(factory);
-        String selectedCourseCode = null;
-        InputStream is = null;
         try {
+            // 防止中文乱码
+            request.setCharacterEncoding("UTF-8");
 
+            // 获取登录人ID
+            Integer id = (Integer) request.getSession().getAttribute("login_user_id");
+            String remark = null;
+
+            if (!ServletFileUpload.isMultipartContent(request)) {
+                return;
+            }
+            var factory = new DiskFileItemFactory();
+            var upload = new ServletFileUpload(factory);
+            String selectedCourseCode = null;
+            InputStream is = null;
             var items = upload.parseRequest(request);
-            for (FileItem item : items) {
 
+            for (FileItem item : items) {
                 // i是普通表单项
                 if (item.isFormField()) {
                     if ("selected_course[]".equals(item.getFieldName())) {
@@ -85,29 +79,24 @@ public class ApplyCoursesServlet extends HttpServlet {
                     is = item.getInputStream();
                 }
             }
-
-        } catch (FileUploadException | IOException e) {
-            System.out.println("InputStream 不能获取。");
-            e.printStackTrace();
-        }
-
-        if (is == null || remark == null) {
-            System.out.println("is 和 remark 不可以为空.");
-            return;
-        }
-
-        // 获取选取的课程列表
-        if (selectedCourseCode != null) {
-
-            List<String> selectedCourseCodeList = new ArrayList<>();
-            selectedCourseCodeList.add(selectedCourseCode);
             // 申请这些课程
-            APPLY_COURSE_SERVICE.apply(id, selectedCourseCodeList, is, remark);
+            val applyServiceResult = APPLY_COURSE_SERVICE.apply(id, selectedCourseCode, is, remark);
+            request.setAttribute(ReqAttr.APPLY_SERVICE_RESULT.value, applyServiceResult);
 
+            doGet(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            response.sendRedirect("error.jsp");
         }
-
-        doGet(request, response);
-
-        // TODO: 2023年5月6日00:38:53 当申请的课程没有被指定审批人时会出现错误 FIX BUG
     }
+
+    @AllArgsConstructor
+    public enum ReqAttr {
+        APPLY_SERVICE_RESULT("apply_service_result"),
+        GET_COURSE_APPLS_BY_USER_ID_SERVICE_RESULT("get_course_appls_by_user_id_service_result");
+
+        public final String value;
+    }
+
 }

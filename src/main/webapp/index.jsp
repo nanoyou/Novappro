@@ -1,9 +1,9 @@
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.Constant" %>
-<%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.servlet.base.LoginServlet" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.model.database.User" %>
 <%@ page import="org.apache.commons.lang3.tuple.Pair" %>
+<%@ page import="com.github.akagawatsurunaki.novappro.constant.JSPResource" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -157,7 +157,7 @@
         </label>
 
         <label>
-            <a href="${pageContext.request.contextPath}/<%=SC.JSPResource.SIGN_UP.name%>">注册</a>
+            <a href="${pageContext.request.contextPath}/<%=JSPResource.SIGN_UP.value%>">注册</a>
         </label>
 
         <label>

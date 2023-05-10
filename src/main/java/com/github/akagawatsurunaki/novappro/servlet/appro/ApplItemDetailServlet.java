@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.appro;
 
+import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ public class ApplItemDetailServlet extends HttpServlet {
         // 为Request赋予参数
         request.setAttribute(ReqAttr.GET_COURSE_APP_ITEM_DETAIL_SERVICE_RESULT.value, getCourseAppItemDetailServiceResult);
         // 转发页面
-        request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
+        request.getRequestDispatcher(JSPResource.GET_CRS_APPL_ITEM.value).forward(request, response);
     }
 
     @Override

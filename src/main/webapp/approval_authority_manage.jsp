@@ -22,7 +22,7 @@
 </script>
 <body>
 <h1>审批权限管理系统</h1>
-<form action="${pageContext.request.contextPath}<%=SC.WebServletValue.UPDATE_APPRO_AUTHO_ITEMS%>" method="post">
+<form action="${pageContext.request.contextPath}/update_appro_autho_items" method="post">
     <%=allApprovalAuthorityItems.getLeft().getMessage()%>
     <table border="1">
         <tr>

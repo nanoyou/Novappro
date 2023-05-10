@@ -4,14 +4,7 @@
 <%@ page import="org.apache.commons.lang3.tuple.Pair" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.constant.SC" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.util.ZhFieldUtil" %>
-<%@ page import="static com.github.akagawatsurunaki.novappro.constant.ServletValue.GET_USERS" %>
-<%@ page import="static com.github.akagawatsurunaki.novappro.constant.ServletValue.UPDATE_USERS" %><%--
-  Created by IntelliJ IDEA.
-  User: 96514
-  Date: 2023/5/5
-  Time: 9:04
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="com.github.akagawatsurunaki.novappro.servlet.manage.UserManageServlet" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -19,7 +12,7 @@
 </head>
 <script>
     function init() {
-        location.href = "${pageContext.request.contextPath}/<%=GET_USERS%>"
+        location.href = "${pageContext.request.contextPath}/get_users"
     }
 
     function removeUser(id) {
@@ -31,10 +24,10 @@
 </script>
 <body>
 <%
-    Pair<ServiceMessage, List<User>> allUsers = (Pair<ServiceMessage, List<User>>) request.getAttribute(SC.ReqAttr.ALL_USERS.name);
+    Pair<ServiceMessage, List<User>> allUsers = (Pair<ServiceMessage, List<User>>) request.getAttribute(UserManageServlet.ReqAttr.ALL_USERS.value);
 %>
 <h1>用户管理系统</h1>
-<form action="${pageContext.request.contextPath}/<%=UPDATE_USERS%>" method="post">
+<form action="${pageContext.request.contextPath}/update_users" method="post">
     <%=allUsers.getLeft().getMessage()%>
     <table border="1">
         <tr>

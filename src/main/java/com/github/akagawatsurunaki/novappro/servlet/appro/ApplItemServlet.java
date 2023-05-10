@@ -1,7 +1,7 @@
 package com.github.akagawatsurunaki.novappro.servlet.appro;
 
+import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.constant.SC;
-import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import lombok.AllArgsConstructor;
 import lombok.val;
@@ -28,7 +28,7 @@ public class ApplItemServlet extends HttpServlet {
         // 增加属性
         request.setAttribute(ReqAttr.GET_APPL_ITEM_SERVICE_RESULT.value, getApplItemServiceResult);
         // 加载界面
-        request.getRequestDispatcher(SC.JSPResource.GET_CRS_APPL_ITEM.name).forward(request, response);
+        request.getRequestDispatcher(JSPResource.GET_CRS_APPL_ITEM.value).forward(request, response);
     }
 
     @Override
