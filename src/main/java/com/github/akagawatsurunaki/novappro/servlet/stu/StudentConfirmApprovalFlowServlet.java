@@ -25,13 +25,15 @@ public class StudentConfirmApprovalFlowServlet extends HttpServlet {
             val confirm = request.getParameter(ReqParam.CONFIRM.value);
             val flowNo = request.getParameter(ReqParam.FLOW_NO.value);
             val serviceMessage = APPROVAL_SERVICE.tryFinishApprovalFlow(flowNo, confirm);
-            if (serviceMessage.getMessageLevel().equals(ServiceMessage.Level.SUCCESS)){
+            if (serviceMessage.getMessageLevel().equals(ServiceMessage.Level.SUCCESS)) {
                 request.getRequestDispatcher("apply_courses").forward(request, response);
+            } else {
+                request.setAttribute(ReqAttr.COURSE_APPL_DETAIL.value, flowNo);
+                response.sendRedirect("course_appl_detail?selected_course_appl_flow_no=" + flowNo);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
             response.sendRedirect(JSPResource.ERROR.value);
         }
     }
@@ -47,6 +49,14 @@ public class StudentConfirmApprovalFlowServlet extends HttpServlet {
 
         CONFIRM("confirm"),
         FLOW_NO("flow_no");
+
+        public final String value;
+    }
+
+    @AllArgsConstructor
+    public enum ReqAttr {
+
+        COURSE_APPL_DETAIL("course_appl_detail");
 
         public final String value;
     }
