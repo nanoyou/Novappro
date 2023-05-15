@@ -24,8 +24,6 @@ public class SC {
 
     @AllArgsConstructor
     public enum ReqParam {
-        USER_ID("userId"),
-        RAW_PASSWORD("rawPassword"),
         UPDATED_COURSES("updated_courses"),
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
         SELECTED_APPL_ITEM_FLOW_NO("selected_appl_item_flow_no"),

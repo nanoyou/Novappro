@@ -30,9 +30,12 @@ public class LoginServlet extends HttpServlet {
         // 测试用例: http://localhost:8080/Novappro_war_exploded/login?username=1&rawPassword=12345678
 
         // 获取用户的ID
-        var userId = request.getParameter(SC.ReqParam.USER_ID.name);
+        var userId = request.getParameter("userId");
         // 获取用户的明文密码
-        var rawPassword = request.getParameter(SC.ReqParam.RAW_PASSWORD.name);
+        var rawPassword = request.getParameter("rawPassword");
+
+        System.out.println("userId = " + userId);
+        System.out.println("rawPassword = " + rawPassword);
 
         // 尝试利用密码登陆
         val loginServiceResult = LOGIN_SERVICE.login(userId, rawPassword);
