@@ -21,7 +21,9 @@ import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.ibatis.session.SqlSession;
 
@@ -271,6 +273,13 @@ public class ApplyCourseService {
             return Collections.unmodifiableList(userMapper.selectByIds(userIds));
         }
     }
+
+    public Pair<ServiceMessage, Pair<List<CourseApplication>, List<ApprovalStatus>>> getCourseApplsByUserIdForAndroid(@Nullable Integer userId) {
+        val triple = getCourseApplsByUserId(userId);
+        val pair = ImmutablePair.of(triple.getMiddle(), triple.getRight());
+        return ImmutablePair.of(triple.getLeft(), pair);
+    }
+
 
     /**
      * 根据用户的ID查询其下的所有课程申请
