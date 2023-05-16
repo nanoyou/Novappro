@@ -71,6 +71,7 @@ public class CourseApplDetailService {
         }
     }
 
+    @Deprecated
     public Triple<ServiceMessage, List<Course>, CourseApplication> updateAppliedCourses(@Nullable String flowNo,
                                                                                         @Nullable String[] courseCodesToUpdate) {
         if (flowNo == null || flowNo.isBlank()) {
@@ -91,7 +92,6 @@ public class CourseApplDetailService {
 
         return _updateAppliedCourses(flowNo, Arrays.stream(courseCodesToUpdate).toList());
     }
-
 
     private Triple<ServiceMessage, List<Course>, CourseApplication> _updateAppliedCourses(@NonNull String flowNo,
                                                                                           @NonNull List<String> courseCodesToUpdate) {

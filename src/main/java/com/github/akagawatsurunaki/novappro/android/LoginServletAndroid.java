@@ -34,12 +34,5 @@ public class LoginServletAndroid extends HttpServlet {
         val loginServiceResult = LoginService.getInstance().login(userId, rawPassword);
         val jsonString = JSON.toJSONString(loginServiceResult);
         ResponseUtil.setBody(response, jsonString);
-        val serviceMessageUserPair = JSONObject.parseObject(jsonString,
-                new TypeReference<Pair<ServiceMessage, User>>() {
-        });
-
-        System.out.println(JSON.toJSONString(loginServiceResult));
-        System.out.println(JSON.toJSONString(serviceMessageUserPair));
-
     }
 }

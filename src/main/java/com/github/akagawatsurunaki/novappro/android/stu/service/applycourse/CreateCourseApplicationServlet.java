@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.android.stu;
+package com.github.akagawatsurunaki.novappro.android.stu.service.applycourse;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.model.database.User;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-@WebServlet(name = "CreateCourseApplicationServlet", value = "/android/createCourseApplication")
+@WebServlet(name = "CreateCourseApplicationServlet", value = "/android/applyCourseService/createCourseApplication")
 public class CreateCourseApplicationServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -380,7 +380,7 @@ public class ApprovalService {
      * @param flowNo
      * @return 如果申请已经结束将会返回最后一个审批通过的节点; <br>如果其中有至少一个节点被驳回, 那么返回第一个被驳回的节点; <br>否则返回第一个既不是被驳回, 也不是被同意的节点.
      */
-    public ApprovalFlowDetail getCurrentApprovalFlowNode(@NonNull String flowNo) {
+    private ApprovalFlowDetail getCurrentApprovalFlowNode(@NonNull String flowNo) {
 
         try (var session = MyDb.use().openSession(true)) {
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
@@ -410,7 +410,7 @@ public class ApprovalService {
      * @param flowNo 指定的审批流流水号，一个审批流可能有多个审批明细。
      * @return true 当审批流结束； false 当审批流未结束。
      */
-    public boolean isSpecifiedApprovalFlowEnded(@NonNull String flowNo) {
+    private boolean isSpecifiedApprovalFlowEnded(@NonNull String flowNo) {
         try (var session = MyDb.use().openSession(true)) {
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
 
@@ -491,7 +491,6 @@ public class ApprovalService {
         }
 
     }
-
 
     /**
      * 从数据库中获取所有的申请流对象

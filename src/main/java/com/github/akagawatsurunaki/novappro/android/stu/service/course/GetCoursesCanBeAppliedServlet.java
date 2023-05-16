@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.android.stu;
+package com.github.akagawatsurunaki.novappro.android.stu.service.course;
 
 import com.alibaba.fastjson2.JSON;
 import com.github.akagawatsurunaki.novappro.service.stu.CourseService;
@@ -10,12 +10,12 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "GetAllCoursesServlet", value = "/android/getAllCourses")
-public class GetAllCoursesServlet extends HttpServlet {
+@WebServlet(name = "GetCoursesCanBeAppliedServlet", value = "/android/courseService/getCoursesCanBeApplied")
+public class GetCoursesCanBeAppliedServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        val getAllCoursesServiceResult = CourseService.getInstance().getAllCourses();
-        val jsonString = JSON.toJSONString(getAllCoursesServiceResult);
+        val getCoursesCanBeAppliedServiceResult = CourseService.getInstance().getCoursesCanBeApplied();
+        val jsonString = JSON.toJSONString(getCoursesCanBeAppliedServiceResult);
         ResponseUtil.setBody(response, jsonString);
     }
 
