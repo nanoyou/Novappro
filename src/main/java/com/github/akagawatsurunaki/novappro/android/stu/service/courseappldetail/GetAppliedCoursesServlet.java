@@ -26,7 +26,7 @@ public class GetAppliedCoursesServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         // 获取流水号
-        val flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+        val flowNo = request.getParameter("flowNo");
         // 获取该流水号下的申请的课程 (可能有多个)
         val getAppliedCoursesServiceResult = COURSE_APPL_DETAIL_SERVICE.getAppliedCourses(flowNo);
         val jsonString = JSONObject.toJSONString(getAppliedCoursesServiceResult);
