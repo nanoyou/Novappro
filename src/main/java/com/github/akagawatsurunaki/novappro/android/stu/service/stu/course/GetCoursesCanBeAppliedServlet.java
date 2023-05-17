@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.android.stu.service.course;
+package com.github.akagawatsurunaki.novappro.android.stu.service.stu.course;
 
 import com.alibaba.fastjson2.JSON;
 import com.github.akagawatsurunaki.novappro.service.stu.CourseService;

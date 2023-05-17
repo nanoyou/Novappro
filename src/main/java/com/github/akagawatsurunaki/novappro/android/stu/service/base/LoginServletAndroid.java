@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.android;
+package com.github.akagawatsurunaki.novappro.android.stu.service.base;
 
 import cn.hutool.extra.servlet.ServletUtil;
 import com.alibaba.fastjson2.JSON;

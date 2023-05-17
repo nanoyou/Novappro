@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.android.stu.service.applycourse;
+package com.github.akagawatsurunaki.novappro.android.stu.service.stu.applycourse;
 
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.model.database.User;

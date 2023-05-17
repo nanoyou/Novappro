@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.android.stu.service.approval;
+package com.github.akagawatsurunaki.novappro.android.stu.service.appro.approval;
 
 import com.alibaba.fastjson2.JSON;
 import com.github.akagawatsurunaki.novappro.model.database.User;

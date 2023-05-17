@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.android.stu.service.courseappldetail;
+package com.github.akagawatsurunaki.novappro.android.stu.service.stu.courseappldetail;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.github.akagawatsurunaki.novappro.constant.SC;

@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.android.stu.service.approval;
+package com.github.akagawatsurunaki.novappro.android.stu.service.appro.approval;
 
 import com.alibaba.fastjson2.JSON;
 import com.github.akagawatsurunaki.novappro.constant.SC;
@@ -11,9 +11,11 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "SaveApprovalResultServlet",
-        value = "/android/approvalService/saveApprovalResult")
-public class SaveApprovalResultServlet extends HttpServlet {
+@WebServlet(name = "GetApprovalFlowDetailsForAndroidServlet", value = "/android/approvalService/getApprovalFlowDetails")
+public class GetApprovalFlowDetailsForAndroidServlet extends HttpServlet {
+
+    private static final ApprovalService APPROVAL_SERVICE = ApprovalService.getInstance();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
@@ -24,15 +26,11 @@ public class SaveApprovalResultServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         request.setCharacterEncoding("UTF-8");
-
-        String flowNo = request.getParameter("flowNo");
-        String applRemark = request.getParameter("remark");
-        String applItemConfirm = request.getParameter("confirm");
-
-        val saveApproResultServiceResult
-                = ApprovalService.getInstance().saveApproResult(flowNo, applRemark,
-                applItemConfirm);
-        val jsonString = JSON.toJSONString(saveApproResultServiceResult);
+        // 获取流水号
+        val flowNo = request.getParameter("flowNo");
+        // 获取该流水号下的申请的课程 (可能有多个)
+        val getApprovalFlowDetailsServiceResult = APPROVAL_SERVICE.getApprovalFlowDetails(flowNo);
+        val jsonString = JSON.toJSONString(getApprovalFlowDetailsServiceResult);
         ResponseUtil.setBody(response, jsonString);
     }
 }

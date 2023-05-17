@@ -1,4 +1,4 @@
-package com.github.akagawatsurunaki.novappro.android.stu.service.approval;
+package com.github.akagawatsurunaki.novappro.android.stu.service.appro.approval;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
