@@ -11,6 +11,11 @@
         INSERT INTO `web_dev`.`user` (`username`, `raw_password`, `type`)
         VALUES (#{username}, #{rawPassword}, #{type});
     </insert>
+    <update id="update">
+        UPDATE `web_dev`.`user`
+        SET username = #{username}, type = #{type}
+        WHERE id = #{id};
+    </update>
     <delete id="delete">
         DELETE FROM `web_dev`.`user`
         WHERE user.id IN

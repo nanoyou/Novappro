@@ -18,6 +18,8 @@ public interface UserMapper {
 
     int delete(@Param("ids") @NonNull List<Integer> ids);
 
+    int update(@NonNull User user);
+
 
 
 }

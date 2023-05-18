@@ -100,6 +100,24 @@ public class UserManageService {
 
     }
 
+    public Pair<ServiceMessage, User> updateUser(@Nullable User user) {
+        if (user == null) {
+            return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.WARN, "不能新建空用户"), null);
+        }
+        return _updateUser(user);
+    }
+
+    private Pair<ServiceMessage, User> _updateUser(@NonNull User user) {
+        try (var session = MyDb.use().openSession(true)) {
+            val userMapper = session.getMapper(UserMapper.class);
+            if (userMapper.update(user) == 1) {
+                return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.SUCCESS, "成功新建了1个新用户"),
+                        userMapper.selectById(user.getId()));
+            }
+        }
+        return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.FATAL, "无法新建1个新用户"), null);
+    }
+
     public Pair<ServiceMessage, User> deleteUser(@Nullable String userId) {
         if (userId == null || userId.isBlank()) {
             return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.WARN, "要删除的用户ID为空"), null);

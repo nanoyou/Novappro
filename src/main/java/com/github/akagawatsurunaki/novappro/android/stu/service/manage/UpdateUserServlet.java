@@ -12,8 +12,9 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "AddUserServlet", value = "/android/userManageService/addUser")
-public class AddUserServlet extends HttpServlet {
+@WebServlet(name = "UpdateUserServlet", value = "/android/userManageService/updateUser")
+public class UpdateUserServlet extends HttpServlet {
+
     private static final UserManageService USER_MANAGE_SERVICE = UserManageService.getInstance();
 
     @Override
@@ -27,7 +28,7 @@ public class AddUserServlet extends HttpServlet {
 
         val user = RequestUtil.<User>parse(request);
 
-        val serviceResult = USER_MANAGE_SERVICE.addUser(user);
+        val serviceResult = USER_MANAGE_SERVICE.updateUser(user);
 
         ResponseUtil.setBody(response, JSON.toJSONString(serviceResult));
     }
