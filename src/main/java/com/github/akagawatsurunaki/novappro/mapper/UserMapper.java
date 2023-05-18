@@ -20,6 +20,8 @@ public interface UserMapper {
 
     int update(@NonNull User user);
 
+    int updatePassword(@Param("id") @NonNull Integer id,
+                       @Param("rawPassword") @NonNull String rawPassword);
 
 
 }

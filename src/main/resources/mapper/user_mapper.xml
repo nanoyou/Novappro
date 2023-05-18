@@ -16,6 +16,11 @@
         SET username = #{username}, type = #{type}
         WHERE id = #{id};
     </update>
+    <update id="updatePassword">
+        UPDATE `web_dev`.`user`
+        SET raw_password = #{rawPassword}
+        WHERE id = #{id};
+    </update>
     <delete id="delete">
         DELETE FROM `web_dev`.`user`
         WHERE user.id IN

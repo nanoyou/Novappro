@@ -172,4 +172,32 @@ public class UserManageService {
         return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.FATAL, "添加用户失败"), null);
     }
 
+    public Pair<ServiceMessage, User> resetUserPassword(@Nullable String userId) {
+        if (userId == null) {
+            return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.WARN, "用户ID不能为空"), null);
+        }
+
+        try {
+            return _resetUserPassword(Integer.valueOf(userId));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.ERROR, "用户ID非法"), null);
+        }
+    }
+
+    public Pair<ServiceMessage, User> _resetUserPassword(@NonNull Integer userId) {
+        try (var session = MyDb.use().openSession(true)) {
+            val userMapper = session.getMapper(UserMapper.class);
+            val user = userMapper.selectById(userId);
+
+            if (user == null) {
+                return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.ERROR, "ID为" + userId + "的用户不存在"), null);
+            }
+
+            if (userMapper.updatePassword(userId, user.getId().toString()) == 1) {
+                return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.SUCCESS, "成功重置密码"), user);
+            }
+        }
+        return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.FATAL, "重置密码失败"), null);
+    }
 }
