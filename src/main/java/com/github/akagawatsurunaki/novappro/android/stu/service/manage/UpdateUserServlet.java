@@ -25,11 +25,8 @@ public class UpdateUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
         val user = RequestUtil.<User>parse(request);
-
         val serviceResult = USER_MANAGE_SERVICE.updateUser(user);
-
         ResponseUtil.setBody(response, JSON.toJSONString(serviceResult));
     }
 }
