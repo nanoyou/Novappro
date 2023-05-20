@@ -1,9 +1,12 @@
 package com.github.akagawatsurunaki.novappro.android.stu.service.stu.applycourse;
 
+import com.alibaba.fastjson2.JSON;
+import com.github.akagawatsurunaki.novappro.constant.Constant;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.stu.ApplyCourseService;
 import com.github.akagawatsurunaki.novappro.servlet.stu.ApplyCoursesServlet;
+import com.github.akagawatsurunaki.novappro.util.ResponseUtil;
 import lombok.val;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -59,11 +62,11 @@ public class CreateCourseApplicationServlet extends HttpServlet {
             // 申请这些课程
             val applyServiceResult = ApplyCourseService.getInstance().apply(user.getId(), selectedCourseCode, is, remark);
             request.setAttribute(ApplyCoursesServlet.ReqAttr.APPLY_SERVICE_RESULT.value, applyServiceResult);
-
+            ResponseUtil.setBody(response, JSON.toJSONString(applyServiceResult));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            response.sendRedirect("error.jsp");
+            ResponseUtil.setBody(response, JSON.toJSONString(Constant.exceptionServiceMessage));
         }
     }
 }
