@@ -32,6 +32,8 @@ public class LoginServletAndroid extends HttpServlet {
         val userId = request.getParameter("userId");
         val rawPassword = request.getParameter("rawPassword");
         val loginServiceResult = LoginService.getInstance().login(userId, rawPassword);
+        request.getSession().setAttribute("login_user", loginServiceResult.getRight());
+        
         val jsonString = JSON.toJSONString(loginServiceResult);
         ResponseUtil.setBody(response, jsonString);
     }
