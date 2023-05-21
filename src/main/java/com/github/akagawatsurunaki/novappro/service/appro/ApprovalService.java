@@ -462,11 +462,11 @@ public class ApprovalService {
     public ServiceMessage tryFinishApprovalFlow(@Nullable String flowNo, @Nullable String confirm) {
 
         if (confirm == null || confirm.isBlank() || !"确定".equals(confirm)) {
-            return ServiceMessage.of(ServiceMessage.Level.INFO, "无效操作") ;
+            return ServiceMessage.of(ServiceMessage.Level.INFO, "无效操作");
         }
 
         if (flowNo == null || flowNo.isBlank()) {
-            return ServiceMessage.of(ServiceMessage.Level.WARN, "流水号不能为空") ;
+            return ServiceMessage.of(ServiceMessage.Level.WARN, "流水号不能为空");
         }
 
         return _tryFinishApprovalFlow(flowNo);
