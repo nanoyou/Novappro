@@ -6,11 +6,9 @@ import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
 import com.github.akagawatsurunaki.novappro.util.MyDb;
-import com.google.protobuf.EnumValue;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -103,7 +101,7 @@ public class UserManageService {
     }
 
     public Pair<ServiceMessage, User> updateUser(@Nullable String id, @Nullable String username,
-                                                  @Nullable String type) {
+                                                 @Nullable String type) {
 
         if (id == null) {
             return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.WARN, "用户ID不能为空"), null);
@@ -131,9 +129,6 @@ public class UserManageService {
 
     private Pair<ServiceMessage, User> _updateUser(@NonNull Integer id, @NonNull String username,
                                                    @NonNull UserType type) {
-
-
-
         try (var session = MyDb.use().openSession(true)) {
 
             val userMapper = session.getMapper(UserMapper.class);
@@ -170,9 +165,11 @@ public class UserManageService {
             if (user == null) {
                 return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.ERROR, "ID为" + userId + "的用户不存在"), null);
             }
-
-            if (userMapper.delete(new ArrayList<>(userId)) == 1) {
-                return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.SUCCESS, "ID为" + userId + "的用户删除成功"), user);
+            List<Integer> ids = new ArrayList<>();
+            ids.add(userId);
+            if (userMapper.delete(ids) == 1) {
+                return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.SUCCESS, "ID为" + userId + "的用户删除成功"),
+                        user);
             }
         }
         return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.FATAL, "ID为" + userId + "的用户删除失败"), null);

@@ -24,9 +24,9 @@
     <delete id="delete">
         DELETE FROM `web_dev`.`user`
         WHERE user.id IN
-        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
             #{item}
-        </foreach>;
+        </foreach>
     </delete>
 
     <select id="selectById" resultType="com.github.akagawatsurunaki.novappro.model.database.User">

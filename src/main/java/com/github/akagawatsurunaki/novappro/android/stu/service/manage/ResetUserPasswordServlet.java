@@ -10,7 +10,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "ResetUserPasswordServlet", value = "/ResetUserPasswordServlet")
+@WebServlet(name = "ResetUserPasswordServlet", value = "/android/userManageService/resetUserPassword")
 public class ResetUserPasswordServlet extends HttpServlet {
 
     private static final UserManageService USER_MANAGE_SERVICE = UserManageService.getInstance();
@@ -22,10 +22,14 @@ public class ResetUserPasswordServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        request.setCharacterEncoding("UTF-8");
-        val userId = request.getParameter("userId");
-        val serviceResult = USER_MANAGE_SERVICE.resetUserPassword(userId);
-        ResponseUtil.setBody(response, JSON.toJSONString(serviceResult));
+        try{
+            request.setCharacterEncoding("UTF-8");
+            val userId = request.getParameter("userId");
+            val serviceResult = USER_MANAGE_SERVICE.resetUserPassword(userId);
+            ResponseUtil.setBody(response, JSON.toJSONString(serviceResult));
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseUtil.setErrBody(response);
+        }
     }
 }
