@@ -7,9 +7,11 @@ import com.github.akagawatsurunaki.novappro.util.RequestUtil;
 import com.github.akagawatsurunaki.novappro.util.ResponseUtil;
 import lombok.val;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.annotation.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(name = "UpdateUserServlet", value = "/android/userManageService/updateUser")
@@ -18,15 +20,26 @@ public class UpdateUserServlet extends HttpServlet {
     private static final UserManageService USER_MANAGE_SERVICE = UserManageService.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
         doPost(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        val user = RequestUtil.<User>parse(request);
-        val serviceResult = USER_MANAGE_SERVICE.updateUser(user);
-        ResponseUtil.setBody(response, JSON.toJSONString(serviceResult));
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        try {
+            request.setCharacterEncoding("UTF-8");
+//            val user = RequestUtil.<User>parse(request);
+            val id = request.getParameter("id");
+            val username = request.getParameter("username");
+            val type = request.getParameter("type");
+
+            val serviceResult = USER_MANAGE_SERVICE.updateUser(id, username, type);
+            ResponseUtil.setBody(response, JSON.toJSONString(serviceResult));
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseUtil.setErrBody(response);
+        }
     }
 }

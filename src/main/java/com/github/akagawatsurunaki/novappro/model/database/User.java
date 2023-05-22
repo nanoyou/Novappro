@@ -12,7 +12,9 @@ import lombok.experimental.FieldNameConstants;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
+@Builder
 @Table(value = "user")
+@ZhField("用户")
 public class User {
 
     @ZhField(value = "学号/工号")

@@ -1,5 +1,7 @@
 package com.github.akagawatsurunaki.novappro.util;
 
+import com.alibaba.fastjson2.JSON;
+import com.github.akagawatsurunaki.novappro.constant.Constant;
 import lombok.NonNull;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
@@ -22,5 +24,9 @@ public final class ResponseUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void setErrBody(@NonNull HttpServletResponse response) {
+        setBody(response, JSON.toJSONString(Constant.exceptionServiceMessage));
     }
 }

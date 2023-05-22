@@ -1,8 +1,7 @@
-package com.github.akagawatsurunaki.novappro.android.stu.service.appro.approval;
+package com.github.akagawatsurunaki.novappro.android.stu.service.manage;
 
 import com.alibaba.fastjson2.JSON;
-import com.github.akagawatsurunaki.novappro.constant.Constant;
-import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
+import com.github.akagawatsurunaki.novappro.service.manage.UserManageService;
 import com.github.akagawatsurunaki.novappro.util.ResponseUtil;
 import lombok.val;
 
@@ -11,10 +10,11 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "TryFinishApprovalFlowServlet", value = "/android/approvalService/tryFinishApprovalFlow")
-public class TryFinishApprovalFlowServlet extends HttpServlet {
+@WebServlet(name = "GetAllUsersServlet", value = "/android/userManageService/getAllUsers")
+public class GetAllUsersServlet extends HttpServlet {
 
-    private static final ApprovalService APPROVAL_SERVICE = ApprovalService.getInstance();
+    private static final UserManageService USER_MANAGE_SERVICE = UserManageService.getInstance();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
@@ -26,9 +26,7 @@ public class TryFinishApprovalFlowServlet extends HttpServlet {
             IOException {
         try {
             request.setCharacterEncoding("UTF-8");
-            val confirm = request.getParameter("confirm");
-            val flowNo = request.getParameter("flowNo");
-            val serviceMessage = APPROVAL_SERVICE.tryFinishApprovalFlow(flowNo, confirm);
+            val serviceMessage = USER_MANAGE_SERVICE.getAllUsers();
             ResponseUtil.setBody(response, JSON.toJSONString(serviceMessage));
         } catch (Exception e) {
             e.printStackTrace();

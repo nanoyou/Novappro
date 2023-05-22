@@ -3,10 +3,20 @@ package com.github.akagawatsurunaki.novappro.util;
 import com.github.akagawatsurunaki.novappro.annotation.ZhField;
 import com.github.akagawatsurunaki.novappro.exception.NoZhFieldAnnotation;
 import lombok.NonNull;
+import lombok.val;
 
 import java.lang.reflect.Field;
 
 public final class ZhFieldUtil {
+
+    public static <T> String getZhValue(Class<T> cls) {
+        val annotation = cls.getAnnotation(ZhField.class);
+        if (annotation == null) {
+            return null;
+        }
+        return annotation.value();
+    }
+
     public static <T> String getZhValue(Class<T> cls, @NonNull String fieldName) {
         // 获取所有字段
         Field[] fields = cls.getDeclaredFields();

@@ -1,10 +1,12 @@
 package com.github.akagawatsurunaki.novappro.service.manage;
 
 import cn.hutool.core.collection.CollUtil;
+import com.github.akagawatsurunaki.novappro.enumeration.UserType;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
 import com.github.akagawatsurunaki.novappro.util.MyDb;
+import com.google.protobuf.EnumValue;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
@@ -100,16 +102,44 @@ public class UserManageService {
 
     }
 
-    public Pair<ServiceMessage, User> updateUser(@Nullable User user) {
-        if (user == null) {
-            return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.WARN, "不能新建空用户"), null);
+    public Pair<ServiceMessage, User> updateUser(@Nullable String id, @Nullable String username,
+                                                  @Nullable String type) {
+
+        if (id == null) {
+            return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.WARN, "用户ID不能为空"), null);
         }
-        return _updateUser(user);
+        if (username == null || username.isBlank()) {
+            return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.WARN, "用户名不能为空"), null);
+        }
+        if (type == null) {
+            return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.WARN, "用户类型不能为空"), null);
+        }
+
+        try {
+            val idInt = Integer.valueOf(id);
+            val typeEnum = UserType.valueOf(type);
+            return _updateUser(idInt, username, typeEnum);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.ERROR, "用户ID非法"), null);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.ERROR, "用户类型非法"), null);
+        }
+
     }
 
-    private Pair<ServiceMessage, User> _updateUser(@NonNull User user) {
+    private Pair<ServiceMessage, User> _updateUser(@NonNull Integer id, @NonNull String username,
+                                                   @NonNull UserType type) {
+
+
+
         try (var session = MyDb.use().openSession(true)) {
+
             val userMapper = session.getMapper(UserMapper.class);
+
+            val user = User.builder().id(id).username(username).type(type).build();
+
             if (userMapper.update(user) == 1) {
                 return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.SUCCESS, "成功新建了1个新用户"),
                         userMapper.selectById(user.getId()));
