@@ -16,31 +16,6 @@
     <title>学生申请课程系统 - 查看课程申请详细内容</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
 </head>
-<script>
-    function removeCourse(id) {
-        const elem = document.getElementById("crs_row_" + id);
-        elem.parentNode.removeChild(elem);
-    }
-
-    function refresh(flowNo) {
-        location.href =
-            "${pageContext.request.contextPath}/course_appl_detail?<%=SC.ReqAttr.SELECTED_COURSE_APPL_FLOW_NO.name%>=" + flowNo
-    }
-
-    function addCourse(flowNo) {
-        const code = document.getElementById("text_add_course").value;
-        const crsTable = document.getElementById("courses_table");
-        crsTable.insertRow();
-        // const row = crsTable.rows[crsTable.rows.length - 1];
-        const elem = '<input type="hidden" name="<%=SC.ReqParam.UPDATED_COURSES.name%>" value="' +
-            code + '">';
-        const input = document.createElement('input');
-
-        crsTable.appendChild(input);
-        refresh(flowNo)
-    }
-
-</script>
 <body>
 <%
     Pair<ServiceMessage, List<Course>> getAppliedCoursesServiceResult = (Pair<ServiceMessage, List<Course>>) request.getAttribute(CourseApplDetailServlet.ReqAttr.GET_APPLIED_COURSES_SERVICE_RESULT.value);
@@ -124,16 +99,6 @@
             }
         %>
     </table>
-    <label>
-        输入课程代码
-        <input id="text_add_course" type="text" name="<%=SC.ReqParam.UPDATED_COURSES.name%>" value=""/>
-    </label>
-    <label>
-        <input type="submit" value="增加课程" onclick="refresh('<%=flowNo%>')"/>
-    </label>
-    <label>
-        <input type="submit" value="确认修改" onclick="refresh('<%=flowNo%>')"/>
-    </label>
 </form>
 
 <%
@@ -197,7 +162,7 @@
     }
 %>
 
-<form action="${pageContext.request.contextPath}/stu_confirm_appro">
+<form action="${pageContext.request.contextPath}/student/application/detail/confirm" onsubmit="return">
     <input type="hidden" value="<%=flowNo%>" name="<%=StudentConfirmApprovalFlowServlet.ReqParam.FLOW_NO.value%>">
     <input type="submit"
            value="确定"
