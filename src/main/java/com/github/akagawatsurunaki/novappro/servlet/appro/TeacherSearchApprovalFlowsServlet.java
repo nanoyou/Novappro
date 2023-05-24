@@ -24,8 +24,10 @@ public class TeacherSearchApprovalFlowsServlet extends HttpServlet {
             request.setCharacterEncoding("UTF-8");
             val page = request.getParameter("page");
             val search = request.getParameter("search");
-            val getPageServiceResult = SEARCH_SERVICE.getPage(page, search);
+            val getPageServiceResult = SEARCH_SERVICE.getPageAsTeacherView(page, search);
             request.setAttribute("getPageServiceResult", getPageServiceResult);
+            request.setAttribute("page", page);
+            request.setAttribute("search", search);
             request.getRequestDispatcher("search_approval_flows.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

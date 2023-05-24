@@ -7,21 +7,33 @@
 <html>
 <head>
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/err_msg.css">
 </head>
 <body>
 
 <h1>查询审批流</h1>
 
 <form action="${pageContext.request.contextPath}/teacherSearch" method="post">
-    输入页码
+    <%
+        String currentPage = (String) request.getAttribute("page");
+        String search = (String) request.getAttribute("search");
+        if (search == null) {
+            search = "";
+        }
+    %>
+    当前页码
     <label>
-        <input name="page" type="number">
+        <input name="page" type="number" value="<%=currentPage%>">
     </label>
     输入搜索内容
     <label>
-        <input name="search" type="text">
+        <input name="search" type="text" value="<%=search%>">
     </label>
-    <input type="submit" value="确认">
+    输入页码和搜索内容后可以单击确认按钮
+    <label>
+        <input type="submit" value="确认">
+    </label>
 </form>
 
 

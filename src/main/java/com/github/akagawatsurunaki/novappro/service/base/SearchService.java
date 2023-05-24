@@ -1,18 +1,15 @@
 package com.github.akagawatsurunaki.novappro.service.base;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.github.akagawatsurunaki.novappro.mapper.ApprovalFlowMapper;
 import com.github.akagawatsurunaki.novappro.mapper.UserMapper;
 import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow;
-import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
 import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
 import com.github.akagawatsurunaki.novappro.util.MyDb;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -20,7 +17,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class SearchService {
 
@@ -33,7 +29,7 @@ public class SearchService {
 
         try (var session = MyDb.use().openSession(true)) {
             val userMapper = session.getMapper(UserMapper.class);
-            val listPair = getPage(pageParam, search);
+            val listPair = getPageAsTeacherView(pageParam, search);
 
             if (userIdParam == null || userIdParam.isBlank()) {
                 return ImmutablePair.of(
@@ -63,7 +59,7 @@ public class SearchService {
         );
     }
 
-    public Pair<ServiceMessage, List<ApprovalFlow>> getPage(@Nullable String pageParam, @Nullable String search) {
+    public Pair<ServiceMessage, List<ApprovalFlow>> getPageAsTeacherView(@Nullable String pageParam, @Nullable String search) {
         try {
 
             if (pageParam == null || pageParam.isBlank()) {
