@@ -17,9 +17,15 @@ public class GetCoursesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        var resultPair = CourseService.getInstance().getCoursesCanBeApplied();
-        request.setAttribute(SC.ReqAttr.COURSES_CAN_BE_APPLIED.name, resultPair);
-        request.getRequestDispatcher("courses.jsp").forward(request, response);
+        try {
+            var resultPair = CourseService.getInstance().getCoursesCanBeApplied();
+            request.setAttribute(SC.ReqAttr.COURSES_CAN_BE_APPLIED.name, resultPair);
+            request.getRequestDispatcher("courses.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        response.sendRedirect("error.jsp");
+        }
+
     }
 
 }

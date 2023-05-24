@@ -16,37 +16,46 @@ import java.io.IOException;
 
 @WebServlet(name = "ApprovalAuthorityManageServlet",
         value = {
-        "/" + ApprovalAuthorityManageServlet.GET,
-        "/update_appro_autho_items"})
+                "/" + ApprovalAuthorityManageServlet.GET,
+                "/update_appro_autho_items"})
 public class ApprovalAuthorityManageServlet extends HttpServlet {
 
     public static final String GET = "ApprovalAuthorityManageServlet";
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        val approvalAuthorityItems =
-                ApprovalAuthorityService.getInstance().getApprovalAuthorityItems();
-        request.setAttribute(SC.ReqAttr.ALL_APPROVAL_AUTHORITY_ITEMS.name, approvalAuthorityItems);
-        request.getRequestDispatcher(JSPResource.APPROVAL_AUTHORITY_MANAGE.value).forward(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        try {
+            val approvalAuthorityItems =
+                    ApprovalAuthorityService.getInstance().getApprovalAuthorityItems();
+            request.setAttribute(SC.ReqAttr.ALL_APPROVAL_AUTHORITY_ITEMS.name, approvalAuthorityItems);
+            request.getRequestDispatcher(JSPResource.APPROVAL_AUTHORITY_MANAGE.value).forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        try {
+            val approverIdParam = request.getParameter("approverId");
+            val appproWeightParam = request.getParameter("appproWeight");
+            val courseCodeParam = request.getParameter("courseCode");
+            val updatedApproAuthosParam = request.getParameterValues(SC.ReqParam.UPDATED_APPRO_AUTHO.name);
 
-        val approverIdParam = request.getParameter("approverId");
-        val appproWeightParam = request.getParameter("appproWeight");
-        val courseCodeParam = request.getParameter("courseCode");
-        val updatedApproAuthosParam = request.getParameterValues(SC.ReqParam.UPDATED_APPRO_AUTHO.name);
+            val serviceMessage =
+                    ApprovalAuthorityService.getInstance()
+                            .update(updatedApproAuthosParam, approverIdParam, appproWeightParam, courseCodeParam);
 
-        val serviceMessage =
-                ApprovalAuthorityService.getInstance()
-                        .update(updatedApproAuthosParam, approverIdParam, appproWeightParam, courseCodeParam);
+            request.setAttribute(ReqAttr.UPDATE_MESSAGE.value, serviceMessage);
 
-        request.setAttribute(ReqAttr.UPDATE_MESSAGE.value, serviceMessage);
-
-        doGet(request, response);
-
+            doGet(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
     }
 
     @AllArgsConstructor

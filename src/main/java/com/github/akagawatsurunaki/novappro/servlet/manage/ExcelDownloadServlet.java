@@ -22,23 +22,27 @@ public class ExcelDownloadServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
+        try {
+            val allApprovalFlows = ApprovalService.getInstance().getAllApprovalFlows();
 
-        val allApprovalFlows = ApprovalService.getInstance().getAllApprovalFlows();
+            if (allApprovalFlows.getLeft().getMessageLevel().equals(ServiceMessage.Level.SUCCESS)) {
+                response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                response.setCharacterEncoding("utf-8");
+                // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+                String fileName = URLEncoder.encode("审批流", StandardCharsets.UTF_8).replaceAll("\\+", "%20");
+                response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+                System.out.println("allApprovalFlows.getRight() = " + allApprovalFlows.getRight());
 
-        if (allApprovalFlows.getLeft().getMessageLevel().equals(ServiceMessage.Level.SUCCESS)) {
-            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setCharacterEncoding("utf-8");
-            // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-            String fileName = URLEncoder.encode("审批流", StandardCharsets.UTF_8).replaceAll("\\+", "%20");
-            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-            System.out.println("allApprovalFlows.getRight() = " + allApprovalFlows.getRight());
+                EasyExcel.write(response.getOutputStream(), ApprovalFlow.class)
+                        .registerConverter(new ApprovalStatusConverter())
+                        .registerConverter(new BusTypeConverter())
+                        .sheet("所有审批流一览表")
+                        .doWrite(allApprovalFlows.getRight());
 
-            EasyExcel.write(response.getOutputStream(), ApprovalFlow.class)
-                    .registerConverter(new ApprovalStatusConverter())
-                    .registerConverter(new BusTypeConverter())
-                    .sheet("所有审批流一览表")
-                    .doWrite(allApprovalFlows.getRight());
-
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
         }
     }
 

@@ -22,25 +22,33 @@ public class SubmitApproResultServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
+        try {
+            request.setCharacterEncoding("UTF-8");
 
-        request.setCharacterEncoding("UTF-8");
+            String flowNo = request.getParameter(SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name);
+            String applRemark = request.getParameter(SC.ReqParam.APPL_REMARK.name);
+            String applItemConfirm = request.getParameter(SC.ReqParam.APPL_ITEM_CONFIRM.name);
 
-        String flowNo = request.getParameter(SC.ReqParam.SELECTED_APPL_ITEM_FLOW_NO.name);
-        String applRemark = request.getParameter(SC.ReqParam.APPL_REMARK.name);
-        String applItemConfirm = request.getParameter(SC.ReqParam.APPL_ITEM_CONFIRM.name);
+            val saveApproResultServiceResult
+                    = ApprovalService.getInstance().saveApproResult(flowNo, applRemark,
+                    applItemConfirm);
 
-        val saveApproResultServiceResult
-                = ApprovalService.getInstance().saveApproResult(flowNo, applRemark,
-                applItemConfirm);
+            if (saveApproResultServiceResult.getLeft().getMessageLevel() == ServiceMessage.Level.SUCCESS) {
+                response.sendRedirect("get_appros");
+                return;
+            }
 
-        if (saveApproResultServiceResult.getLeft().getMessageLevel() == ServiceMessage.Level.SUCCESS){
-            response.sendRedirect("get_appros");
-            return;
+            request.setAttribute(ReqAttr.SAVE_APPRO_RESULT_SERVICE_RESULT.value, saveApproResultServiceResult);
+            request.getRequestDispatcher("get_appl_item_detail").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
         }
+    }
 
-        request.setAttribute(ReqAttr.SAVE_APPRO_RESULT_SERVICE_RESULT.value, saveApproResultServiceResult);
-        request.getRequestDispatcher("get_appl_item_detail").forward(request, response);
-
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
     }
 
     @AllArgsConstructor

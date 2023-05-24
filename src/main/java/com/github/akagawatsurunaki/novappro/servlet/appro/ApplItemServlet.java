@@ -21,14 +21,19 @@ public class ApplItemServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        // 获取单号
-        val flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
-        // 获取服务结果
-        val getApplItemServiceResult = APPROVAL_SERVICE.getApplItem(flowNo);
-        // 增加属性
-        request.setAttribute(ReqAttr.GET_APPL_ITEM_SERVICE_RESULT.value, getApplItemServiceResult);
-        // 加载界面
-        request.getRequestDispatcher(JSPResource.GET_CRS_APPL_ITEM.value).forward(request, response);
+        try {
+            // 获取单号
+            val flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+            // 获取服务结果
+            val getApplItemServiceResult = APPROVAL_SERVICE.getApplItem(flowNo);
+            // 增加属性
+            request.setAttribute(ReqAttr.GET_APPL_ITEM_SERVICE_RESULT.value, getApplItemServiceResult);
+            // 加载界面
+            request.getRequestDispatcher(JSPResource.GET_CRS_APPL_ITEM.value).forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
     }
 
     @Override

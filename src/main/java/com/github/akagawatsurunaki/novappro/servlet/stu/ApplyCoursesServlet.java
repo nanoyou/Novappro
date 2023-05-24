@@ -29,15 +29,20 @@ public class ApplyCoursesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
+        try {
+            val id = ((User) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name)).getId();
 
-        val id = ((User) request.getSession().getAttribute(SC.ReqAttr.LOGIN_USER.name)).getId();
+            // 获取这些课程
+            val getCourseApplsByUserIdServiceResult
+                    = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
 
-        // 获取这些课程
-        val getCourseApplsByUserIdServiceResult
-                = APPLY_COURSE_SERVICE.getCourseApplsByUserId(id);
-
-        request.setAttribute(ReqAttr.GET_COURSE_APPLS_BY_USER_ID_SERVICE_RESULT.value, getCourseApplsByUserIdServiceResult);
-        request.getRequestDispatcher(JSPResource.GET_APPLIED_COURSES.value).forward(request, response);
+            request.setAttribute(ReqAttr.GET_COURSE_APPLS_BY_USER_ID_SERVICE_RESULT.value,
+                    getCourseApplsByUserIdServiceResult);
+            request.getRequestDispatcher(JSPResource.GET_APPLIED_COURSES.value).forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
     }
 
     @Override
@@ -81,7 +86,6 @@ public class ApplyCoursesServlet extends HttpServlet {
             doGet(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
             response.sendRedirect("error.jsp");
         }
     }

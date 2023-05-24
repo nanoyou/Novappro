@@ -1,6 +1,5 @@
 package com.github.akagawatsurunaki.novappro.servlet.stu;
 
-import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import lombok.AllArgsConstructor;
@@ -31,10 +30,9 @@ public class StudentConfirmApprovalFlowServlet extends HttpServlet {
                 request.setAttribute(ReqAttr.COURSE_APPL_DETAIL.value, flowNo);
                 response.sendRedirect("course_appl_detail?selected_course_appl_flow_no=" + flowNo);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(JSPResource.ERROR.value);
+            response.sendRedirect("error.jsp");
         }
     }
 

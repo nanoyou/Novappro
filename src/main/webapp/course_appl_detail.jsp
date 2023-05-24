@@ -152,7 +152,7 @@
     }
 %>
 
-<form action="${pageContext.request.contextPath}/student/application/detail/confirm" onsubmit="return">
+<form action="${pageContext.request.contextPath}/stu_confirm_appro" onsubmit="return">
     <input type="hidden" value="<%=flowNo%>" name="<%=StudentConfirmApprovalFlowServlet.ReqParam.FLOW_NO.value%>">
     <input type="submit"
            value="确定"

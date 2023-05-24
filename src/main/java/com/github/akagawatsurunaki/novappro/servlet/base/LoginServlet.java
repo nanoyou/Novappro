@@ -28,34 +28,38 @@ public class LoginServlet extends HttpServlet {
 
     void loginBySession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 测试用例: http://localhost:8080/Novappro_war_exploded/login?username=1&rawPassword=12345678
+        try {
+            // 获取用户的ID
+            var userId = request.getParameter("userId");
+            // 获取用户的明文密码
+            var rawPassword = request.getParameter("rawPassword");
 
-        // 获取用户的ID
-        var userId = request.getParameter("userId");
-        // 获取用户的明文密码
-        var rawPassword = request.getParameter("rawPassword");
+            System.out.println("userId = " + userId);
+            System.out.println("rawPassword = " + rawPassword);
 
-        System.out.println("userId = " + userId);
-        System.out.println("rawPassword = " + rawPassword);
+            // 尝试利用密码登陆
+            val loginServiceResult = LOGIN_SERVICE.login(userId, rawPassword);
 
-        // 尝试利用密码登陆
-        val loginServiceResult = LOGIN_SERVICE.login(userId, rawPassword);
+            request.setAttribute(ReqAttr.LOGIN_SERVICE_RESULT.value, loginServiceResult);
 
-        request.setAttribute(ReqAttr.LOGIN_SERVICE_RESULT.value, loginServiceResult);
-
-        if (loginServiceResult.getLeft().getMessageLevel() == ServiceMessage.Level.SUCCESS) {
-            // 获取登录对象
-            val user = loginServiceResult.getRight();
-            request.getSession().setAttribute(ReqAttr.LOGIN_USER.value, user);
-            switch (user.getType()) {
-                case STUDENT -> response.sendRedirect(JSPResource.WELCOME_SESSION.value);
-                case LECTURE_TEACHER, SUPERVISOR_TEACHER -> response.sendRedirect("get_appros");
-                case ADMIN -> throw new NotImplementedException("管理员界面实现中...");
+            if (loginServiceResult.getLeft().getMessageLevel() == ServiceMessage.Level.SUCCESS) {
+                // 获取登录对象
+                val user = loginServiceResult.getRight();
+                request.getSession().setAttribute(ReqAttr.LOGIN_USER.value, user);
+                switch (user.getType()) {
+                    case STUDENT -> response.sendRedirect(JSPResource.WELCOME_SESSION.value);
+                    case LECTURE_TEACHER, SUPERVISOR_TEACHER -> response.sendRedirect("get_appros");
+                    case ADMIN -> throw new NotImplementedException("管理员界面实现中...");
+                }
+                return;
             }
-            return;
-        }
 
-        // 登录失败, 返回主页
-        request.getRequestDispatcher(JSPResource.INDEX.value).forward(request, response);
+            // 登录失败, 返回主页
+            request.getRequestDispatcher(JSPResource.INDEX.value).forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
     }
 
     @Override

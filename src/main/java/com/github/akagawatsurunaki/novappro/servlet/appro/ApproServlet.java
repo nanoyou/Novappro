@@ -1,7 +1,6 @@
 package com.github.akagawatsurunaki.novappro.servlet.appro;
 
 import com.github.akagawatsurunaki.novappro.constant.JSPResource;
-import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import com.github.akagawatsurunaki.novappro.servlet.base.LoginServlet;
@@ -36,7 +35,6 @@ public class ApproServlet extends HttpServlet {
             request.getRequestDispatcher(JSPResource.GET_APPROS.value).forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
             response.sendRedirect("error.jsp");
         }
     }

@@ -20,32 +20,43 @@ import java.io.IOException;
 @WebServlet(name = "CourseApplDetailServlet", value = "/course_appl_detail")
 public class CourseApplDetailServlet extends HttpServlet {
 
-    private final static CourseApplDetailService COURSE_APPL_DETAIL_SERVICE = new CourseApplDetailService();
+    private final static CourseApplDetailService COURSE_APPL_DETAIL_SERVICE = CourseApplDetailService.getInstance();
 
     private final static ApprovalService APPROVAL_SERVICE = ApprovalService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        // 获取流水号
-        val flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
-        // 获取该流水号下的申请的课程 (可能有多个)
-        val getAppliedCoursesServiceResult = COURSE_APPL_DETAIL_SERVICE.getAppliedCourses(flowNo);
-        val getApprovalFlowDetailsServiceResult = APPROVAL_SERVICE.getApprovalFlowDetails(flowNo);
 
-        request.setAttribute(ReqAttr.SELECTED_COURSE_APPL_FLOW_NO.value, flowNo);
-        request.setAttribute(ReqAttr.GET_APPLIED_COURSES_SERVICE_RESULT.value, getAppliedCoursesServiceResult);
-        request.setAttribute(ReqAttr.GET_APPROVAL_FLOW_DETAILS_SERVICE_RESULT.value, getApprovalFlowDetailsServiceResult);
+        try {
+            // 获取流水号
+            val flowNo = request.getParameter(SC.ReqParam.SELECTED_COURSE_APPL_FLOW_NO.name);
+            // 获取该流水号下的申请的课程 (可能有多个)
+            val getAppliedCoursesServiceResult = COURSE_APPL_DETAIL_SERVICE.getAppliedCourses(flowNo);
+            val getApprovalFlowDetailsServiceResult = APPROVAL_SERVICE.getApprovalFlowDetails(flowNo);
 
-        request.getRequestDispatcher(JSPResource.COURSE_APPL_DETAIL.value).forward(request, response);
+            request.setAttribute(ReqAttr.SELECTED_COURSE_APPL_FLOW_NO.value, flowNo);
+            request.setAttribute(ReqAttr.GET_APPLIED_COURSES_SERVICE_RESULT.value, getAppliedCoursesServiceResult);
+            request.setAttribute(ReqAttr.GET_APPROVAL_FLOW_DETAILS_SERVICE_RESULT.value,
+                    getApprovalFlowDetailsServiceResult);
+
+            request.getRequestDispatcher(JSPResource.COURSE_APPL_DETAIL.value).forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
     }
 
     @AllArgsConstructor
     public enum ReqAttr {
         GET_APPLIED_COURSES_SERVICE_RESULT("get_applied_courses_service_result"),
         SELECTED_COURSE_APPL_FLOW_NO("selected_course_appl_flow_no"),
-        GET_APPROVAL_FLOW_DETAILS_SERVICE_RESULT("get_approval_flow_details_service_result")
-        ;
+        GET_APPROVAL_FLOW_DETAILS_SERVICE_RESULT("get_approval_flow_details_service_result");
 
         public final String value;
     }
