@@ -77,5 +77,9 @@
     </table>
 </form>
 
+<form action="${pageContext.request.contextPath}/studentSearch">
+    <input type="submit" value="高级搜索功能">
+</form>
+
 </body>
 </html>

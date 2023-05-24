@@ -105,6 +105,8 @@
         }
     %>
 </table>
-
+<form action="${pageContext.request.contextPath}/teacherSearch">
+    <input type="submit" value="高级搜索功能">
+</form>
 </body>
 </html>

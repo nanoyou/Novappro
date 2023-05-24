@@ -144,19 +144,6 @@ public class SearchService {
 
             val approvalFlowPairList = approvalFlows.stream().map(
                     approvalFlow ->
-//                            new ImmutablePair<>(approvalFlow, approvalFlow.getFlowNo() +
-//                                    " " +
-//                                    approvalFlow.getApproStatus().chinese +
-//                                    " " +
-//                                    approvalFlow.getTitle() +
-//                                    " " +
-//                                    approvalFlow.getBusType().chinese +
-//                                    " " +
-//                                    approvalFlow.getAddUserId().toString() +
-//                                    " " +
-//                                    approvalFlow.getAddTime().toString() +
-//                                    " " +
-//                                    approvalFlow.getRemark())
                             new ImmutablePair<>(approvalFlow, approvalFlow.getFlowNo() +
                                     approvalFlow.getApproStatus().chinese +
                                     approvalFlow.getTitle() +
