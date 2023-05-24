@@ -1,9 +1,9 @@
 package com.github.akagawatsurunaki.novappro.service.stu;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
 import com.github.akagawatsurunaki.novappro.config.ResourceConfig;
-import com.github.akagawatsurunaki.novappro.constant.VC;
 import com.github.akagawatsurunaki.novappro.enumeration.ApprovalStatus;
 import com.github.akagawatsurunaki.novappro.enumeration.BusType;
 import com.github.akagawatsurunaki.novappro.mapper.*;
@@ -13,7 +13,6 @@ import com.github.akagawatsurunaki.novappro.model.database.approval.ApprovalFlow
 import com.github.akagawatsurunaki.novappro.model.database.approval.CourseApplication;
 import com.github.akagawatsurunaki.novappro.model.database.file.UploadFile;
 import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
-import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
 import com.github.akagawatsurunaki.novappro.util.CourseUtil;
 import com.github.akagawatsurunaki.novappro.util.IdUtil;
 import com.github.akagawatsurunaki.novappro.util.ImgUtil;
@@ -102,7 +101,6 @@ public class ApplyCourseService {
         ) {
 
             val userMapper = session.getMapper(UserMapper.class);
-            val uploadFileMapper = session.getMapper(UploadFileMapper.class);
             val approvalFlowMapper = session.getMapper(ApprovalFlowMapper.class);
             val approvalFlowDetailMapper = session.getMapper(ApprovalFlowDetailMapper.class);
             val courseApplicationMapper = session.getMapper(CourseApplicationMapper.class);
@@ -114,6 +112,25 @@ public class ApplyCourseService {
                         ServiceMessage.Level.ERROR,
                         "该用户不存在"
                 );
+            }
+
+            val courseApplicationList = courseApplicationMapper.select(user.getId());
+
+            if (courseApplicationList != null && !courseApplicationList.isEmpty()) {
+
+                for (var courseApplication : courseApplicationList) {
+                    val flowNo = courseApplication.getFlowNo();
+                    val approvalFlow = approvalFlowMapper.select(flowNo);
+                    assert approvalFlow != null;
+                    val courseCodes = CourseUtil.getCourseCodes(courseApplication.getApproCourses());
+                    val intersection = CollectionUtil.intersection(courseIds, courseCodes);
+                    if (!intersection.isEmpty() && !approvalFlow.getApproStatus().equals(ApprovalStatus.FINISHED)) {
+                        return ServiceMessage.of(
+                                ServiceMessage.Level.ERROR,
+                                "不能重复申请课程"
+                        );
+                    }
+                }
             }
 
             val flowNo = IdUtil.genFlowNo(user.getId());
@@ -284,8 +301,6 @@ public class ApplyCourseService {
     /**
      * 根据用户的ID查询其下的所有课程申请
      *
-     * @param userId
-     * @return
      */
     public Triple<ServiceMessage, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@Nullable Integer userId) {
         if (userId == null) {
