@@ -8,6 +8,8 @@
 <html>
 <head>
     <title>管理员系统 - 审批权限管理系统</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/err_msg.css">
 </head>
 <%
     Pair<ServiceMessage, List<ApprovalAuthorityItem>> allApprovalAuthorityItems = (Pair<ServiceMessage, List<ApprovalAuthorityItem>>) request.getAttribute(SC.ReqAttr.ALL_APPROVAL_AUTHORITY_ITEMS.name);

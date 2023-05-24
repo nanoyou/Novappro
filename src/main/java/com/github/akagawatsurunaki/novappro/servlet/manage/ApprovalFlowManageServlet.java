@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "ApprovalFlowManageServlet", value = "/ApprovalFlowManageServlet")
+@WebServlet(name = "ApprovalFlowManageServlet", value = "/approvalFlowManage")
 public class ApprovalFlowManageServlet extends HttpServlet {
     private static final ApprovalService APPROVAL_SERVICE = ApprovalService.getInstance();
 

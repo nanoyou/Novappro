@@ -49,7 +49,7 @@ public class LoginServlet extends HttpServlet {
                 switch (user.getType()) {
                     case STUDENT -> response.sendRedirect(JSPResource.WELCOME_SESSION.value);
                     case LECTURE_TEACHER, SUPERVISOR_TEACHER -> response.sendRedirect("get_appros");
-                    case ADMIN -> throw new NotImplementedException("管理员界面实现中...");
+                    case ADMIN -> response.sendRedirect("admin.jsp");
                 }
                 return;
             }

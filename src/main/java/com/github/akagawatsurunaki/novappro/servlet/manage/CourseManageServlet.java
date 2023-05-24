@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "CourseManageServlet", value = "/course_manage")
+@WebServlet(name = "CourseManageServlet", value = "/courseManage")
 public class CourseManageServlet extends HttpServlet {
 
     private static final CourseService COURSE_SERVICE = CourseService.getInstance();

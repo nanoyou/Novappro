@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebServlet(name = "ManagementServlet", value = {"/ManagementServlet",
+@WebServlet(name = "ManagementServlet", value = {"/userManage",
         "/get_users", "/update_users"})
 public class UserManageServlet extends HttpServlet {
 

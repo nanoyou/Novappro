@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>管理员系统 - 审批流管理系统</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/err_msg.css">
 </head>

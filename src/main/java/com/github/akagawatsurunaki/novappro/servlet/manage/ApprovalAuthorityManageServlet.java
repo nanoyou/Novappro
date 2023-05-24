@@ -16,11 +16,9 @@ import java.io.IOException;
 
 @WebServlet(name = "ApprovalAuthorityManageServlet",
         value = {
-                "/" + ApprovalAuthorityManageServlet.GET,
+                "/approvalAuthorityManage",
                 "/update_appro_autho_items"})
 public class ApprovalAuthorityManageServlet extends HttpServlet {
-
-    public static final String GET = "ApprovalAuthorityManageServlet";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
