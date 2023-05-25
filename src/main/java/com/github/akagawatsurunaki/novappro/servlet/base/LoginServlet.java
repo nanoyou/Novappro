@@ -34,9 +34,6 @@ public class LoginServlet extends HttpServlet {
             // 获取用户的明文密码
             var rawPassword = request.getParameter("rawPassword");
 
-            System.out.println("userId = " + userId);
-            System.out.println("rawPassword = " + rawPassword);
-
             // 尝试利用密码登陆
             val loginServiceResult = LOGIN_SERVICE.login(userId, rawPassword);
 
