@@ -14,8 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebServlet(name = "ManagementServlet", value = {"/userManage",
-        "/get_users", "/update_users"})
+@WebServlet(name = "ManagementServlet", value = {"/userManage"})
 public class UserManageServlet extends HttpServlet {
 
     @Override
@@ -35,14 +34,15 @@ public class UserManageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        try {
-            val userIds = request.getParameterValues(SC.ReqParam.UPDATED_USERS.name);
-            val pair = UserManageService.getInstance().updateAllUsers(userIds);
-            doGet(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp");
-        }
+//        try {
+//            val userIds = request.getParameterValues(SC.ReqParam.UPDATED_USERS.name);
+//            val pair = UserManageService.getInstance().updateAllUsers(userIds);
+//            doGet(request, response);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            response.sendRedirect("error.jsp");
+//        }
+        doGet(request, response);
     }
 
     @AllArgsConstructor
