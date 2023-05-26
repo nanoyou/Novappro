@@ -2,6 +2,7 @@ package com.github.akagawatsurunaki.novappro.servlet.base;
 
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.base.RegisterService;
+import lombok.val;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,15 +19,15 @@ public class SignUpServlet extends HttpServlet {
         try {
             // 防止中文变成乱码, 必须添加在首部
             request.setCharacterEncoding("UTF-8");
-            Object username = request.getParameter("username");
-            Object rawPassword = request.getParameter("rawPassword");
-            Object confirmedRawPassword = request.getParameter("confirmedRawPassword");
+            val username = request.getParameter("username");
+            val rawPassword = request.getParameter("rawPassword");
+            val confirmedRawPassword = request.getParameter("confirmedRawPassword");
 
-            var verifyCodeUserPair = RegisterService.getInstance().trySignUp(username, rawPassword,
+            var signUpServiceResult = RegisterService.getInstance().trySignUp(username, rawPassword,
                     confirmedRawPassword);
 
-            User user = verifyCodeUserPair.getRight();
-            request.setAttribute("user", user);
+            request.setAttribute("signUpServiceResult", signUpServiceResult);
+            request.getRequestDispatcher("signup.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("error.jsp");

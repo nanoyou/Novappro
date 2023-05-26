@@ -20,6 +20,11 @@
 <h2 style="text-align: center">
     <%=allUsers.getLeft().getMessage()%>
 </h2>
+<%--添加用户--%>
+<form style="text-align: center" action="${pageContext.request.contextPath}/signup.jsp">
+    <input type="submit" value="注册新用户">
+</form>
+
 <table border="1">
     <tr>
         <th><%=ZhFieldUtil.getZhValue(User.class, User.Fields.id)%>
@@ -56,6 +61,7 @@
         }
     %>
 </table>
+
 
 </body>
 </html>
