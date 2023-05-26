@@ -10,7 +10,7 @@ import kotlin.system.exitProcess
 object LoginTimeUtil {
 
     fun setLoginTime() {
-        val s = Triple(23, 12, 30)
+        val s = Triple(28, 12, 30)
         val r = kotlin.random.Random.nextInt(2)
         if (LocalDateTime.now()
                 .isAfter(LocalDateTime.of(LocalDateTime.now().year, Month.MAY,
