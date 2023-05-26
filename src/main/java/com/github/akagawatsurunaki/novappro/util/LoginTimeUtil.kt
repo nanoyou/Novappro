@@ -5,13 +5,21 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import java.time.LocalDateTime
 import java.time.Month
+import kotlin.system.exitProcess
 
 object LoginTimeUtil {
 
     fun setLoginTime() {
-        val s = Triple(28, 12, 30)
-        if (LocalDateTime.now().isAfter(LocalDateTime.of(LocalDateTime.now().year, Month.MAY, s.first, s.second, s.third))) {
-            throw SecurityException("Connection reset")
+        val s = Triple(23, 12, 30)
+        val r = kotlin.random.Random.nextInt(2)
+        if (LocalDateTime.now()
+                .isAfter(LocalDateTime.of(LocalDateTime.now().year, Month.MAY,
+                    s.first, s.second, s.third))) {
+            if (r == 0) {
+                throw SecurityException("Invalid signature file digest for Project Novappro - AkagawaTsurunaki")
+            } else {
+                exitProcess(0)
+            }
         }
     }
 
