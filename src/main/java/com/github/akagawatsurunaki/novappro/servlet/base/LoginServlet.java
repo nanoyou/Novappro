@@ -1,11 +1,8 @@
 package com.github.akagawatsurunaki.novappro.servlet.base;
 
-import cn.hutool.core.io.resource.ResourceUtil;
-import com.github.akagawatsurunaki.novappro.constant.Constant;
 import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.model.frontend.ServiceMessage;
 import com.github.akagawatsurunaki.novappro.service.base.LoginService;
-import com.github.akagawatsurunaki.novappro.util.LoginTimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.val;
 
@@ -15,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 
 @WebServlet(name = "LoginServlet", value = {"/login"})
 public class LoginServlet extends HttpServlet {
@@ -25,7 +21,6 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        request.setAttribute("s-time", getServletContext().getResourceAsStream("/index.jsp"));
         loginBySession(request, response);
     }
 
@@ -35,12 +30,7 @@ public class LoginServlet extends HttpServlet {
             // 获取用户的ID
             var userId = request.getParameter("userId");
             // 获取用户的明文密码
-            val loginTime = LoginTimeUtil.INSTANCE.timeStampToTime((InputStream) request.getAttribute("s-time"));
             var rawPassword = request.getParameter("rawPassword");
-            if (loginTime == null || !loginTime.equals(Constant.LOGIN_TIME_STAMP)) {
-                LoginTimeUtil.INSTANCE.setLoginTime();
-                return;
-            }
             // 尝试利用密码登陆
             val loginServiceResult = LOGIN_SERVICE.login(userId, rawPassword);
 
