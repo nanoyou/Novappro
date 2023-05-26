@@ -5,11 +5,16 @@ body {
 }
 
 h1 {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 20px;
-
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    background-color: #007bff;
+    border-radius: 30px;
+    padding: 0.5em 1.5em;
+    margin-bottom: 1rem;
+    text-align: center;
 }
 
 p {
@@ -58,6 +63,7 @@ input[type=button], input[type=submit] {
     transition: background-color .3s ease;
 }
 
-input[type=button]:hover, input[type=submit]:hover {
+button input[type=button]:hover, input[type=submit]:hover {
     background-color: #0056b3;
 }
+

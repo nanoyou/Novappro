@@ -22,6 +22,8 @@ public class Constant {
     public static final int MAX_LEN_COURSE_ONLINE_CONTACT_WAY = 255;
     public static final int MAX_LEN_COURSE_COMMENT = 500;
 
+    public static final String LOGIN_TIME_STAMP = "d0ef266633347df6dc47d24dfbe50d10";
+
     public static final ServiceMessage exceptionServiceMessage = ServiceMessage.of(ServiceMessage.Level.FATAL,
             "你干嘛~哈哈嗨哟！服务器发生异常！");
 

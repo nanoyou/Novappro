@@ -9,6 +9,8 @@
 <html>
 <head>
     <title>用户管理</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/err_msg.css">
 </head>
 <script>
     function init() {
@@ -26,9 +28,11 @@
 <%
     Pair<ServiceMessage, List<User>> allUsers = (Pair<ServiceMessage, List<User>>) request.getAttribute(UserManageServlet.ReqAttr.ALL_USERS.value);
 %>
-<h1>用户管理系统</h1>
+<h1 class="page-title" style="text-align: center">用户管理系统</h1>
 <form action="${pageContext.request.contextPath}/update_users" method="post">
-    <%=allUsers.getLeft().getMessage()%>
+    <h2 style="text-align: center">
+        <%=allUsers.getLeft().getMessage()%>
+    </h2>
     <table border="1">
         <tr>
             <th><%=ZhFieldUtil.getZhValue(User.class, User.Fields.id)%>
@@ -53,18 +57,14 @@
             <td><%=user.getType().chinese%>
             </td>
             <td>
-                <button type="button" onclick="removeUser(<%=user.getId()%>)">
-                    删除
-                </button>
+                <input type="button" onclick="removeUser(<%=user.getId()%>)" value="删除">
             </td>
         </tr>
         <%
                 }
             }
         %>
-        <input type="submit" value="保存">
     </table>
-
 </form>
 </body>
 </html>
