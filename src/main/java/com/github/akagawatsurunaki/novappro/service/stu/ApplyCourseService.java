@@ -241,6 +241,7 @@ public class ApplyCourseService {
         try (var session = MyDb.use().openSession(true)) {
             val uploadFileMapper = session.getMapper(UploadFileMapper.class);
 
+
             var fileType = FileTypeUtil.getType(inputStream);
 
             var path = ResourceConfig.UPLOADED_IMG_PATH;

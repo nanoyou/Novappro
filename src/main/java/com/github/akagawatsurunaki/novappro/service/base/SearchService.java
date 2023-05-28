@@ -25,7 +25,9 @@ public class SearchService {
 
     private static final int offset = 2;
 
-    public Pair<ServiceMessage, List<ApprovalFlow>> getPageAsStudentView(@Nullable String pageParam, @Nullable String search, @Nullable String userIdParam) {
+    public Pair<ServiceMessage, List<ApprovalFlow>> getPageAsStudentView(@Nullable String pageParam,
+                                                                         @Nullable String search,
+                                                                         @Nullable String userIdParam) {
 
         try (var session = MyDb.use().openSession(true)) {
             val userMapper = session.getMapper(UserMapper.class);
@@ -59,7 +61,8 @@ public class SearchService {
         );
     }
 
-    public Pair<ServiceMessage, List<ApprovalFlow>> getPageAsTeacherView(@Nullable String pageParam, @Nullable String search) {
+    public Pair<ServiceMessage, List<ApprovalFlow>> getPageAsTeacherView(@Nullable String pageParam,
+                                                                         @Nullable String search) {
         try {
 
             if (pageParam == null || pageParam.isBlank()) {
@@ -96,8 +99,22 @@ public class SearchService {
         if (serviceMessageListPair.getLeft().getMessageLevel() == ServiceMessage.Level.SUCCESS) {
 
             var approvalFlowList = serviceMessageListPair.getRight();
-            int start = Math.max((page - 1) * offset, 0);
-            int end = Math.min(page * offset, approvalFlowList.size());
+
+            if (approvalFlowList.isEmpty()) {
+                return ImmutablePair.of(serviceMessageListPair.getLeft(), new ArrayList<>());
+            }
+
+            val resultSize = approvalFlowList.size();
+
+            if (resultSize < offset) {
+                return ImmutablePair.of(serviceMessageListPair.getLeft(),
+                        approvalFlowList);
+            }
+
+            int start = clamp((page - 1) * offset, 0, resultSize - offset);
+            int end = clamp(page * offset, resultSize - offset, resultSize);
+//            int end = Math.min(page * offset, approvalFlowList.size());
+
 
             approvalFlowList = approvalFlowList.subList(start, end);
             return ImmutablePair.of(
@@ -107,6 +124,10 @@ public class SearchService {
         }
 
         return ImmutablePair.of(serviceMessageListPair.getLeft(), new ArrayList<>());
+    }
+
+    public int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     public Pair<ServiceMessage, List<ApprovalFlow>> searchApprovalFlow(@Nullable String search) {
