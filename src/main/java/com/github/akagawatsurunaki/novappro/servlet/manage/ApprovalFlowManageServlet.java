@@ -24,7 +24,6 @@ public class ApprovalFlowManageServlet extends HttpServlet {
             request.getRequestDispatcher("approval_flow_manage.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
             response.sendRedirect("error.jsp");
         }
     }

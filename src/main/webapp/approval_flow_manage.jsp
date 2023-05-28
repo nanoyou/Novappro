@@ -102,5 +102,23 @@
     <% }
     %>
 </form>
+
+
+<form action="${pageContext.request.contextPath}/createApprovalFlow" method="post">
+    <label>
+        课程名称
+        <input name="addCourseCode" type="text">
+    </label>
+    <label>
+        申请人
+        <input name="addUserId" type="text">
+    </label>
+    <label>
+        审批人
+        <input name="approverId" type="text">
+    </label>
+    <input type="submit" value="确认创建">
+</form>
+
 </body>
 </html>
