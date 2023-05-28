@@ -13,17 +13,4 @@ public final class ImgUtil {
         return  "IMG-" + userId + System.currentTimeMillis() +  NumberUtil.generateRandomNumber(0, 10000,
                 1)[0];
     }
-
-    public static InputStream copyInputStream(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
-        }
-        byte[] data = outputStream.toByteArray();
-        return new ByteArrayInputStream(data);
-    }
-
-
 }
