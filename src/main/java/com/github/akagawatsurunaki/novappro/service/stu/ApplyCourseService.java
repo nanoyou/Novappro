@@ -241,11 +241,10 @@ public class ApplyCourseService {
         try (var session = MyDb.use().openSession(true)) {
             val uploadFileMapper = session.getMapper(UploadFileMapper.class);
 
+            // 获取文件类型
             inputStream.mark(0);
             var fileType = FileTypeUtil.getType(inputStream);
-
             inputStream.reset();
-//            var fileType = "png";
 
             var path = ResourceConfig.UPLOADED_IMG_PATH;
             var name = ImgUtil.genImgName(userId);
