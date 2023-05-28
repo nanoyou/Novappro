@@ -97,7 +97,7 @@ public class ApplyCourseService {
 
         try (
                 SqlSession session = MyDb.use().openSession(true);
-                val inputStream = new BufferedInputStream(is)
+//                val inputStream = new BufferedInputStream(is)
         ) {
 
             val userMapper = session.getMapper(UserMapper.class);
@@ -137,7 +137,7 @@ public class ApplyCourseService {
             val date = new Date();
 
             // 上传文件
-            if (!uploadFile(inputStream, userId, flowNo)) {
+            if (!uploadFile(is, userId, flowNo)) {
                 return ServiceMessage.of(
                         ServiceMessage.Level.FATAL,
                         "文件上传失败。"
@@ -224,7 +224,7 @@ public class ApplyCourseService {
                     ServiceMessage.Level.SUCCESS,
                     "课程申请成功！"
             );
-        } catch (IOException e) {
+        } catch (Exception e) {
             return ServiceMessage.of(
                     ServiceMessage.Level.FATAL,
                     "无法写入文件。"
@@ -241,11 +241,15 @@ public class ApplyCourseService {
         try (var session = MyDb.use().openSession(true)) {
             val uploadFileMapper = session.getMapper(UploadFileMapper.class);
 
-
+            inputStream.mark(0);
             var fileType = FileTypeUtil.getType(inputStream);
+
+            inputStream.reset();
+//            var fileType = "png";
 
             var path = ResourceConfig.UPLOADED_IMG_PATH;
             var name = ImgUtil.genImgName(userId);
+
             var file = new File(path + "/" + name + "." + fileType);
 
             var uploadFile = UploadFile.builder()
