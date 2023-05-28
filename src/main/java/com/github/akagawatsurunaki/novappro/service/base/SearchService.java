@@ -113,8 +113,6 @@ public class SearchService {
 
             int start = clamp((page - 1) * offset, 0, resultSize - offset);
             int end = clamp(page * offset, resultSize - offset, resultSize);
-//            int end = Math.min(page * offset, approvalFlowList.size());
-
 
             approvalFlowList = approvalFlowList.subList(start, end);
             return ImmutablePair.of(
