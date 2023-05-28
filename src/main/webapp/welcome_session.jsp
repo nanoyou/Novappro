@@ -53,7 +53,13 @@
 </style>
 <head>
     <title>欢迎回来</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
 </head>
+<script>
+    function courseAppl() {
+        location.href = "${pageContext.request.contextPath}/apply_courses"
+    }
+</script>
 <body class="container">
 <h1>欢迎回来</h1>
 <p>
@@ -68,7 +74,23 @@
 (new Date()).toString()
 %>
 <div>
-    <a class="btn" href="${pageContext.request.contextPath}/get_courses">我要申请课程捏</a>
+    <form action="${pageContext.request.contextPath}/get_courses" method="get">
+        <input type="submit" value="1.2	在线申请功能">
+    </form>
 </div>
+<div>
+
+</div>
+<div>
+    <form action="${pageContext.request.contextPath}/apply_courses" method="get">
+        <input type="submit" value="1.3 已申请课程，审批进度查询功能">
+    </form>
+</div>
+<div>
+    <form action="${pageContext.request.contextPath}/studentSearch" method="get">
+        <input type="submit" value="1.4	已申请课程审批记录查询功能">
+    </form>
+</div>
+
 </body>
 </html>

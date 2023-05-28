@@ -11,11 +11,7 @@
     <title>学生申请课程系统 - 课程表</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
 </head>
-<script>
-    function courseAppl() {
-        location.href = "${pageContext.request.contextPath}/apply_courses"
-    }
-</script>
+
 <body>
 <h1>当前课程表</h1>
 
@@ -97,8 +93,6 @@
     </label>
 
 </form>
-<label>
-    <input id="course_appl_btn" type="button" value="查看我的课程申请" onclick="courseAppl()"/>
-</label>
+
 </body>
 </html>

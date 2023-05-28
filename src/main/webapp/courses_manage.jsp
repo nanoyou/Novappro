@@ -91,6 +91,12 @@
 
 </form>
 
+<form>
+    <input name="addCourseCode" type="text">
+    <input name="addCourse" type="text">
+    <input name="addCourseId" type="text">
+</form>
+
 
 </body>
 </html>

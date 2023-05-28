@@ -5,23 +5,21 @@
 <html>
 <head>
     <title>欢迎回来</title>
-    <h1>欢迎回来</h1>
-    <p>
-        <% User user = (User) request.getAttribute(User.class.getName()); %>
-        <%= user.getType().chinese %>
-        <%= user.getUsername() %>
-    </p>
-    成功登录于
-    <%=
-    (new Date()).toString()
-    %>
-    <form action="./courses.jsp" method="get">
-        <input type="button" value="我要申请课程" onclick="">
-    </form>
-
-
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/table_common.css">
 </head>
 <body>
-
+<h1>欢迎回来</h1>
+<p>
+    <% User user = (User) request.getAttribute(User.class.getName()); %>
+    <%= user.getType().chinese %>
+    <%= user.getUsername() %>
+</p>
+成功登录于
+<%=
+(new Date()).toString()
+%>
+<form action="./courses.jsp" method="get">
+    <input type="button" value="我要申请课程" onclick="">
+</form>
 </body>
 </html>
