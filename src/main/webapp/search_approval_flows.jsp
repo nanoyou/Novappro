@@ -39,15 +39,15 @@
 
 <%
     Pair<ServiceMessage, List<ApprovalFlow>> getPageServiceResult = (Pair<ServiceMessage, List<ApprovalFlow>>) request.getAttribute("getPageServiceResult");
-
     if (getPageServiceResult == null) {
         return;
     }
-
-    if (getPageServiceResult.getLeft().getMessageLevel().equals(ServiceMessage.Level.SUCCESS)) {
-
 %>
 <%=getPageServiceResult.getLeft().getMessage()%>
+<%
+    if (getPageServiceResult.getLeft().getMessageLevel().equals(ServiceMessage.Level.SUCCESS)) {
+%>
+
 <table>
     <tr>
         <th>

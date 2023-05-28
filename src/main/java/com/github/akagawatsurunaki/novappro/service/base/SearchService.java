@@ -42,6 +42,10 @@ public class SearchService {
 
             val userId = Integer.parseInt(userIdParam);
 
+            if (userMapper.selectById(userId) == null) {
+                return ImmutablePair.of(ServiceMessage.of(ServiceMessage.Level.ERROR, "用户不存在"), new ArrayList<>());
+            }
+
             if (listPair.getLeft().getMessageLevel().equals(ServiceMessage.Level.SUCCESS)) {
                 val approvalFlows = listPair.getRight();
                 val result = approvalFlows.stream().filter(

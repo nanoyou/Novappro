@@ -15,7 +15,13 @@ public class TeacherSearchApprovalFlowsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+        try {
+            request.setCharacterEncoding("UTF-8");
+            request.getRequestDispatcher("search_approval_flows.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
     }
 
     @Override
