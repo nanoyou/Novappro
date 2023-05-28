@@ -9,6 +9,7 @@
 <%@ page import="java.util.Optional" %>
 <%@ page import="org.apache.commons.lang3.tuple.Pair" %>
 <%@ page import="com.github.akagawatsurunaki.novappro.servlet.appro.SubmitApproResultServlet" %>
+<%@ page import="java.io.File" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -141,6 +142,35 @@
                 </table>
             </td>
         </tr>
+        <%
+            Pair<ServiceMessage, String> imgFileServiceResult = (Pair<ServiceMessage, String>)
+                    request.getAttribute("uploadImg");
+
+            if (imgFileServiceResult != null) {
+        %>
+        <tr>
+            <th>
+                申请证明
+            </th>
+            <td>
+                <%
+                    if (imgFileServiceResult.getLeft().getMessageLevel().equals(ServiceMessage.Level.SUCCESS)) {
+                %>
+                <img src="<%=imgFileServiceResult.getRight()%>" alt="">
+                <%
+                } else {
+                %>
+                <%=imgFileServiceResult.getLeft()%>
+                <%
+                    }
+                %>
+
+            </td>
+        </tr>
+        <%
+            }
+        %>
+
         <%--    申请状态--%>
         <tr>
             <td><%=ZhFieldUtil.getZhValue(CourseAppItemDetail.class, CourseAppItemDetail.Fields.approStatus)%>
@@ -181,7 +211,6 @@
             if (getApplItemServiceResult.getLeft().getMessageLevel() != ServiceMessage.Level.SUCCESS) {
                 out.print(getApplItemServiceResult.getLeft().getMessage());
             }
-
         %>
         <%
             if (saveApproResultServiceResult != null) {

@@ -29,7 +29,6 @@ import org.apache.ibatis.session.SqlSession;
 import javax.annotation.Nullable;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -234,11 +233,13 @@ public class ApplyCourseService {
 
 
     private boolean uploadFile(
-            @NonNull InputStream inputStream,
+            @NonNull InputStream is,
             @NonNull Integer userId,
             @NonNull String flowNo
     ) {
-        try (var session = MyDb.use().openSession(true)) {
+        try (var session = MyDb.use().openSession(true);
+             val inputStream = new BufferedInputStream(is)
+        ) {
             val uploadFileMapper = session.getMapper(UploadFileMapper.class);
 
             // 获取文件类型
@@ -248,8 +249,8 @@ public class ApplyCourseService {
 
             var path = ResourceConfig.UPLOADED_IMG_PATH;
             var name = ImgUtil.genImgName(userId);
-
-            var file = new File(path + "/" + name + "." + fileType);
+            val fullPath = path + "/" + name + "." + fileType;
+            var file = new File(fullPath);
 
             var uploadFile = UploadFile.builder()
                     .fileName(name + "." + fileType)
@@ -304,7 +305,6 @@ public class ApplyCourseService {
 
     /**
      * 根据用户的ID查询其下的所有课程申请
-     *
      */
     public Triple<ServiceMessage, List<CourseApplication>, List<ApprovalStatus>> getCourseApplsByUserId(@Nullable Integer userId) {
         if (userId == null) {

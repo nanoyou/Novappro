@@ -4,6 +4,7 @@ import com.github.akagawatsurunaki.novappro.constant.JSPResource;
 import com.github.akagawatsurunaki.novappro.constant.SC;
 import com.github.akagawatsurunaki.novappro.model.database.User;
 import com.github.akagawatsurunaki.novappro.service.appro.ApprovalService;
+import com.github.akagawatsurunaki.novappro.service.appro.ImgService;
 import lombok.AllArgsConstructor;
 import lombok.val;
 
@@ -32,6 +33,8 @@ public class ApplItemDetailServlet extends HttpServlet {
             // 为Request赋予参数
             request.setAttribute(ReqAttr.GET_COURSE_APP_ITEM_DETAIL_SERVICE_RESULT.value,
                     getCourseAppItemDetailServiceResult);
+            request.setAttribute("uploadImg", ImgService.getInstance().getImg( getServletContext().getRealPath("/data"),
+                    flowNo));
             // 转发页面
             request.getRequestDispatcher(JSPResource.GET_CRS_APPL_ITEM.value).forward(request, response);
         } catch (Exception e) {
